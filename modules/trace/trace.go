@@ -8,7 +8,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/GoAdminGroup/go-admin/context"
+	"github.com/go-hq/go-admin/context"
 )
 
 var (
@@ -18,23 +18,25 @@ var (
 )
 
 func getMachineID() string {
-	machineIDOnce.Do(func() {
-		addrs, err := net.InterfaceAddrs()
-		if err == nil {
-			for _, addr := range addrs {
-				if ipNet, ok := addr.(*net.IPNet); ok && !ipNet.IP.IsLoopback() {
-					if ipNet.IP.To4() != nil {
-						machineID = ipNet.IP.String()
-						break
+	machineIDOnce.Do(
+		func() {
+			addrs, err := net.InterfaceAddrs()
+			if err == nil {
+				for _, addr := range addrs {
+					if ipNet, ok := addr.(*net.IPNet); ok && !ipNet.IP.IsLoopback() {
+						if ipNet.IP.To4() != nil {
+							machineID = ipNet.IP.String()
+							break
+						}
 					}
 				}
 			}
-		}
 
-		if machineID == "" {
-			machineID = "127.0.0.1"
-		}
-	})
+			if machineID == "" {
+				machineID = "127.0.0.1"
+			}
+		},
+	)
 
 	return machineID
 }

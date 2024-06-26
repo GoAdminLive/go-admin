@@ -13,24 +13,24 @@ import (
 	"time"
 
 	"github.com/360EntSecGroup-Skylar/excelize"
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/auth"
-	"github.com/GoAdminGroup/go-admin/modules/errors"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/modules/logger"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/guard"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/parameter"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/response"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/table"
-	"github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/icon"
-	"github.com/GoAdminGroup/go-admin/template/types"
-	"github.com/GoAdminGroup/go-admin/template/types/action"
-	form2 "github.com/GoAdminGroup/go-admin/template/types/form"
-	"github.com/GoAdminGroup/html"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/auth"
+	"github.com/go-hq/go-admin/modules/errors"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/modules/logger"
+	"github.com/go-hq/go-admin/plugins/admin/modules"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	"github.com/go-hq/go-admin/plugins/admin/modules/form"
+	"github.com/go-hq/go-admin/plugins/admin/modules/guard"
+	"github.com/go-hq/go-admin/plugins/admin/modules/parameter"
+	"github.com/go-hq/go-admin/plugins/admin/modules/response"
+	"github.com/go-hq/go-admin/plugins/admin/modules/table"
+	"github.com/go-hq/go-admin/template"
+	"github.com/go-hq/go-admin/template/icon"
+	"github.com/go-hq/go-admin/template/types"
+	"github.com/go-hq/go-admin/template/types/action"
+	form2 "github.com/go-hq/go-admin/template/types/form"
+	"github.com/go-hq/html"
 )
 
 // ShowInfo show info page.
@@ -55,15 +55,19 @@ func (h *Handler) ShowInfo(ctx *context.Context) {
 		return
 	}
 
-	params := parameter.GetParam(ctx.Request.URL, panel.GetInfo().DefaultPageSize, panel.GetInfo().SortField,
-		panel.GetInfo().GetSort())
+	params := parameter.GetParam(
+		ctx.Request.URL, panel.GetInfo().DefaultPageSize, panel.GetInfo().SortField,
+		panel.GetInfo().GetSort(),
+	)
 
 	buf := h.showTable(ctx, prefix, params, panel)
 	ctx.HTML(http.StatusOK, buf.String())
 }
 
-func (h *Handler) showTableData(ctx *context.Context, prefix string, params parameter.Parameters,
-	panel table.Table, urlNamePrefix string) (table.Table, table.PanelInfo, []string, error) {
+func (h *Handler) showTableData(
+	ctx *context.Context, prefix string, params parameter.Parameters,
+	panel table.Table, urlNamePrefix string,
+) (table.Table, table.PanelInfo, []string, error) {
 	if panel == nil {
 		panel = h.table(prefix, ctx)
 	}
@@ -77,11 +81,21 @@ func (h *Handler) showTableData(ctx *context.Context, prefix string, params para
 	var (
 		paramStr = params.DeleteIsAll().GetRouteParamStr()
 
-		editUrl   = modules.AorEmpty(!panel.GetInfo().IsHideEditButton, h.routePathWithPrefix(urlNamePrefix+"show_edit", prefix)+paramStr)
-		newUrl    = modules.AorEmpty(!panel.GetInfo().IsHideNewButton, h.routePathWithPrefix(urlNamePrefix+"show_new", prefix)+paramStr)
-		deleteUrl = modules.AorEmpty(!panel.GetInfo().IsHideDeleteButton, h.routePathWithPrefix(urlNamePrefix+"delete", prefix)+paramStr)
-		exportUrl = modules.AorEmpty(!panel.GetInfo().IsHideExportButton, h.routePathWithPrefix(urlNamePrefix+"export", prefix)+paramStr)
-		detailUrl = modules.AorEmpty(!panel.GetInfo().IsHideDetailButton, h.routePathWithPrefix(urlNamePrefix+"detail", prefix)+paramStr)
+		editUrl = modules.AorEmpty(
+			!panel.GetInfo().IsHideEditButton, h.routePathWithPrefix(urlNamePrefix+"show_edit", prefix)+paramStr,
+		)
+		newUrl = modules.AorEmpty(
+			!panel.GetInfo().IsHideNewButton, h.routePathWithPrefix(urlNamePrefix+"show_new", prefix)+paramStr,
+		)
+		deleteUrl = modules.AorEmpty(
+			!panel.GetInfo().IsHideDeleteButton, h.routePathWithPrefix(urlNamePrefix+"delete", prefix)+paramStr,
+		)
+		exportUrl = modules.AorEmpty(
+			!panel.GetInfo().IsHideExportButton, h.routePathWithPrefix(urlNamePrefix+"export", prefix)+paramStr,
+		)
+		detailUrl = modules.AorEmpty(
+			!panel.GetInfo().IsHideDetailButton, h.routePathWithPrefix(urlNamePrefix+"detail", prefix)+paramStr,
+		)
 
 		infoUrl   = h.routePathWithPrefix(urlNamePrefix+"info", prefix)
 		updateUrl = h.routePathWithPrefix(urlNamePrefix+"update", prefix) + paramStr
@@ -95,28 +109,46 @@ func (h *Handler) showTableData(ctx *context.Context, prefix string, params para
 	exportUrl = user.GetCheckPermissionByUrlMethod(exportUrl, h.route(urlNamePrefix+"export").Method())
 	detailUrl = user.GetCheckPermissionByUrlMethod(detailUrl, h.route(urlNamePrefix+"detail").Method())
 
-	return panel, panelInfo, []string{editUrl, newUrl, deleteUrl, exportUrl, detailUrl, infoUrl, updateUrl}, nil
+	return panel, panelInfo, []string{
+		editUrl,
+		newUrl,
+		deleteUrl,
+		exportUrl,
+		detailUrl,
+		infoUrl,
+		updateUrl,
+	}, nil
 }
 
-func (h *Handler) showTable(ctx *context.Context, prefix string, params parameter.Parameters, panel table.Table) *bytes.Buffer {
+func (h *Handler) showTable(
+	ctx *context.Context, prefix string, params parameter.Parameters, panel table.Table,
+) *bytes.Buffer {
 
 	panel, panelInfo, urls, err := h.showTableData(ctx, prefix, params, panel, "")
 	if err != nil {
-		return h.Execute(ctx, auth.Auth(ctx),
+		return h.Execute(
+			ctx, auth.Auth(ctx),
 			template.WarningPanelWithDescAndTitle(ctx, err.Error(), errors.Msg, errors.Msg), "",
-			template.ExecuteOptions{Animation: params.Animation})
+			template.ExecuteOptions{Animation: params.Animation},
+		)
 	}
 
 	if panel.GetInfo().HasError() {
 		if panel.GetInfo().PageErrorHTML != template2.HTML("") {
-			return h.Execute(ctx, auth.Auth(ctx),
+			return h.Execute(
+				ctx, auth.Auth(ctx),
 				types.Panel{Content: panel.GetInfo().PageErrorHTML}, "",
-				template.ExecuteOptions{Animation: params.Animation})
+				template.ExecuteOptions{Animation: params.Animation},
+			)
 		}
-		return h.Execute(ctx, auth.Auth(ctx),
-			template.WarningPanel(ctx, panel.GetInfo().PageError.Error(),
-				template.GetPageTypeFromPageError(panel.GetInfo().PageError)), "",
-			template.ExecuteOptions{Animation: params.Animation})
+		return h.Execute(
+			ctx, auth.Auth(ctx),
+			template.WarningPanel(
+				ctx, panel.GetInfo().PageError.Error(),
+				template.GetPageTypeFromPageError(panel.GetInfo().PageError),
+			), "",
+			template.ExecuteOptions{Animation: params.Animation},
+		)
 	}
 
 	editUrl, newUrl, deleteUrl, exportUrl, detailUrl, infoUrl,
@@ -141,39 +173,85 @@ func (h *Handler) showTable(ctx *context.Context, prefix string, params paramete
 			ext := template2.HTML("")
 			if deleteUrl != "" {
 				ext = html.LiEl().SetClass("divider").Get()
-				allActionBtns = append([]types.Button{types.GetActionButton(language.GetFromHtml("delete"),
-					types.NewDefaultAction(`data-id='{{.Id}}' data-param='{{(index .Value "__goadmin_delete_params").Content}}' style="cursor: pointer;"`,
-						ext, "", ""), "grid-row-delete")}, allActionBtns...)
+				allActionBtns = append(
+					[]types.Button{
+						types.GetActionButton(
+							language.GetFromHtml("delete"),
+							types.NewDefaultAction(
+								`data-id='{{.Id}}' data-param='{{(index .Value "__goadmin_delete_params").Content}}' style="cursor: pointer;"`,
+								ext, "", "",
+							), "grid-row-delete",
+						),
+					}, allActionBtns...,
+				)
 			}
 			ext = template2.HTML("")
 			if detailUrl != "" {
 				if editUrl == "" && deleteUrl == "" {
 					ext = html.LiEl().SetClass("divider").Get()
 				}
-				allActionBtns = append([]types.Button{types.GetActionButton(language.GetFromHtml("detail"),
-					action.Jump(detailUrl+"&"+constant.DetailPKKey+`={{.Id}}{{(index .Value "__goadmin_detail_params").Content}}`, ext))}, allActionBtns...)
+				allActionBtns = append(
+					[]types.Button{
+						types.GetActionButton(
+							language.GetFromHtml("detail"),
+							action.Jump(
+								detailUrl+"&"+constant.DetailPKKey+`={{.Id}}{{(index .Value "__goadmin_detail_params").Content}}`,
+								ext,
+							),
+						),
+					}, allActionBtns...,
+				)
 			}
 			if editUrl != "" {
 				if detailUrl == "" && deleteUrl == "" {
 					ext = html.LiEl().SetClass("divider").Get()
 				}
-				allActionBtns = append([]types.Button{types.GetActionButton(language.GetFromHtml("edit"),
-					action.Jump(editUrl+"&"+constant.EditPKKey+`={{.Id}}{{(index .Value "__goadmin_edit_params").Content}}`, ext))}, allActionBtns...)
+				allActionBtns = append(
+					[]types.Button{
+						types.GetActionButton(
+							language.GetFromHtml("edit"),
+							action.Jump(
+								editUrl+"&"+constant.EditPKKey+`={{.Id}}{{(index .Value "__goadmin_edit_params").Content}}`,
+								ext,
+							),
+						),
+					}, allActionBtns...,
+				)
 			}
 
 			var content template2.HTML
 			content, actionJs = allActionBtns.Content(ctx)
 
-			actionBtns = html.Div(html.Div(
-				html.A(icon.Icon(icon.EllipsisV),
-					html.M{"color": "#676565"},
-					html.M{"href": "#"},
-				), html.M{"cursor": "pointer", "width": "100%"}, html.M{"class": "dropdown-toggle", "data-toggle": "dropdown"})+
-				html.Ul(content,
-					html.M{"min-width": "20px !important", "left": "-32px", "overflow": "hidden"},
-					html.M{"class": "dropdown-menu", "role": "menu", "aria-labelledby": "dLabel"}),
+			actionBtns = html.Div(
+				html.Div(
+					html.A(
+						icon.Icon(icon.EllipsisV),
+						html.M{"color": "#676565"},
+						html.M{"href": "#"},
+					), html.M{
+						"cursor": "pointer",
+						"width":  "100%",
+					}, html.M{
+						"class":       "dropdown-toggle",
+						"data-toggle": "dropdown",
+					},
+				)+
+					html.Ul(
+						content,
+						html.M{
+							"min-width": "20px !important",
+							"left":      "-32px",
+							"overflow":  "hidden",
+						},
+						html.M{
+							"class":           "dropdown-menu",
+							"role":            "menu",
+							"aria-labelledby": "dLabel",
+						},
+					),
 
-				html.M{"text-align": "center"}, html.M{"class": "dropdown"})
+				html.M{"text-align": "center"}, html.M{"class": "dropdown"},
+			)
 		} else {
 			actionBtns, actionJs = allActionBtns.Content(ctx)
 		}
@@ -263,7 +341,8 @@ func (h *Handler) showTable(ctx *context.Context, prefix string, params paramete
 		SetHeader(dataTable.GetDataTableHeader() + info.HeaderHtml).
 		WithHeadBorder().
 		SetIframeStyle(!isNotIframe).
-		SetFooter(paginator.GetContent() + info.FooterHtml + `
+		SetFooter(
+			paginator.GetContent() + info.FooterHtml + `
 		<script>
 		$(document).ready(function() {
 			var tableWrapper = $(".table");
@@ -289,7 +368,8 @@ func (h *Handler) showTable(ctx *context.Context, prefix string, params paramete
 			});
 		});
 </script>
-		`)
+		`,
+		)
 
 	content := template2.HTML("")
 
@@ -297,36 +377,44 @@ func (h *Handler) showTable(ctx *context.Context, prefix string, params paramete
 		filterBoxModel := aBox(ctx).SetClass("filter-area").
 			SetAttr(`style="padding-top: 20px;margin-top: -10px;margin-bottom: 12px;padding-left: 20px;display: block;padding-bottom: 5px;"`).
 			SetStyle(`padding: 0px;`).
-			SetBody(aForm(ctx).
-				SetContent(panelInfo.FilterFormData).
-				SetHorizontal(true).
-				SetPrefix(h.config.PrefixFixSlash()).
-				SetInputWidth(info.FilterFormInputWidth).
-				SetHeadWidth(info.FilterFormHeadWidth).
-				SetMethod("get").
-				SetLayout(info.FilterFormLayout).
-				SetUrl(infoUrl). //  + params.GetFixedParamStrWithoutColumnsAndPage()
-				SetHiddenFields(map[string]string{
-					form.NoAnimationKey: "true",
-				}).
-				GetContent())
-		content = filterBoxModel.GetContent() + boxModel.GetContent()
-	} else {
-		if len(panelInfo.FilterFormData) > 0 {
-			boxModel = boxModel.SetSecondHeaderClass("filter-area").
-				SetSecondHeader(aForm(ctx).
+			SetBody(
+				aForm(ctx).
 					SetContent(panelInfo.FilterFormData).
+					SetHorizontal(true).
 					SetPrefix(h.config.PrefixFixSlash()).
 					SetInputWidth(info.FilterFormInputWidth).
 					SetHeadWidth(info.FilterFormHeadWidth).
 					SetMethod("get").
 					SetLayout(info.FilterFormLayout).
 					SetUrl(infoUrl). //  + params.GetFixedParamStrWithoutColumnsAndPage()
-					SetHiddenFields(map[string]string{
-						form.NoAnimationKey: "true",
-					}).
-					SetOperationFooter(filterFormFooter(ctx, infoUrl)).
-					GetContent())
+					SetHiddenFields(
+						map[string]string{
+							form.NoAnimationKey: "true",
+						},
+					).
+					GetContent(),
+			)
+		content = filterBoxModel.GetContent() + boxModel.GetContent()
+	} else {
+		if len(panelInfo.FilterFormData) > 0 {
+			boxModel = boxModel.SetSecondHeaderClass("filter-area").
+				SetSecondHeader(
+					aForm(ctx).
+						SetContent(panelInfo.FilterFormData).
+						SetPrefix(h.config.PrefixFixSlash()).
+						SetInputWidth(info.FilterFormInputWidth).
+						SetHeadWidth(info.FilterFormHeadWidth).
+						SetMethod("get").
+						SetLayout(info.FilterFormLayout).
+						SetUrl(infoUrl). //  + params.GetFixedParamStrWithoutColumnsAndPage()
+						SetHiddenFields(
+							map[string]string{
+								form.NoAnimationKey: "true",
+							},
+						).
+						SetOperationFooter(filterFormFooter(ctx, infoUrl)).
+						GetContent(),
+				)
 		}
 		content = boxModel.GetContent()
 	}
@@ -341,14 +429,19 @@ func (h *Handler) showTable(ctx *context.Context, prefix string, params paramete
 		interval = append(interval, int(info.AutoRefresh))
 	}
 
-	return h.Execute(ctx, user, types.Panel{
-		Content:         content,
-		Description:     template2.HTML(panelInfo.Description),
-		Title:           modules.AorBHTML(isNotIframe, template2.HTML(panelInfo.Title), ""),
-		MiniSidebar:     info.HideSideBar,
-		AutoRefresh:     autoRefresh,
-		RefreshInterval: interval,
-	}, "", template.ExecuteOptions{Animation: params.Animation, NoCompress: info.NoCompress})
+	return h.Execute(
+		ctx, user, types.Panel{
+			Content:         content,
+			Description:     template2.HTML(panelInfo.Description),
+			Title:           modules.AorBHTML(isNotIframe, template2.HTML(panelInfo.Title), ""),
+			MiniSidebar:     info.HideSideBar,
+			AutoRefresh:     autoRefresh,
+			RefreshInterval: interval,
+		}, "", template.ExecuteOptions{
+			Animation:  params.Animation,
+			NoCompress: info.NoCompress,
+		},
+	)
 }
 
 // Assets return front-end assets according the request path.
@@ -386,12 +479,14 @@ func (h *Handler) Assets(ctx *context.Context) {
 		}
 	}
 
-	ctx.DataWithHeaders(http.StatusOK, map[string]string{
-		"Content-Type":   contentType,
-		"Cache-Control":  "max-age=2592000",
-		"Content-Length": strconv.Itoa(len(data)),
-		"ETag":           etag,
-	}, data)
+	ctx.DataWithHeaders(
+		http.StatusOK, map[string]string{
+			"Content-Type":   contentType,
+			"Cache-Control":  "max-age=2592000",
+			"Content-Length": strconv.Itoa(len(data)),
+			"ETag":           etag,
+		}, data,
+	)
 }
 
 // Export export table rows as excel object.
@@ -415,8 +510,10 @@ func (h *Handler) Export(ctx *context.Context) {
 	)
 
 	if fn := panel.GetInfo().ExportProcessFn; fn != nil {
-		params = parameter.GetParam(ctx.Request.URL, tableInfo.DefaultPageSize, tableInfo.SortField,
-			tableInfo.GetSort())
+		params = parameter.GetParam(
+			ctx.Request.URL, tableInfo.DefaultPageSize, tableInfo.SortField,
+			tableInfo.GetSort(),
+		)
 		p, err := fn(params.WithIsAll(param.IsAll))
 		if err != nil {
 			response.Error(ctx, "export error")
@@ -426,14 +523,22 @@ func (h *Handler) Export(ctx *context.Context) {
 		infoData.InfoList = p.InfoList
 	} else {
 		if len(param.Id) == 0 {
-			params = parameter.GetParam(ctx.Request.URL, tableInfo.DefaultPageSize, tableInfo.SortField,
-				tableInfo.GetSort())
+			params = parameter.GetParam(
+				ctx.Request.URL, tableInfo.DefaultPageSize, tableInfo.SortField,
+				tableInfo.GetSort(),
+			)
 			infoData, err = panel.GetData(ctx, params.WithIsAll(param.IsAll))
-			fileName = fmt.Sprintf("%s-%d-page-%s-pageSize-%s.xlsx", tableInfo.Title, time.Now().Unix(),
-				params.Page, params.PageSize)
+			fileName = fmt.Sprintf(
+				"%s-%d-page-%s-pageSize-%s.xlsx", tableInfo.Title, time.Now().Unix(),
+				params.Page, params.PageSize,
+			)
 		} else {
-			infoData, err = panel.GetDataWithIds(ctx, parameter.GetParam(ctx.Request.URL,
-				tableInfo.DefaultPageSize, tableInfo.SortField, tableInfo.GetSort()).WithPKs(param.Id...))
+			infoData, err = panel.GetDataWithIds(
+				ctx, parameter.GetParam(
+					ctx.Request.URL,
+					tableInfo.DefaultPageSize, tableInfo.SortField, tableInfo.GetSort(),
+				).WithPKs(param.Id...),
+			)
 			fileName = fmt.Sprintf("%s-%d-id-%s.xlsx", tableInfo.Title, time.Now().Unix(), strings.Join(param.Id, "_"))
 		}
 		if err != nil {
@@ -443,8 +548,34 @@ func (h *Handler) Export(ctx *context.Context) {
 	}
 
 	// TODO: support any numbers of fields.
-	orders := []string{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
-		"L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"}
+	orders := []string{
+		"A",
+		"B",
+		"C",
+		"D",
+		"E",
+		"F",
+		"G",
+		"H",
+		"I",
+		"J",
+		"K",
+		"L",
+		"M",
+		"N",
+		"O",
+		"P",
+		"Q",
+		"R",
+		"S",
+		"T",
+		"U",
+		"V",
+		"W",
+		"X",
+		"Y",
+		"Z",
+	}
 
 	if len(infoData.Thead) > 26 {
 		j := -1

@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
 	"github.com/gavv/httpexpect"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	"github.com/go-hq/go-admin/plugins/admin/modules/form"
 )
 
 func menuTest(e *httpexpect.Expect, sesID *http.Cookie) {
@@ -35,22 +35,24 @@ func menuTest(e *httpexpect.Expect, sesID *http.Cookie) {
 		WithCookie(sesID.Name, sesID.Value).
 		WithMultipart().
 		WithFormField("roles[]", "1").
-		WithForm(map[string]interface{}{
-			"parent_id":      0,
-			"title":          "test menu",
-			"header":         "",
-			"icon":           "fa-angellist",
-			"uri":            "/example/test",
-			form.PreviousKey: "/admin/menu",
-			form.TokenKey:    token[1],
-		}).Expect().Status(200)
+		WithForm(
+			map[string]interface{}{
+				"parent_id":      0,
+				"title":          "test menu",
+				"header":         "",
+				"icon":           "fa-angellist",
+				"uri":            "/example/test",
+				form.PreviousKey: "/admin/menu",
+				form.TokenKey:    token[1],
+			},
+		).Expect().Status(200)
 	res.Header("X-Pjax-Url").Contains(config.Url("/menu"))
 	res.Body().Contains("test menu").Contains("/example/test")
 
 	// show form: without id
 
-	//printlnWithColor("show form: without id", "green")
-	//e.GET(config.Url("/menu/edit/show")).
+	// printlnWithColor("show form: without id", "green")
+	// e.GET(config.Url("/menu/edit/show")).
 	//	WithCookie(sesID.Name, sesID.Value).
 	//	Expect().Status(200).Body().Contains(errors.WrongID)
 
@@ -71,16 +73,18 @@ func menuTest(e *httpexpect.Expect, sesID *http.Cookie) {
 		WithCookie(sesID.Name, sesID.Value).
 		WithMultipart().
 		WithFormField("roles[]", "1").
-		WithForm(map[string]interface{}{
-			"parent_id":      0,
-			"title":          "test2 menu",
-			"header":         "",
-			"icon":           "fa-angellist",
-			"uri":            "/example/test",
-			form.PreviousKey: "/admin/menu",
-			form.TokenKey:    token[1],
-			"id":             "3",
-		}).Expect().Status(200)
+		WithForm(
+			map[string]interface{}{
+				"parent_id":      0,
+				"title":          "test2 menu",
+				"header":         "",
+				"icon":           "fa-angellist",
+				"uri":            "/example/test",
+				form.PreviousKey: "/admin/menu",
+				form.TokenKey:    token[1],
+				"id":             "3",
+			},
+		).Expect().Status(200)
 	res.Header("X-Pjax-Url").Contains(config.Url("/menu"))
 	res.Body().Contains("test2 menu").Contains("/example/test")
 
@@ -91,15 +95,17 @@ func menuTest(e *httpexpect.Expect, sesID *http.Cookie) {
 		WithCookie(sesID.Name, sesID.Value).
 		WithMultipart().
 		WithFormField("roles[]", "1").
-		WithForm(map[string]interface{}{
-			"parent_id":      0,
-			"title":          "test2 menu",
-			"header":         "",
-			"icon":           "fa-angellist",
-			"uri":            "/example/test2",
-			form.PreviousKey: "/admin/menu",
-			form.TokenKey:    token[1],
-		}).Expect().Status(200)
+		WithForm(
+			map[string]interface{}{
+				"parent_id":      0,
+				"title":          "test2 menu",
+				"header":         "",
+				"icon":           "fa-angellist",
+				"uri":            "/example/test2",
+				form.PreviousKey: "/admin/menu",
+				form.TokenKey:    token[1],
+			},
+		).Expect().Status(200)
 
 	// delete tester2
 

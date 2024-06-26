@@ -3,10 +3,10 @@ package action
 import (
 	"html/template"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/parameter"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/plugins/admin/modules/form"
+	"github.com/go-hq/go-admin/plugins/admin/modules/parameter"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 type FieldFilterAction struct {
@@ -29,7 +29,8 @@ func (jump *FieldFilterAction) ExtContent(ctx *context.Context) template.HTML {
 	}`
 	}
 
-	return template.HTML(`<script>
+	return template.HTML(
+		`<script>
 $("select` + jump.BtnId + `").on("select2:select",function(e){
 
 	let setURL = function(field, value) {
@@ -71,5 +72,6 @@ for (let i = 0; i < vars.length; i++) {
 if (vv !== "") {
 	$("` + jump.BtnId + `").val(vv).select2()
 }
-</script>`)
+</script>`,
+	)
 }

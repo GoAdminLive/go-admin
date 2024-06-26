@@ -7,9 +7,9 @@ import (
 
 	"github.com/mgutz/ansi"
 
-	_ "github.com/GoAdminGroup/go-admin/adapter/gin"
-	_ "github.com/GoAdminGroup/go-admin/modules/db/drivers/mysql"
-	_ "github.com/GoAdminGroup/themes/adminlte"
+	_ "github.com/go-hq/go-admin/adapter/gin"
+	_ "github.com/go-hq/go-admin/modules/db/drivers/mysql"
+	_ "github.com/go-hq/themes/adminlte"
 
 	"github.com/sclevine/agouti"
 )
@@ -52,7 +52,8 @@ func UserAcceptanceTestSuit(t *testing.T, testers Testers, serverStarter ServerS
 				"acceptSslCerts":      true,
 				"acceptInsecureCerts": true,
 			},
-		))
+		),
+	)
 	err := driver.Start()
 	if err != nil {
 		panic("failed to start driver, error: " + err.Error())
@@ -69,7 +70,14 @@ func UserAcceptanceTestSuit(t *testing.T, testers Testers, serverStarter ServerS
 	fmt.Println("============================================")
 	fmt.Println()
 
-	testers(t, &Page{T: t, Page: page, Driver: driver, Quit: quit})
+	testers(
+		t, &Page{
+			T:      t,
+			Page:   page,
+			Driver: driver,
+			Quit:   quit,
+		},
+	)
 
 	wait(2)
 

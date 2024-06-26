@@ -4,9 +4,9 @@ import (
 	"html/template"
 	"strconv"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/modules/utils"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/modules/utils"
 )
 
 type DefaultSelection struct {
@@ -52,7 +52,8 @@ func (b *DefaultSelection) Content(ctx *context.Context) (template.HTML, templat
 		optionsHtml += `<option value='` + op.Value + `'>` + op.Text + `</option>`
 	}
 
-	h := template.HTML(`<div class="btn-group pull-right" style="margin-right: 10px">
+	h := template.HTML(
+		`<div class="btn-group pull-right" style="margin-right: 10px">
 <div style="width:`+strconv.Itoa(b.Width)+`px;">
 <select style="width:100%;height:30px;" class="`+b.Id+` select2-hidden-accessible" name="`+b.Id+`"
             data-multiple="false"  data-placeholder="`+b.Placeholder+`" tabindex="-1" aria-hidden="true">
@@ -70,9 +71,12 @@ func (b *DefaultSelection) Content(ctx *context.Context) (template.HTML, templat
 	{
 		line-height: 24px;
 	}
-</style>`) + b.Action.ExtContent(ctx)
+</style>`,
+	) + b.Action.ExtContent(ctx)
 
-	return h, b.Action.Js() + template.JS(`
+	return h, b.Action.Js() + template.JS(
+		`
 	$(".`+b.Id+`").select2();
-`)
+`,
+	)
 }

@@ -2,7 +2,7 @@ package db
 
 import (
 	"database/sql"
-	"github.com/GoAdminGroup/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/config"
 )
 
 // OceanBase is a Connection of OceanBase.
@@ -36,42 +36,49 @@ func (db *OceanBase) GetDelimiter2() string {
 
 // GetDelimiters implements the method Connection.GetDelimiters.
 func (db *OceanBase) GetDelimiters() []string {
-	return []string{"`", "`"}
+	return []string{
+		"`",
+		"`",
+	}
 }
 
 // InitDB implements the method Connection.InitDB.
 func (db *OceanBase) InitDB(cfgs map[string]config.Database) Connection {
 	db.Configs = cfgs
-	db.Once.Do(func() {
-		for conn, cfg := range cfgs {
+	db.Once.Do(
+		func() {
+			for conn, cfg := range cfgs {
 
-			sqlDB, err := sql.Open("mysql", cfg.GetDSN())
+				sqlDB, err := sql.Open("mysql", cfg.GetDSN())
 
-			if err != nil {
-				if sqlDB != nil {
-					_ = sqlDB.Close()
+				if err != nil {
+					if sqlDB != nil {
+						_ = sqlDB.Close()
+					}
+					panic(err)
 				}
-				panic(err)
+
+				// Largest set up the database connection reduce time wait
+				sqlDB.SetMaxIdleConns(cfg.MaxIdleConns)
+				sqlDB.SetMaxOpenConns(cfg.MaxOpenConns)
+				sqlDB.SetConnMaxLifetime(cfg.ConnMaxLifetime)
+				sqlDB.SetConnMaxIdleTime(cfg.ConnMaxIdleTime)
+
+				db.DbList[conn] = sqlDB
+
+				if err := sqlDB.Ping(); err != nil {
+					panic(err)
+				}
 			}
-
-			// Largest set up the database connection reduce time wait
-			sqlDB.SetMaxIdleConns(cfg.MaxIdleConns)
-			sqlDB.SetMaxOpenConns(cfg.MaxOpenConns)
-			sqlDB.SetConnMaxLifetime(cfg.ConnMaxLifetime)
-			sqlDB.SetConnMaxIdleTime(cfg.ConnMaxIdleTime)
-
-			db.DbList[conn] = sqlDB
-
-			if err := sqlDB.Ping(); err != nil {
-				panic(err)
-			}
-		}
-	})
+		},
+	)
 	return db
 }
 
 // QueryWithConnection implements the method Connection.QueryWithConnection.
-func (db *OceanBase) QueryWithConnection(con string, query string, args ...interface{}) ([]map[string]interface{}, error) {
+func (db *OceanBase) QueryWithConnection(con string, query string, args ...interface{}) (
+	[]map[string]interface{}, error,
+) {
 	return CommonQuery(db.DbList[con], query, args...)
 }
 

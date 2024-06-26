@@ -6,17 +6,17 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/auth"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/modules/logger"
-	"github.com/GoAdminGroup/go-admin/modules/system"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/captcha"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/response"
-	"github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/auth"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/logger"
+	"github.com/go-hq/go-admin/modules/system"
+	"github.com/go-hq/go-admin/plugins/admin/models"
+	"github.com/go-hq/go-admin/plugins/admin/modules/captcha"
+	"github.com/go-hq/go-admin/plugins/admin/modules/response"
+	"github.com/go-hq/go-admin/template"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 // Auth check the input password and username for authentication.
@@ -70,17 +70,21 @@ func (h *Handler) Auth(ctx *context.Context) {
 			v := u.Query()
 			if r := v.Get("ref"); r != "" {
 				rr, _ := url.QueryUnescape(r)
-				response.OkWithData(ctx, map[string]interface{}{
-					"url": rr,
-				})
+				response.OkWithData(
+					ctx, map[string]interface{}{
+						"url": rr,
+					},
+				)
 				return
 			}
 		}
 	}
 
-	response.OkWithData(ctx, map[string]interface{}{
-		"url": h.config.GetIndexURL(),
-	})
+	response.OkWithData(
+		ctx, map[string]interface{}{
+			"url": h.config.GetIndexURL(),
+		},
+	)
 }
 
 // Logout delete the cookie.
@@ -98,21 +102,23 @@ func (h *Handler) ShowLogin(ctx *context.Context) {
 
 	tmpl, name := template.GetComp("login").GetTemplate()
 	buf := new(bytes.Buffer)
-	if err := tmpl.ExecuteTemplate(buf, name, struct {
-		UrlPrefix string
-		Title     string
-		Logo      template2.HTML
-		CdnUrl    string
-		System    types.SystemInfo
-	}{
-		UrlPrefix: h.config.AssertPrefix(),
-		Title:     h.config.LoginTitle,
-		Logo:      h.config.LoginLogo,
-		System: types.SystemInfo{
-			Version: system.Version(),
+	if err := tmpl.ExecuteTemplate(
+		buf, name, struct {
+			UrlPrefix string
+			Title     string
+			Logo      template2.HTML
+			CdnUrl    string
+			System    types.SystemInfo
+		}{
+			UrlPrefix: h.config.AssertPrefix(),
+			Title:     h.config.LoginTitle,
+			Logo:      h.config.LoginLogo,
+			System: types.SystemInfo{
+				Version: system.Version(),
+			},
+			CdnUrl: h.config.AssetUrl,
 		},
-		CdnUrl: h.config.AssetUrl,
-	}); err == nil {
+	); err == nil {
 		ctx.HTML(http.StatusOK, buf.String())
 	} else {
 		logger.ErrorCtx(ctx, "ShowLogin error %+v", err)

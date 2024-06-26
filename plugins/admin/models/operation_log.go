@@ -1,8 +1,8 @@
 package models
 
 import (
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/modules/db/dialect"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/db/dialect"
 )
 
 // OperationLogModel is operation log model structure.
@@ -38,13 +38,15 @@ func (t OperationLogModel) SetConn(con db.Connection) OperationLogModel {
 // New create a new operation log model.
 func (t OperationLogModel) New(userId int64, path, method, ip, input string) OperationLogModel {
 
-	id, _ := t.Table(t.TableName).Insert(dialect.H{
-		"user_id": userId,
-		"path":    path,
-		"method":  method,
-		"ip":      ip,
-		"input":   input,
-	})
+	id, _ := t.Table(t.TableName).Insert(
+		dialect.H{
+			"user_id": userId,
+			"path":    path,
+			"method":  method,
+			"ip":      ip,
+			"input":   input,
+		},
+	)
 
 	t.Id = id
 	t.UserId = userId

@@ -1,8 +1,8 @@
 package guard
 
 import (
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/errors"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/errors"
 )
 
 type MenuDeleteParam struct {
@@ -21,9 +21,11 @@ func (g *Guard) MenuDelete(ctx *context.Context) {
 
 	// TODO: check the user permission
 
-	ctx.SetUserValue(deleteMenuParamKey, &MenuDeleteParam{
-		Id: id,
-	})
+	ctx.SetUserValue(
+		deleteMenuParamKey, &MenuDeleteParam{
+			Id: id,
+		},
+	)
 	ctx.Next()
 }
 

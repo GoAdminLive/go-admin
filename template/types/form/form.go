@@ -3,9 +3,9 @@ package form
 import (
 	"html/template"
 
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/modules/language"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/language"
 )
 
 type Type uint8
@@ -46,9 +46,41 @@ const (
 	Slider
 )
 
-var AllType = []Type{Default, Text, Array, SelectSingle, Select, IconPicker, SelectBox, File, Multifile, Password,
-	RichText, Datetime, DatetimeRange, Checkbox, CheckboxStacked, Radio, Table, Email, Url, Ip, Color, Currency, Number, NumberRange,
-	TextArea, Custom, Switch, Code, Rate, Slider, Date, DateRange, CheckboxSingle}
+var AllType = []Type{
+	Default,
+	Text,
+	Array,
+	SelectSingle,
+	Select,
+	IconPicker,
+	SelectBox,
+	File,
+	Multifile,
+	Password,
+	RichText,
+	Datetime,
+	DatetimeRange,
+	Checkbox,
+	CheckboxStacked,
+	Radio,
+	Table,
+	Email,
+	Url,
+	Ip,
+	Color,
+	Currency,
+	Number,
+	NumberRange,
+	TextArea,
+	Custom,
+	Switch,
+	Code,
+	Rate,
+	Slider,
+	Date,
+	DateRange,
+	CheckboxSingle,
+}
 
 func CheckType(t, def Type) Type {
 	for _, item := range AllType {
@@ -387,12 +419,21 @@ func (t Type) FixOptions(m map[string]interface{}) map[string]interface{} {
 
 func (t Type) SelectedLabel() []template.HTML {
 	if t == Select || t == SelectSingle || t == SelectBox {
-		return []template.HTML{"selected", ""}
+		return []template.HTML{
+			"selected",
+			"",
+		}
 	}
 	if t == Radio || t == Switch || t == Checkbox || t == CheckboxStacked || t == CheckboxSingle {
-		return []template.HTML{"checked", ""}
+		return []template.HTML{
+			"checked",
+			"",
+		}
 	}
-	return []template.HTML{"", ""}
+	return []template.HTML{
+		"",
+		"",
+	}
 }
 
 func (t Type) GetDefaultOptions(field string) (map[string]interface{}, map[string]interface{}, template.JS) {
@@ -520,8 +561,10 @@ func GetFormTypeFromFieldType(typeName db.DatabaseType, fieldName string) string
 }
 
 func DefaultHTML(value string) template.HTML {
-	return template.HTML(`<div class="box box-solid box-default no-margin"><div class="box-body" style="min-height: 40px;">` +
-		value + `</div></div>`)
+	return template.HTML(
+		`<div class="box box-solid box-default no-margin"><div class="box-body" style="min-height: 40px;">` +
+			value + `</div></div>`,
+	)
 }
 
 func HiddenInputHTML(field, value string) template.HTML {

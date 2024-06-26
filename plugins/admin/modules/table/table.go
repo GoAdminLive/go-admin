@@ -5,13 +5,13 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/modules/service"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/paginator"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/parameter"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/service"
+	"github.com/go-hq/go-admin/plugins/admin/modules/form"
+	"github.com/go-hq/go-admin/plugins/admin/modules/paginator"
+	"github.com/go-hq/go-admin/plugins/admin/modules/parameter"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 type Generator func(ctx *context.Context) Table
@@ -133,7 +133,9 @@ func (base *BaseTable) GetOnlyDetail() bool       { return base.OnlyDetail }
 func (base *BaseTable) GetOnlyNewForm() bool      { return base.OnlyNewForm }
 func (base *BaseTable) GetOnlyUpdateForm() bool   { return base.OnlyUpdateForm }
 
-func (base *BaseTable) GetPaginator(ctx *context.Context, size int, params parameter.Parameters, extraHtml ...template.HTML) types.PaginatorAttribute {
+func (base *BaseTable) GetPaginator(
+	ctx *context.Context, size int, params parameter.Parameters, extraHtml ...template.HTML,
+) types.PaginatorAttribute {
 
 	var eh template.HTML
 
@@ -141,11 +143,13 @@ func (base *BaseTable) GetPaginator(ctx *context.Context, size int, params param
 		eh = extraHtml[0]
 	}
 
-	return paginator.Get(ctx, paginator.Config{
-		Size:         size,
-		Param:        params,
-		PageSizeList: base.Info.GetPageSizeList(),
-	}).SetExtraInfo(eh)
+	return paginator.Get(
+		ctx, paginator.Config{
+			Size:         size,
+			Param:        params,
+			PageSizeList: base.Info.GetPageSizeList(),
+		},
+	).SetExtraInfo(eh)
 }
 
 type PanelInfo struct {

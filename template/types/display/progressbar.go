@@ -5,8 +5,8 @@ import (
 	"html/template"
 	"strconv"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 type ProgressBar struct {
@@ -36,7 +36,8 @@ func (p *ProgressBar) Get(ctx *context.Context, args ...interface{}) types.Field
 		}
 		base, _ := strconv.Atoi(value.Value)
 		per := fmt.Sprintf("%.0f", float32(base)/float32(max)*100)
-		return template.HTML(`
+		return template.HTML(
+			`
 <div class="row" style="min-width: 100px;">
 	<span class="col-sm-3" style="color:#777;width: 60px">` + per + `%</span>
 	<div class="progress progress-` + size + ` col-sm-9" style="padding-left: 0;width: 100px;margin-left: -13px;">
@@ -44,6 +45,7 @@ func (p *ProgressBar) Get(ctx *context.Context, args ...interface{}) types.Field
 			aria-valuemin="0" aria-valuemax="` + strconv.Itoa(max) + `" style="width: ` + per + `%">
 		</div>
 	</div>
-</div>`)
+</div>`,
+		)
 	}
 }

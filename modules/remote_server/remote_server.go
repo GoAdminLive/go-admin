@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/GoAdminGroup/go-admin/modules/system"
+	"github.com/go-hq/go-admin/modules/system"
 
-	"github.com/GoAdminGroup/go-admin/modules/logger"
+	"github.com/go-hq/go-admin/modules/logger"
 )
 
 const (
@@ -32,8 +32,12 @@ type LoginRes struct {
 func Login(account, password string) LoginRes {
 	var resData LoginRes
 
-	req, err := http.NewRequest("POST", ServerHostApi+"/signin", strings.NewReader(`{"account":"`+account+
-		`","password":"`+password+`"}`))
+	req, err := http.NewRequest(
+		"POST", ServerHostApi+"/signin", strings.NewReader(
+			`{"account":"`+account+
+				`","password":"`+password+`"}`,
+		),
+	)
 
 	if err != nil {
 		logger.Error("login: ", err)
@@ -89,7 +93,10 @@ type GetDownloadURLRes struct {
 func GetDownloadURL(uuid, token string) (string, string, error) {
 	var resData GetDownloadURLRes
 
-	req, err := http.NewRequest("GET", ServerHostApi+"/plugin/download", strings.NewReader(`{"uuid":"`+uuid+`", "version":"`+system.Version()+`"}`))
+	req, err := http.NewRequest(
+		"GET", ServerHostApi+"/plugin/download",
+		strings.NewReader(`{"uuid":"`+uuid+`", "version":"`+system.Version()+`"}`),
+	)
 
 	if err != nil {
 		logger.Error("get plugin download url error: ", err)

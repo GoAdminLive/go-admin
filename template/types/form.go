@@ -11,18 +11,18 @@ import (
 	"strings"
 	"time"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/modules/errors"
-	"github.com/GoAdminGroup/go-admin/modules/file"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/modules/logger"
-	"github.com/GoAdminGroup/go-admin/modules/utils"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
-	form2 "github.com/GoAdminGroup/go-admin/template/types/form"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/constant"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/errors"
+	"github.com/go-hq/go-admin/modules/file"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/modules/logger"
+	"github.com/go-hq/go-admin/modules/utils"
+	"github.com/go-hq/go-admin/plugins/admin/modules"
+	"github.com/go-hq/go-admin/plugins/admin/modules/form"
+	form2 "github.com/go-hq/go-admin/template/types/form"
 )
 
 type FieldOption struct {
@@ -184,8 +184,10 @@ type FormField struct {
 
 func (f *FormField) GetRawValue(columns []string, v interface{}) string {
 	isJSON := len(columns) == 0
-	return modules.AorB(isJSON || modules.InArray(columns, f.Field),
-		db.GetValueFromDatabaseType(f.TypeName, v, isJSON).String(), "")
+	return modules.AorB(
+		isJSON || modules.InArray(columns, f.Field),
+		db.GetValueFromDatabaseType(f.TypeName, v, isJSON).String(), "",
+	)
 }
 
 func (f *FormField) UpdateValue(id, val string, res map[string]interface{}, sql *db.SQL) *FormField {
@@ -209,10 +211,12 @@ func (f *FormField) setOptionsFromSQL(sql *db.SQL) {
 		queryRes, err := sql.All()
 		if err == nil {
 			for _, item := range queryRes {
-				f.Options = append(f.Options, FieldOption{
-					Value: fmt.Sprintf("%v", item[f.OptionTable.ValueField]),
-					Text:  fmt.Sprintf("%v", item[f.OptionTable.TextField]),
-				})
+				f.Options = append(
+					f.Options, FieldOption{
+						Value: fmt.Sprintf("%v", item[f.OptionTable.ValueField]),
+						Text:  fmt.Sprintf("%v", item[f.OptionTable.TextField]),
+					},
+				)
 			}
 		}
 
@@ -443,7 +447,10 @@ func (f *FormPanel) AddXssJsFilter() *FormPanel {
 }
 
 func (f *FormPanel) SetPrimaryKey(name string, typ db.DatabaseType) *FormPanel {
-	f.primaryKey = primaryKey{Name: name, Type: typ}
+	f.primaryKey = primaryKey{
+		Name: name,
+		Type: typ,
+	}
 	return f
 }
 
@@ -467,34 +474,40 @@ func (f *FormPanel) HideBackButton() *FormPanel {
 	return f
 }
 
-func (f *FormPanel) AddFieldTr(ctx *context.Context, head, field string, filedType db.DatabaseType, formType form2.Type) *FormPanel {
+func (f *FormPanel) AddFieldTr(
+	ctx *context.Context, head, field string, filedType db.DatabaseType, formType form2.Type,
+) *FormPanel {
 	return f.AddFieldWithTranslation(ctx, head, field, filedType, formType)
 }
 
-func (f *FormPanel) AddFieldWithTranslation(ctx *context.Context, head, field string, filedType db.DatabaseType,
-	formType form2.Type) *FormPanel {
+func (f *FormPanel) AddFieldWithTranslation(
+	ctx *context.Context, head, field string, filedType db.DatabaseType,
+	formType form2.Type,
+) *FormPanel {
 	return f.AddField(language.GetWithLang(head, ctx.Lang()), field, filedType, formType)
 }
 
 func (f *FormPanel) AddField(head, field string, filedType db.DatabaseType, formType form2.Type) *FormPanel {
 
-	f.FieldList = append(f.FieldList, FormField{
-		Head:        head,
-		Field:       field,
-		FieldClass:  field,
-		TypeName:    filedType,
-		Editable:    true,
-		Hide:        false,
-		TableFields: make(FormFields, 0),
-		Placeholder: language.Get("input") + " " + head,
-		FormType:    formType,
-		FieldDisplay: FieldDisplay{
-			Display: func(value FieldModel) interface{} {
-				return value.Value
+	f.FieldList = append(
+		f.FieldList, FormField{
+			Head:        head,
+			Field:       field,
+			FieldClass:  field,
+			TypeName:    filedType,
+			Editable:    true,
+			Hide:        false,
+			TableFields: make(FormFields, 0),
+			Placeholder: language.Get("input") + " " + head,
+			FormType:    formType,
+			FieldDisplay: FieldDisplay{
+				Display: func(value FieldModel) interface{} {
+					return value.Value
+				},
+				DisplayProcessChains: chooseDisplayProcessChains(f.processChains),
 			},
-			DisplayProcessChains: chooseDisplayProcessChains(f.processChains),
 		},
-	})
+	)
 	f.curFieldListIndex++
 
 	// Set default options of different form type
@@ -524,22 +537,24 @@ func (f *FormPanel) AddTable(head, field string, addFields AddFormFieldFn) *Form
 	}
 	fields := make(FormFields, f.curFieldListIndex-index)
 	copy(fields, f.FieldList[index+1:f.curFieldListIndex+1])
-	f.FieldList = append(f.FieldList, FormField{
-		Head:        head,
-		Field:       field,
-		FieldClass:  field,
-		TypeName:    db.Varchar,
-		Editable:    true,
-		Hide:        false,
-		TableFields: fields,
-		FormType:    form2.Table,
-		FieldDisplay: FieldDisplay{
-			Display: func(value FieldModel) interface{} {
-				return value.Value
+	f.FieldList = append(
+		f.FieldList, FormField{
+			Head:        head,
+			Field:       field,
+			FieldClass:  field,
+			TypeName:    db.Varchar,
+			Editable:    true,
+			Hide:        false,
+			TableFields: fields,
+			FormType:    form2.Table,
+			FieldDisplay: FieldDisplay{
+				Display: func(value FieldModel) interface{} {
+					return value.Value
+				},
+				DisplayProcessChains: chooseDisplayProcessChains(f.processChains),
 			},
-			DisplayProcessChains: chooseDisplayProcessChains(f.processChains),
 		},
-	})
+	)
 	f.curFieldListIndex++
 	return f
 }
@@ -645,12 +660,16 @@ func (f *FormPanel) FieldOptionExt(m map[string]interface{}) *FormPanel {
 	}
 
 	if f.FieldList[f.curFieldListIndex].FormType.IsCode() {
-		f.FieldList[f.curFieldListIndex].OptionExt = template.JS(fmt.Sprintf(`
+		f.FieldList[f.curFieldListIndex].OptionExt = template.JS(
+			fmt.Sprintf(
+				`
 	theme = "%s";
 	font_size = %s;
 	language = "%s";
 	options = %s;
-`, m["theme"], m["font_size"], m["language"], m["options"]))
+`, m["theme"], m["font_size"], m["language"], m["options"],
+			),
+		)
 		return f
 	}
 
@@ -663,7 +682,11 @@ func (f *FormPanel) FieldOptionExt(m map[string]interface{}) *FormPanel {
 		ss = strings.Replace(ss, "}", "", strings.Count(ss, "}"))
 		ss = strings.TrimRight(ss, " ")
 		ss += ","
-		f.FieldList[f.curFieldListIndex].OptionExt = template.JS(ss) + template.JS(strings.Replace(string(s), "{", "", 1))
+		f.FieldList[f.curFieldListIndex].OptionExt = template.JS(ss) + template.JS(
+			strings.Replace(
+				string(s), "{", "", 1,
+			),
+		)
 	} else {
 		f.FieldList[f.curFieldListIndex].OptionExt = template.JS(string(s))
 	}
@@ -686,7 +709,11 @@ func (f *FormPanel) FieldOptionExt2(m map[string]interface{}) *FormPanel {
 		ss = strings.Replace(ss, "}", "", strings.Count(ss, "}"))
 		ss = strings.TrimRight(ss, " ")
 		ss += ","
-		f.FieldList[f.curFieldListIndex].OptionExt2 = template.JS(ss) + template.JS(strings.Replace(string(s), "{", "", 1))
+		f.FieldList[f.curFieldListIndex].OptionExt2 = template.JS(ss) + template.JS(
+			strings.Replace(
+				string(s), "{", "", 1,
+			),
+		)
 	} else {
 		f.FieldList[f.curFieldListIndex].OptionExt2 = template.JS(string(s))
 	}
@@ -716,12 +743,16 @@ func (f *FormPanel) FieldEnableFileUpload(data ...interface{}) *FormPanel {
 
 	field := f.FieldList[f.curFieldListIndex].Field
 
-	f.FieldList[f.curFieldListIndex].OptionExt = template.JS(fmt.Sprintf(`
+	f.FieldList[f.curFieldListIndex].OptionExt = template.JS(
+		fmt.Sprintf(
+			`
 	%seditor.customConfig.uploadImgServer = '%s';
 	%seditor.customConfig.uploadImgMaxSize = 3 * 1024 * 1024;
 	%seditor.customConfig.uploadImgMaxLength = 5;
 	%seditor.customConfig.uploadFileName = 'file';
-`, field, url, field, field, field))
+`, field, url, field, field, field,
+		),
+	)
 
 	var fileUploadHandler context.Handler
 	if len(data) > 1 {
@@ -729,17 +760,21 @@ func (f *FormPanel) FieldEnableFileUpload(data ...interface{}) *FormPanel {
 	} else {
 		fileUploadHandler = func(ctx *context.Context) {
 			if len(ctx.Request.MultipartForm.File) == 0 {
-				ctx.JSON(http.StatusOK, map[string]interface{}{
-					"errno": 400,
-				})
+				ctx.JSON(
+					http.StatusOK, map[string]interface{}{
+						"errno": 400,
+					},
+				)
 				return
 			}
 
 			err := file.GetFileEngine(config.GetFileUploadEngine().Name).Upload(ctx.Request.MultipartForm)
 			if err != nil {
-				ctx.JSON(http.StatusOK, map[string]interface{}{
-					"errno": 500,
-				})
+				ctx.JSON(
+					http.StatusOK, map[string]interface{}{
+						"errno": 500,
+					},
+				)
 				return
 			}
 
@@ -748,19 +783,23 @@ func (f *FormPanel) FieldEnableFileUpload(data ...interface{}) *FormPanel {
 				imgPath[i] = config.GetStore().URL(path)
 			}
 
-			ctx.JSON(http.StatusOK, map[string]interface{}{
-				"errno": 0,
-				"data":  imgPath,
-			})
+			ctx.JSON(
+				http.StatusOK, map[string]interface{}{
+					"errno": 0,
+					"data":  imgPath,
+				},
+			)
 		}
 	}
 
-	f.Callbacks = f.Callbacks.AddCallback(context.Node{
-		Path:     url,
-		Method:   "post",
-		Value:    map[string]interface{}{constant.ContextNodeNeedAuth: 1},
-		Handlers: []context.Handler{fileUploadHandler},
-	})
+	f.Callbacks = f.Callbacks.AddCallback(
+		context.Node{
+			Path:     url,
+			Method:   "post",
+			Value:    map[string]interface{}{constant.ContextNodeNeedAuth: 1},
+			Handlers: []context.Handler{fileUploadHandler},
+		},
+	)
 
 	return f
 }
@@ -840,7 +879,9 @@ func (f *FormPanel) FieldValue(value string) *FormPanel {
 //	`select id, name from roles`.
 //
 // And the `id` will be the value of options, `name` is the text to be shown.
-func (f *FormPanel) FieldOptionsFromTable(table, textFieldName, valueFieldName string, process ...OptionTableQueryProcessFn) *FormPanel {
+func (f *FormPanel) FieldOptionsFromTable(
+	table, textFieldName, valueFieldName string, process ...OptionTableQueryProcessFn,
+) *FormPanel {
 	var fn OptionTableQueryProcessFn
 	if len(process) > 0 {
 		fn = process[0]
@@ -942,9 +983,11 @@ func (f *FormPanel) FieldToLower() *FormPanel {
 // FieldXssFilter escape field with html.Escape.
 func (f *FormPanel) FieldXssFilter() *FormPanel {
 	f.FieldList[f.curFieldListIndex].DisplayProcessChains = f.FieldList[f.curFieldListIndex].DisplayProcessChains.
-		Add(func(value FieldModel) interface{} {
-			return html.EscapeString(value.Value)
-		})
+		Add(
+			func(value FieldModel) interface{} {
+				return html.EscapeString(value.Value)
+			},
+		)
 	return f
 }
 
@@ -1105,8 +1148,11 @@ func searchJS(ext template.JS, url string, handler Handler, delay ...int) (templ
 		ext = template.JS(s)
 	}
 
-	return template.JS(`{
-		`) + ext + template.JS(`
+	return template.JS(
+			`{
+		`,
+		) + ext + template.JS(
+			`
 		ajax: {
 		    url: "`+url+`",
 		    dataType: 'json',
@@ -1122,7 +1168,8 @@ func searchJS(ext template.JS, url string, handler Handler, delay ...int) (templ
 			      return data.data;
 	    	}
 	  	}
-	}`), context.Node{
+	}`,
+		), context.Node{
 			Path:     url,
 			Method:   "get",
 			Handlers: context.Handlers{handler.Wrap()},
@@ -1131,34 +1178,43 @@ func searchJS(ext template.JS, url string, handler Handler, delay ...int) (templ
 }
 
 func chooseCustomJS(field string, js template.HTML) template.HTML {
-	return utils.ParseHTML("choose_custom", tmpls["choose_custom"], struct {
-		Field template.JS
-		JS    template.JS
-	}{Field: template.JS(field), JS: template.JS(js)})
+	return utils.ParseHTML(
+		"choose_custom", tmpls["choose_custom"], struct {
+			Field template.JS
+			JS    template.JS
+		}{
+			Field: template.JS(field),
+			JS:    template.JS(js),
+		},
+	)
 }
 
 func chooseMapJS(field string, m map[string]LinkField) template.HTML {
-	return utils.ParseHTML("choose_map", tmpls["choose_map"], struct {
-		Field template.JS
-		Data  map[string]LinkField
-	}{
-		Field: template.JS(field),
-		Data:  m,
-	})
+	return utils.ParseHTML(
+		"choose_map", tmpls["choose_map"], struct {
+			Field template.JS
+			Data  map[string]LinkField
+		}{
+			Field: template.JS(field),
+			Data:  m,
+		},
+	)
 }
 
 func chooseJS(field, chooseField, val string, value template.HTML) template.HTML {
-	return utils.ParseHTML("choose", tmpls["choose"], struct {
-		Field       template.JS
-		ChooseField template.JS
-		Val         template.JS
-		Value       template.JS
-	}{
-		Field:       template.JS(field),
-		ChooseField: template.JS(chooseField),
-		Value:       decorateChooseValue([]string{string(value)}),
-		Val:         decorateChooseValue([]string{string(val)}),
-	})
+	return utils.ParseHTML(
+		"choose", tmpls["choose"], struct {
+			Field       template.JS
+			ChooseField template.JS
+			Val         template.JS
+			Value       template.JS
+		}{
+			Field:       template.JS(field),
+			ChooseField: template.JS(chooseField),
+			Value:       decorateChooseValue([]string{string(value)}),
+			Val:         decorateChooseValue([]string{string(val)}),
+		},
+	)
 }
 
 func chooseAjax(field, chooseField, url string, handler Handler, js ...template.HTML) (template.HTML, context.Node) {
@@ -1174,19 +1230,21 @@ func chooseAjax(field, chooseField, url string, handler Handler, js ...template.
 		passValue = template.JS(js[1])
 	}
 
-	return utils.ParseHTML("choose_ajax", tmpls["choose_ajax"], struct {
-			Field       template.JS
-			ChooseField template.JS
-			PassValue   template.JS
-			ActionJS    template.JS
-			Url         template.JS
-		}{
-			Url:         template.JS(url),
-			Field:       template.JS(field),
-			ChooseField: template.JS(chooseField),
-			PassValue:   passValue,
-			ActionJS:    template.JS(actionJS),
-		}), context.Node{
+	return utils.ParseHTML(
+			"choose_ajax", tmpls["choose_ajax"], struct {
+				Field       template.JS
+				ChooseField template.JS
+				PassValue   template.JS
+				ActionJS    template.JS
+				Url         template.JS
+			}{
+				Url:         template.JS(url),
+				Field:       template.JS(field),
+				ChooseField: template.JS(chooseField),
+				PassValue:   passValue,
+				ActionJS:    template.JS(actionJS),
+			},
+		), context.Node{
 			Path:     url,
 			Method:   "post",
 			Handlers: context.Handlers{handler.Wrap()},
@@ -1199,15 +1257,17 @@ func chooseHideJS(field string, value []string, chooseFields ...string) template
 		return ""
 	}
 
-	return utils.ParseHTML("choose_hide", tmpls["choose_hide"], struct {
-		Field        template.JS
-		Value        template.JS
-		ChooseFields []string
-	}{
-		Field:        template.JS(field),
-		Value:        decorateChooseValue(value),
-		ChooseFields: chooseFields,
-	})
+	return utils.ParseHTML(
+		"choose_hide", tmpls["choose_hide"], struct {
+			Field        template.JS
+			Value        template.JS
+			ChooseFields []string
+		}{
+			Field:        template.JS(field),
+			Value:        decorateChooseValue(value),
+			ChooseFields: chooseFields,
+		},
+	)
 }
 
 func chooseShowJS(field string, value []string, chooseFields ...string) template.HTML {
@@ -1215,15 +1275,17 @@ func chooseShowJS(field string, value []string, chooseFields ...string) template
 		return ""
 	}
 
-	return utils.ParseHTML("choose_show", tmpls["choose_show"], struct {
-		Field        template.JS
-		Value        template.JS
-		ChooseFields []string
-	}{
-		Field:        template.JS(field),
-		Value:        decorateChooseValue(value),
-		ChooseFields: chooseFields,
-	})
+	return utils.ParseHTML(
+		"choose_show", tmpls["choose_show"], struct {
+			Field        template.JS
+			Value        template.JS
+			ChooseFields []string
+		}{
+			Field:        template.JS(field),
+			Value:        decorateChooseValue(value),
+			ChooseFields: chooseFields,
+		},
+	)
 }
 
 func chooseDisableJS(field string, value []string, chooseFields ...string) template.HTML {
@@ -1231,15 +1293,17 @@ func chooseDisableJS(field string, value []string, chooseFields ...string) templ
 		return ""
 	}
 
-	return utils.ParseHTML("choose_disable", tmpls["choose_disable"], struct {
-		Field        template.JS
-		Value        template.JS
-		ChooseFields []string
-	}{
-		Field:        template.JS(field),
-		Value:        decorateChooseValue(value),
-		ChooseFields: chooseFields,
-	})
+	return utils.ParseHTML(
+		"choose_disable", tmpls["choose_disable"], struct {
+			Field        template.JS
+			Value        template.JS
+			ChooseFields []string
+		}{
+			Field:        template.JS(field),
+			Value:        decorateChooseValue(value),
+			ChooseFields: chooseFields,
+		},
+	)
 }
 
 func decorateChooseValue(val []string) template.JS {
@@ -1445,7 +1509,8 @@ func (f *FormPanel) EnableAjaxData(data AjaxData) *FormPanel {
 			$("input[name='__go_admin_t_']").val(data.data.token)
 		}`
 		}
-		f.AjaxSuccessJS = template.JS(`
+		f.AjaxSuccessJS = template.JS(
+			`
 	if (typeof (data) === "string") {
 	    data = JSON.parse(data);
 	}
@@ -1475,13 +1540,15 @@ func (f *FormPanel) EnableAjaxData(data AjaxData) *FormPanel {
 			confirmButtonText: '` + language.Get("got it") + `',
         })
 	}
-`)
+`,
+		)
 	}
 	if f.AjaxErrorJS == template.JS("") {
 		errorMsg := modules.AorB(data.ErrorTitle != "", `"`+data.ErrorTitle+`"`, "data.responseJSON.msg")
 		error2Msg := modules.AorB(data.ErrorTitle != "", `"`+data.ErrorTitle+`"`, "'"+language.Get("error")+"'")
 		wrongText := modules.AorB(data.ErrorText != "", `text:"`+data.ErrorText+`",`, "text:data.msg,")
-		f.AjaxErrorJS = template.JS(`
+		f.AjaxErrorJS = template.JS(
+			`
 	if (data.responseText !== "") {
 		if (data.responseJSON.data && data.responseJSON.data.token !== "") {
 			$("input[name='__go_admin_t_']").val(data.responseJSON.data.token)
@@ -1504,7 +1571,8 @@ func (f *FormPanel) EnableAjaxData(data AjaxData) *FormPanel {
 			confirmButtonText: '` + language.Get("got it") + `',
         })
 	}
-`)
+`,
+		)
 	}
 	return f
 }
@@ -1554,7 +1622,9 @@ func (f *FormPanel) SetInsertFn(fn FormPostFn) *FormPanel {
 	return f
 }
 
-func (f *FormPanel) GroupFieldWithValue(pk, id string, columns []string, res map[string]interface{}, sql func() *db.SQL) ([]FormFields, []string) {
+func (f *FormPanel) GroupFieldWithValue(
+	pk, id string, columns []string, res map[string]interface{}, sql func() *db.SQL,
+) ([]FormFields, []string) {
 	var (
 		groupFormList = make([]FormFields, 0)
 		groupHeaders  = make([]string, 0)
@@ -1604,13 +1674,15 @@ func (f *FormPanel) GroupFieldWithValue(pk, id string, columns []string, res map
 		}
 
 		if len(groupFormList) > 0 && !hasPK {
-			groupFormList[len(groupFormList)-1] = groupFormList[len(groupFormList)-1].Add(&FormField{
-				Head:       pk,
-				FieldClass: pk,
-				Field:      pk,
-				Value:      template.HTML(id),
-				Hide:       true,
-			})
+			groupFormList[len(groupFormList)-1] = groupFormList[len(groupFormList)-1].Add(
+				&FormField{
+					Head:       pk,
+					FieldClass: pk,
+					Field:      pk,
+					Value:      template.HTML(id),
+					Hide:       true,
+				},
+			)
 		}
 	}
 
@@ -1667,7 +1739,9 @@ func (f *FormPanel) GroupField(sql ...func() *db.SQL) ([]FormFields, []string) {
 	return groupFormList, groupHeaders
 }
 
-func (f *FormPanel) FieldsWithValue(pk, id string, columns []string, res map[string]interface{}, sql func() *db.SQL) FormFields {
+func (f *FormPanel) FieldsWithValue(
+	pk, id string, columns []string, res map[string]interface{}, sql func() *db.SQL,
+) FormFields {
 	var (
 		list  = make(FormFields, 0)
 		hasPK = false
@@ -1679,7 +1753,9 @@ func (f *FormPanel) FieldsWithValue(pk, id string, columns []string, res map[str
 			}
 			rowValue := f.FieldList[i].GetRawValue(columns, res[f.FieldList[i].Field])
 			if f.FieldList[i].FatherField != "" {
-				f.FieldList.FindTableField(f.FieldList[i].Field, f.FieldList[i].FatherField).UpdateValue(id, rowValue, res, sql())
+				f.FieldList.FindTableField(f.FieldList[i].Field, f.FieldList[i].FatherField).UpdateValue(
+					id, rowValue, res, sql(),
+				)
 			} else if f.FieldList[i].FormType.IsTable() {
 				list = append(list, f.FieldList[i])
 			} else {
@@ -1692,14 +1768,16 @@ func (f *FormPanel) FieldsWithValue(pk, id string, columns []string, res map[str
 		}
 	}
 	if !hasPK {
-		list = list.Add(&FormField{
-			Head:       pk,
-			FieldClass: pk,
-			Field:      pk,
-			Value:      template.HTML(id),
-			FormType:   form2.Default,
-			Hide:       true,
-		})
+		list = list.Add(
+			&FormField{
+				Head:       pk,
+				FieldClass: pk,
+				Field:      pk,
+				Value:      template.HTML(id),
+				FormType:   form2.Default,
+				Hide:       true,
+			},
+		)
 	}
 	return list.FillCustomContent()
 }
@@ -1714,7 +1792,9 @@ func (f *FormPanel) FieldsWithDefaultValue(sql ...func() *db.SQL) FormFields {
 			}
 			if f.FieldList[i].FatherField != "" {
 				if len(sql) > 0 {
-					f.FieldList.FindTableField(f.FieldList[i].Field, f.FieldList[i].FatherField).UpdateDefaultValue(sql[0]())
+					f.FieldList.FindTableField(
+						f.FieldList[i].Field, f.FieldList[i].FatherField,
+					).UpdateDefaultValue(sql[0]())
 				} else {
 					f.FieldList.FindTableField(f.FieldList[i].Field, f.FieldList[i].FatherField).UpdateDefaultValue(nil)
 				}

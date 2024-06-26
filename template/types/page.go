@@ -11,12 +11,12 @@ import (
 	"strconv"
 	textTmpl "text/template"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/menu"
-	"github.com/GoAdminGroup/go-admin/modules/system"
-	"github.com/GoAdminGroup/go-admin/modules/utils"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/menu"
+	"github.com/go-hq/go-admin/modules/system"
+	"github.com/go-hq/go-admin/modules/utils"
+	"github.com/go-hq/go-admin/plugins/admin/models"
 )
 
 // Attribute is the component interface of template. Every component of
@@ -222,11 +222,13 @@ func ParseTableDataTmplWithID(id template.HTML, content string, value ...map[str
 	if len(value) > 0 {
 		v = value[0]
 	}
-	_ = t.Execute(buf, TableRowData{
-		Id:    id,
-		Ids:   `typeof(selectedRows)==="function" ? selectedRows().join() : ""`,
-		Value: v,
-	})
+	_ = t.Execute(
+		buf, TableRowData{
+			Id:    id,
+			Ids:   `typeof(selectedRows)==="function" ? selectedRows().join() : ""`,
+			Value: v,
+		},
+	)
 	return buf.String()
 }
 
@@ -287,20 +289,30 @@ func (p Panel) GetContent(params ...bool) Panel {
 	if ani.Type != "" && (len(params) < 2 || params[1]) {
 		animation = template.HTML(` class='pjax-container-content animated ` + ani.Type + `'`)
 		if ani.Delay != 0 {
-			style = template.HTML(fmt.Sprintf(`animation-delay: %fs;-webkit-animation-delay: %fs;`, ani.Delay, ani.Delay))
+			style = template.HTML(
+				fmt.Sprintf(
+					`animation-delay: %fs;-webkit-animation-delay: %fs;`, ani.Delay, ani.Delay,
+				),
+			)
 		}
 		if ani.Duration != 0 {
-			style = template.HTML(fmt.Sprintf(`animation-duration: %fs;-webkit-animation-duration: %fs;`, ani.Duration, ani.Duration))
+			style = template.HTML(
+				fmt.Sprintf(
+					`animation-duration: %fs;-webkit-animation-duration: %fs;`, ani.Duration, ani.Duration,
+				),
+			)
 		}
 		if style != "" {
 			style = ` style="` + style + `"`
 		}
-		remove = template.HTML(`<script>
+		remove = template.HTML(
+			`<script>
 		$('.pjax-container-content .modal.fade').on('show.bs.modal', function (event) {
             // Fix Animate.css
 			$('.pjax-container-content').removeClass('` + ani.Type + `');
         });
-		</script>`)
+		</script>`,
+		)
 	}
 
 	p.Content = `<div` + animation + style + ">" + p.Content + "</div>" + remove

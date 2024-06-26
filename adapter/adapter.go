@@ -10,18 +10,18 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/auth"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/modules/errors"
-	"github.com/GoAdminGroup/go-admin/modules/logger"
-	"github.com/GoAdminGroup/go-admin/modules/menu"
-	"github.com/GoAdminGroup/go-admin/plugins"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
-	"github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/auth"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/constant"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/errors"
+	"github.com/go-hq/go-admin/modules/logger"
+	"github.com/go-hq/go-admin/modules/menu"
+	"github.com/go-hq/go-admin/plugins"
+	"github.com/go-hq/go-admin/plugins/admin/models"
+	"github.com/go-hq/go-admin/template"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 // WebFrameWork is an interface which is used as an adapter of
@@ -135,8 +135,10 @@ func (*BaseAdapter) DisableLog()        { panic("not implement") }
 func (*BaseAdapter) Static(_, _ string) { panic("not implement") }
 
 // GetContent is a helper function of adapter.Content
-func (base *BaseAdapter) GetContent(ctx interface{}, getPanelFn types.GetPanelFn, wf WebFrameWork,
-	navButtons types.Buttons, fn context.NodeProcessor) {
+func (base *BaseAdapter) GetContent(
+	ctx interface{}, getPanelFn types.GetPanelFn, wf WebFrameWork,
+	navButtons types.Buttons, fn context.NodeProcessor,
+) {
 
 	var (
 		newBase          = wf.SetContext(ctx)
@@ -176,16 +178,22 @@ func (base *BaseAdapter) GetContent(ctx interface{}, getPanelFn types.GetPanelFn
 	tmpl, tmplName := template.Default(gctx).GetTemplate(newBase.IsPjax())
 
 	buf := new(bytes.Buffer)
-	hasError = tmpl.ExecuteTemplate(buf, tmplName, types.NewPage(gctx, &types.NewPageParam{
-		User:         user,
-		Menu:         menu.GetGlobalMenu(user, wf.GetConnection(), newBase.Lang()).SetActiveClass(config.URLRemovePrefix(newBase.Path())),
-		Panel:        panel.GetContent(config.IsProductionEnvironment()),
-		Assets:       template.GetComponentAssetImportHTML(gctx),
-		Buttons:      navButtons.CheckPermission(user),
-		TmplHeadHTML: template.Default(gctx).GetHeadHTML(),
-		TmplFootJS:   template.Default(gctx).GetFootJS(),
-		Iframe:       newBase.Query().Get(constant.IframeKey) == "true",
-	}))
+	hasError = tmpl.ExecuteTemplate(
+		buf, tmplName, types.NewPage(
+			gctx, &types.NewPageParam{
+				User: user,
+				Menu: menu.GetGlobalMenu(
+					user, wf.GetConnection(), newBase.Lang(),
+				).SetActiveClass(config.URLRemovePrefix(newBase.Path())),
+				Panel:        panel.GetContent(config.IsProductionEnvironment()),
+				Assets:       template.GetComponentAssetImportHTML(gctx),
+				Buttons:      navButtons.CheckPermission(user),
+				TmplHeadHTML: template.Default(gctx).GetHeadHTML(),
+				TmplFootJS:   template.Default(gctx).GetFootJS(),
+				Iframe:       newBase.Query().Get(constant.IframeKey) == "true",
+			},
+		),
+	)
 
 	if hasError != nil {
 		logger.Error(fmt.Sprintf("error: %s adapter content, ", newBase.Name()), hasError)

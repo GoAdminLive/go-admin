@@ -1,13 +1,13 @@
 package tables
 
 import (
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/table"
-	"github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/types"
-	"github.com/GoAdminGroup/go-admin/template/types/form"
-	editType "github.com/GoAdminGroup/go-admin/template/types/table"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/plugins/admin/modules/table"
+	"github.com/go-hq/go-admin/template"
+	"github.com/go-hq/go-admin/template/types"
+	"github.com/go-hq/go-admin/template/types/form"
+	editType "github.com/go-hq/go-admin/template/types/table"
 )
 
 // GetPostsTable return the model of table posts.
@@ -18,15 +18,17 @@ func GetPostsTable(ctx *context.Context) (postsTable table.Table) {
 	info := postsTable.GetInfo()
 	info.AddField("ID", "id", db.Int).FieldSortable()
 	info.AddField("Title", "title", db.Varchar)
-	info.AddField("AuthorID", "author_id", db.Varchar).FieldDisplay(func(value types.FieldModel) interface{} {
-		return template.Default(ctx).
-			Link().
-			SetURL("/admin/info/authors/detail?__goadmin_detail_pk=100").
-			SetContent("100").
-			OpenInNewTab().
-			SetTabTitle("Author Detail").
-			GetContent()
-	})
+	info.AddField("AuthorID", "author_id", db.Varchar).FieldDisplay(
+		func(value types.FieldModel) interface{} {
+			return template.Default(ctx).
+				Link().
+				SetURL("/admin/info/authors/detail?__goadmin_detail_pk=100").
+				SetContent("100").
+				OpenInNewTab().
+				SetTabTitle("Author Detail").
+				GetContent()
+		},
+	)
 	info.AddField("Description", "description", db.Varchar)
 	info.AddField("Content", "content", db.Varchar).FieldEditAble(editType.Textarea)
 	info.AddField("Date", "date", db.Varchar)

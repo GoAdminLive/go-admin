@@ -15,28 +15,28 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/template/icon"
-	"github.com/GoAdminGroup/go-admin/template/types/action"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/template/icon"
+	"github.com/go-hq/go-admin/template/types/action"
 
-	"github.com/GoAdminGroup/go-admin/adapter"
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/auth"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/modules/errors"
-	"github.com/GoAdminGroup/go-admin/modules/logger"
-	"github.com/GoAdminGroup/go-admin/modules/menu"
-	"github.com/GoAdminGroup/go-admin/modules/service"
-	"github.com/GoAdminGroup/go-admin/modules/system"
-	"github.com/GoAdminGroup/go-admin/modules/ui"
-	"github.com/GoAdminGroup/go-admin/plugins"
-	"github.com/GoAdminGroup/go-admin/plugins/admin"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/response"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/table"
-	"github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/adapter"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/auth"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/errors"
+	"github.com/go-hq/go-admin/modules/logger"
+	"github.com/go-hq/go-admin/modules/menu"
+	"github.com/go-hq/go-admin/modules/service"
+	"github.com/go-hq/go-admin/modules/system"
+	"github.com/go-hq/go-admin/modules/ui"
+	"github.com/go-hq/go-admin/plugins"
+	"github.com/go-hq/go-admin/plugins/admin"
+	"github.com/go-hq/go-admin/plugins/admin/models"
+	"github.com/go-hq/go-admin/plugins/admin/modules/response"
+	"github.com/go-hq/go-admin/plugins/admin/modules/table"
+	"github.com/go-hq/go-admin/template"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 // Engine is the core component of goAdmin. It has two attributes.
@@ -129,9 +129,11 @@ func (eng *Engine) AddAuthService(processor auth.Processor) *Engine {
 
 func (eng *Engine) announce() *Engine {
 	if eng.config.Debug {
-		eng.announceLock.Do(func() {
-			fmt.Printf(language.Get("goadmin is now running. \nrunning in \"debug\" mode. switch to \"release\" mode in production.\n\n"))
-		})
+		eng.announceLock.Do(
+			func() {
+				fmt.Printf(language.Get("goadmin is now running. \nrunning in \"debug\" mode. switch to \"release\" mode in production.\n\n"))
+			},
+		)
 	}
 	return eng
 }
@@ -146,12 +148,16 @@ func (eng *Engine) setConfig(cfg *config.Config) *Engine {
 	eng.config = config.Initialize(cfg)
 	sysCheck, themeCheck := template.CheckRequirements()
 	if !sysCheck {
-		logger.Panicf(language.Get("wrong goadmin version, theme %s required goadmin version are %s"),
-			eng.config.Theme, strings.Join(template.Default().GetRequirements(), ","))
+		logger.Panicf(
+			language.Get("wrong goadmin version, theme %s required goadmin version are %s"),
+			eng.config.Theme, strings.Join(template.Default().GetRequirements(), ","),
+		)
 	}
 	if !themeCheck {
-		logger.Panicf(language.Get("wrong theme version, goadmin %s required version of theme %s is %s"),
-			system.Version(), eng.config.Theme, strings.Join(system.RequireThemeVersion()[eng.config.Theme], ","))
+		logger.Panicf(
+			language.Get("wrong theme version, goadmin %s required version of theme %s is %s"),
+			system.Version(), eng.config.Theme, strings.Join(system.RequireThemeVersion()[eng.config.Theme], ","),
+		)
 	}
 	return eng
 }
@@ -359,13 +365,22 @@ func (eng *Engine) deferHandler(conn db.Connection) context.Handler {
 // wrapWithAuthMiddleware wrap a auth middleware to the given handler.
 func (eng *Engine) wrapWithAuthMiddleware(handler context.Handler) context.Handlers {
 	conn := db.GetConnection(eng.Services)
-	return []context.Handler{eng.deferHandler(conn), response.OffLineHandler, auth.Middleware(conn), handler}
+	return []context.Handler{
+		eng.deferHandler(conn),
+		response.OffLineHandler,
+		auth.Middleware(conn),
+		handler,
+	}
 }
 
 // wrapWithAuthMiddleware wrap a auth middleware to the given handler.
 func (eng *Engine) wrap(handler context.Handler) context.Handlers {
 	conn := db.GetConnection(eng.Services)
-	return []context.Handler{eng.deferHandler(conn), response.OffLineHandler, handler}
+	return []context.Handler{
+		eng.deferHandler(conn),
+		response.OffLineHandler,
+		handler,
+	}
 }
 
 // ============================
@@ -396,9 +411,13 @@ type navJumpButtonParam struct {
 
 func (eng *Engine) addJumpNavButton(param navJumpButtonParam) *Engine {
 	if param.Exist {
-		*eng.NavButtons = (*eng.NavButtons).AddNavButton(param.Icon, param.BtnName,
-			action.JumpInNewTab(config.Url(param.URL),
-				language.GetWithScope(param.Title, param.TitleScore)))
+		*eng.NavButtons = (*eng.NavButtons).AddNavButton(
+			param.Icon, param.BtnName,
+			action.JumpInNewTab(
+				config.Url(param.URL),
+				language.GetWithScope(param.Title, param.TitleScore),
+			),
+		)
 	}
 	return eng
 }
@@ -448,21 +467,24 @@ func (eng *Engine) initNavJumpButtonParams() []navJumpButtonParam {
 			URL:        "/info/site/edit",
 			Title:      "site setting",
 			TitleScore: "config",
-		}, {
+		},
+		{
 			Exist:      !eng.config.HideToolEntrance && eng.config.IsNotProductionEnvironment(),
 			Icon:       icon.Wrench,
 			BtnName:    types.NavBtnToolName,
 			URL:        "/info/generate/new",
 			Title:      "code generate tool",
 			TitleScore: "tool",
-		}, {
+		},
+		{
 			Exist:      !eng.config.HideAppInfoEntrance,
 			Icon:       icon.Info,
 			BtnName:    types.NavBtnInfoName,
 			URL:        "/application/info",
 			Title:      "site info",
 			TitleScore: "system",
-		}, {
+		},
+		{
 			Exist:      !eng.config.HidePluginEntrance,
 			Icon:       icon.Th,
 			BtnName:    types.NavBtnPlugName,
@@ -477,10 +499,12 @@ func (eng *Engine) initSiteSetting() {
 
 	printInitMsg(language.Get("initialize configuration"))
 
-	err := eng.config.Update(models.Site().
-		SetConn(eng.DefaultConnection()).
-		Init(eng.config.ToMap()).
-		AllToMap())
+	err := eng.config.Update(
+		models.Site().
+			SetConn(eng.DefaultConnection()).
+			Init(eng.config.ToMap()).
+			AllToMap(),
+	)
 	if err != nil {
 		logger.Panic(err)
 	}
@@ -538,16 +562,22 @@ func (eng *Engine) HTML(method, url string, fn types.GetPanelInfoFn, noAuth ...b
 			buf  = new(bytes.Buffer)
 		)
 
-		hasError := tmpl.ExecuteTemplate(buf, tmplName, types.NewPage(ctx, &types.NewPageParam{
-			User:         user,
-			Menu:         menu.GetGlobalMenu(user, eng.Adapter.GetConnection(), ctx.Lang()).SetActiveClass(config.URLRemovePrefix(ctx.Path())),
-			Panel:        panel.GetContent(eng.config.IsProductionEnvironment()),
-			Assets:       template.GetComponentAssetImportHTML(ctx),
-			Buttons:      eng.NavButtons.CheckPermission(user),
-			TmplHeadHTML: template.Default(ctx).GetHeadHTML(),
-			TmplFootJS:   template.Default(ctx).GetFootJS(),
-			Iframe:       ctx.IsIframe(),
-		}))
+		hasError := tmpl.ExecuteTemplate(
+			buf, tmplName, types.NewPage(
+				ctx, &types.NewPageParam{
+					User: user,
+					Menu: menu.GetGlobalMenu(
+						user, eng.Adapter.GetConnection(), ctx.Lang(),
+					).SetActiveClass(config.URLRemovePrefix(ctx.Path())),
+					Panel:        panel.GetContent(eng.config.IsProductionEnvironment()),
+					Assets:       template.GetComponentAssetImportHTML(ctx),
+					Buttons:      eng.NavButtons.CheckPermission(user),
+					TmplHeadHTML: template.Default(ctx).GetHeadHTML(),
+					TmplFootJS:   template.Default(ctx).GetFootJS(),
+					Iframe:       ctx.IsIframe(),
+				},
+			),
+		)
 
 		if hasError != nil {
 			logger.Error(fmt.Sprintf("error: %s adapter content, ", eng.Adapter.Name()), hasError)
@@ -587,18 +617,24 @@ func (eng *Engine) HTMLFile(method, url, path string, data map[string]interface{
 			buf  = new(bytes.Buffer)
 		)
 
-		hasError := tmpl.ExecuteTemplate(buf, tmplName, types.NewPage(ctx, &types.NewPageParam{
-			User: user,
-			Menu: menu.GetGlobalMenu(user, eng.Adapter.GetConnection(), ctx.Lang()).SetActiveClass(eng.config.URLRemovePrefix(ctx.Path())),
-			Panel: types.Panel{
-				Content: template.HTML(cbuf.String()),
-			},
-			Assets:       template.GetComponentAssetImportHTML(ctx),
-			Buttons:      eng.NavButtons.CheckPermission(user),
-			TmplHeadHTML: template.Default(ctx).GetHeadHTML(),
-			TmplFootJS:   template.Default(ctx).GetFootJS(),
-			Iframe:       ctx.IsIframe(),
-		}))
+		hasError := tmpl.ExecuteTemplate(
+			buf, tmplName, types.NewPage(
+				ctx, &types.NewPageParam{
+					User: user,
+					Menu: menu.GetGlobalMenu(
+						user, eng.Adapter.GetConnection(), ctx.Lang(),
+					).SetActiveClass(eng.config.URLRemovePrefix(ctx.Path())),
+					Panel: types.Panel{
+						Content: template.HTML(cbuf.String()),
+					},
+					Assets:       template.GetComponentAssetImportHTML(ctx),
+					Buttons:      eng.NavButtons.CheckPermission(user),
+					TmplHeadHTML: template.Default(ctx).GetHeadHTML(),
+					TmplFootJS:   template.Default(ctx).GetFootJS(),
+					Iframe:       ctx.IsIframe(),
+				},
+			),
+		)
 
 		if hasError != nil {
 			logger.Error(fmt.Sprintf("error: %s adapter content, ", eng.Adapter.Name()), hasError)
@@ -649,18 +685,24 @@ func (eng *Engine) htmlFilesHandler(data map[string]interface{}, files ...string
 			buf  = new(bytes.Buffer)
 		)
 
-		hasError := tmpl.ExecuteTemplate(buf, tmplName, types.NewPage(ctx, &types.NewPageParam{
-			User: user,
-			Menu: menu.GetGlobalMenu(user, eng.Adapter.GetConnection(), ctx.Lang()).SetActiveClass(eng.config.URLRemovePrefix(ctx.Path())),
-			Panel: types.Panel{
-				Content: template.HTML(cbuf.String()),
-			},
-			Assets:       template.GetComponentAssetImportHTML(ctx),
-			Buttons:      eng.NavButtons.CheckPermission(user),
-			TmplHeadHTML: template.Default(ctx).GetHeadHTML(),
-			TmplFootJS:   template.Default(ctx).GetFootJS(),
-			Iframe:       ctx.IsIframe(),
-		}))
+		hasError := tmpl.ExecuteTemplate(
+			buf, tmplName, types.NewPage(
+				ctx, &types.NewPageParam{
+					User: user,
+					Menu: menu.GetGlobalMenu(
+						user, eng.Adapter.GetConnection(), ctx.Lang(),
+					).SetActiveClass(eng.config.URLRemovePrefix(ctx.Path())),
+					Panel: types.Panel{
+						Content: template.HTML(cbuf.String()),
+					},
+					Assets:       template.GetComponentAssetImportHTML(ctx),
+					Buttons:      eng.NavButtons.CheckPermission(user),
+					TmplHeadHTML: template.Default(ctx).GetHeadHTML(),
+					TmplFootJS:   template.Default(ctx).GetFootJS(),
+					Iframe:       ctx.IsIframe(),
+				},
+			),
+		)
 
 		if hasError != nil {
 			logger.Error(fmt.Sprintf("error: %s adapter content, ", eng.Adapter.Name()), hasError)
@@ -676,16 +718,22 @@ func (eng *Engine) errorPanelHTML(ctx *context.Context, buf *bytes.Buffer, err e
 	user := auth.Auth(ctx)
 	tmpl, tmplName := template.Default(ctx).GetTemplate(ctx.IsPjax())
 
-	hasError := tmpl.ExecuteTemplate(buf, tmplName, types.NewPage(ctx, &types.NewPageParam{
-		User:         user,
-		Menu:         menu.GetGlobalMenu(user, eng.Adapter.GetConnection(), ctx.Lang()).SetActiveClass(eng.config.URLRemovePrefix(ctx.Path())),
-		Panel:        template.WarningPanel(ctx, err.Error()).GetContent(eng.config.IsProductionEnvironment()),
-		Assets:       template.GetComponentAssetImportHTML(ctx),
-		Buttons:      (*eng.NavButtons).CheckPermission(user),
-		TmplHeadHTML: template.Default(ctx).GetHeadHTML(),
-		TmplFootJS:   template.Default(ctx).GetFootJS(),
-		Iframe:       ctx.IsIframe(),
-	}))
+	hasError := tmpl.ExecuteTemplate(
+		buf, tmplName, types.NewPage(
+			ctx, &types.NewPageParam{
+				User: user,
+				Menu: menu.GetGlobalMenu(
+					user, eng.Adapter.GetConnection(), ctx.Lang(),
+				).SetActiveClass(eng.config.URLRemovePrefix(ctx.Path())),
+				Panel:        template.WarningPanel(ctx, err.Error()).GetContent(eng.config.IsProductionEnvironment()),
+				Assets:       template.GetComponentAssetImportHTML(ctx),
+				Buttons:      (*eng.NavButtons).CheckPermission(user),
+				TmplHeadHTML: template.Default(ctx).GetHeadHTML(),
+				TmplFootJS:   template.Default(ctx).GetFootJS(),
+				Iframe:       ctx.IsIframe(),
+			},
+		),
+	)
 
 	if hasError != nil {
 		logger.Error(fmt.Sprintf("error: %s adapter content, ", eng.Adapter.Name()), hasError)

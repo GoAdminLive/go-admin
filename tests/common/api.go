@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
 	"github.com/gavv/httpexpect"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
 )
 
 func apiTest(e *httpexpect.Expect, sesID *http.Cookie) {
@@ -22,8 +22,8 @@ func apiTest(e *httpexpect.Expect, sesID *http.Cookie) {
 		Expect().
 		Status(200).JSON().Object().ValueEqual("code", 200)
 
-	//printlnWithColor("update form without id", "green")
-	//e.GET(config.Url("/api/edit/form/manager")).
+	// printlnWithColor("update form without id", "green")
+	// e.GET(config.Url("/api/edit/form/manager")).
 	//	WithHeader("Accept", "application/json, text/plain, */*").
 	//	WithCookie(sesID.Name, sesID.Value).
 	//	Expect().

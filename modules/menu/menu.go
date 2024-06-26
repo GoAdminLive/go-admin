@@ -10,11 +10,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/GoAdminGroup/go-admin/modules/db/dialect"
+	"github.com/go-hq/go-admin/modules/db/dialect"
 
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/plugins/admin/models"
 )
 
 // Item is an menu item.
@@ -47,12 +47,14 @@ func (menu *Menu) GetUpdateJS(updateFlag bool) template.JS {
 	if menu.ForceUpdate {
 		forceUpdate = "true"
 	}
-	return template.JS(`$(function () {
+	return template.JS(
+		`$(function () {
 	let curMenuPlug = $(".main-sidebar section.sidebar ul.sidebar-menu").attr("data-plug");
     if (curMenuPlug !== '` + menu.PluginName + `' || ` + forceUpdate + `) {
         $(".main-sidebar section.sidebar").html($("#sidebar-menu-tmpl").html())
     }
-});`)
+});`,
+	)
 }
 
 // SetMaxOrder set the max order of menu.
@@ -148,17 +150,19 @@ func NewMenu(conn db.Connection, data NewMenuData) (int64, error) {
 	}
 
 	id, err := db.WithDriver(conn).Table("goadmin_menu").
-		Insert(dialect.H{
-			"parent_id":   data.ParentId,
-			"type":        data.Type,
-			"order":       maxOrder,
-			"title":       data.Title,
-			"uuid":        data.Uuid,
-			"icon":        data.Icon,
-			"plugin_name": data.PluginName,
-			"uri":         data.Uri,
-			"header":      data.Header,
-		})
+		Insert(
+			dialect.H{
+				"parent_id":   data.ParentId,
+				"type":        data.Type,
+				"order":       maxOrder,
+				"title":       data.Title,
+				"uuid":        data.Uuid,
+				"icon":        data.Icon,
+				"plugin_name": data.PluginName,
+				"uri":         data.Uri,
+				"header":      data.Header,
+			},
+		)
 	if !db.CheckError(err, db.INSERT) {
 		return id, nil
 	}
@@ -204,10 +208,12 @@ func GetGlobalMenu(user models.UserModel, conn db.Connection, lang string, plugi
 	for i := 0; i < len(menus); i++ {
 
 		title = language.GetWithLang(menus[i]["title"].(string), lang)
-		menuOption = append(menuOption, map[string]string{
-			"id":    strconv.FormatInt(menus[i]["id"].(int64), 10),
-			"title": title,
-		})
+		menuOption = append(
+			menuOption, map[string]string{
+				"id":    strconv.FormatInt(menus[i]["id"].(int64), 10),
+				"title": title,
+			},
+		)
 	}
 
 	menuList := constructMenuTree(menus, 0, lang)

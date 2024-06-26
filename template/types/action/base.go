@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"html/template"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/utils"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/utils"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 type AjaxData map[string]interface{}
@@ -25,10 +25,12 @@ func (a AjaxData) Add(m map[string]interface{}) AjaxData {
 
 func (a AjaxData) JSON() string {
 	b, _ := json.Marshal(a)
-	return utils.ReplaceAll(string(b), `"{%id}"`, "{{.Id}}",
+	return utils.ReplaceAll(
+		string(b), `"{%id}"`, "{{.Id}}",
 		`"{%ids}"`, "{{.Ids}}",
 		`"{{.Ids}}"`, "{{.Ids}}",
-		`"{{.Id}}"`, "{{.Id}}")
+		`"{{.Id}}"`, "{{.Id}}",
+	)
 }
 
 type BaseAction struct {
@@ -44,13 +46,13 @@ func (base *BaseAction) SetBtnId(btnId string) {
 		base.BtnId = btnId
 	}
 }
-func (base *BaseAction) Js() template.JS              { return base.JS }
-func (base *BaseAction) BtnClass() template.HTML      { return "" }
-func (base *BaseAction) BtnAttribute() template.HTML  { return "" }
-func (base *BaseAction) GetCallbacks() context.Node   { return context.Node{} }
+func (base *BaseAction) Js() template.JS                                  { return base.JS }
+func (base *BaseAction) BtnClass() template.HTML                          { return "" }
+func (base *BaseAction) BtnAttribute() template.HTML                      { return "" }
+func (base *BaseAction) GetCallbacks() context.Node                       { return context.Node{} }
 func (base *BaseAction) ExtContent(ctx *context.Context) template.HTML    { return template.HTML(``) }
 func (base *BaseAction) FooterContent(ctx *context.Context) template.HTML { return template.HTML(``) }
-func (base *BaseAction) SetBtnData(data interface{})  { base.BtnData = data }
+func (base *BaseAction) SetBtnData(data interface{})                      { base.BtnData = data }
 
 var _ types.Action = (*AjaxAction)(nil)
 var _ types.Action = (*PopUpAction)(nil)

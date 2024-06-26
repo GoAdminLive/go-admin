@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/GoAdminGroup/go-admin">
+  <a href="https://github.com/go-hq/go-admin">
     <img width="48%" alt="go-admin" src="http://quick.go-admin.cn/official/assets/imgs/github_logo.png">
   </a>
 </p>
@@ -20,8 +20,8 @@
 
 <p align="center">
   <a href="http://drone.go-admin.com/GoAdminGroup/go-admin"><img alt="Build Status" src="http://drone.go-admin.com/api/badges/GoAdminGroup/go-admin/status.svg?ref=refs/heads/master"></a>
-  <a href="https://goreportcard.com/report/github.com/GoAdminGroup/go-admin"><img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/GoAdminGroup/go-admin"></a>
-  <a href="https://goreportcard.com/report/github.com/GoAdminGroup/go-admin"><img alt="golang" src="https://img.shields.io/badge/awesome-golang-blue.svg"></a>
+  <a href="https://goreportcard.com/report/github.com/go-hq/go-admin"><img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/go-hq/go-admin"></a>
+  <a href="https://goreportcard.com/report/github.com/go-hq/go-admin"><img alt="golang" src="https://img.shields.io/badge/awesome-golang-blue.svg"></a>
   <a href="https://discord.gg/usAaEpCP"><img alt="discord" src="https://img.shields.io/badge/chat%20on-Discord-blue.svg"></a>
   <a href="https://t.me/joinchat/NlyH6Bch2QARZkArithKvg" rel="nofollow"><img alt="telegram" src="https://img.shields.io/badge/chat%20on-telegram-blue" style="max-width:100%;"></a>  
   <a href="https://raw.githubusercontent.com/GoAdminGroup/go-admin/master/LICENSE" rel="nofollow"><img src="https://img.shields.io/badge/license-Apache2.0-blue.svg" alt="license" data-canonical-src="https://img.shields.io/badge/license-Apache2.0-blue.svg" style="max-width:100%;"></a>
@@ -48,11 +48,11 @@ Online demo: [https://demo.go-admin.com](https://demo.go-admin.com)
 - ⚙️ **Frameworks**: support most of the go web frameworks.
 
 ## Translation
-We need your help: [https://github.com/GoAdminGroup/docs/issues/1](https://github.com/GoAdminGroup/docs/issues/1)
+We need your help: [https://github.com/go-hq/docs/issues/1](https://github.com/go-hq/docs/issues/1)
 
 ## Who is using
 
-[Comment the issue to tell us](https://github.com/GoAdminGroup/go-admin/issues/71).
+[Comment the issue to tell us](https://github.com/go-hq/go-admin/issues/71).
 
 ## How to
 
@@ -60,7 +60,7 @@ Following three steps to run it.
 
 ```shell
 $ mkdir new_project && cd new_project
-$ go install github.com/GoAdminGroup/adm@latest
+$ go install github.com/go-hq/adm@latest
 $ adm init web
 ```
 
@@ -68,9 +68,9 @@ $ adm init web
 
 Quick follow up example: 
 
-- [pure golang](https://github.com/GoAdminGroup/example), simple and less dependency
-- [golang with frontend template](https://github.com/GoAdminGroup/example_with_frontend), change template by yourself
-- [golang with vue](https://github.com/GoAdminGroup/example_with_vue), if you have vue experience
+- [pure golang](https://github.com/go-hq/example), simple and less dependency
+- [golang with frontend template](https://github.com/go-hq/example_with_frontend), change template by yourself
+- [golang with vue](https://github.com/go-hq/example_with_vue), if you have vue experience
 
 See the [docs](https://book.go-admin.cn) for more details.
 

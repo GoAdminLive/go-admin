@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/errors"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
 	"github.com/gavv/httpexpect"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/errors"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	"github.com/go-hq/go-admin/plugins/admin/modules/form"
 )
 
 func managerTest(e *httpexpect.Expect, sesID *http.Cookie) {
@@ -32,22 +32,24 @@ func managerTest(e *httpexpect.Expect, sesID *http.Cookie) {
 	e.POST(config.Url("/edit/manager")).
 		WithCookie(sesID.Name, sesID.Value).
 		WithMultipart().
-		WithForm(map[string]interface{}{
-			"username":        "admin",
-			"name":            "admin1",
-			"password":        "admin",
-			"password_again":  "admin",
-			"role_id[]":       1,
-			"permission_id[]": 1,
-			form.PreviousKey:  config.Url("/info/manager?__page=1&__pageSize=10&__sort=id&__sort_type=desc"),
-			"id":              "1",
-			form.TokenKey:     "123",
-		}).Expect().Status(200).Body().Contains(errors.EditFailWrongToken)
+		WithForm(
+			map[string]interface{}{
+				"username":        "admin",
+				"name":            "admin1",
+				"password":        "admin",
+				"password_again":  "admin",
+				"role_id[]":       1,
+				"permission_id[]": 1,
+				form.PreviousKey:  config.Url("/info/manager?__page=1&__pageSize=10&__sort=id&__sort_type=desc"),
+				"id":              "1",
+				form.TokenKey:     "123",
+			},
+		).Expect().Status(200).Body().Contains(errors.EditFailWrongToken)
 
 	// show form: without id
 
-	//printlnWithColor("show form: without id", "green")
-	//e.GET(config.Url("/info/manager/edit")).
+	// printlnWithColor("show form: without id", "green")
+	// e.GET(config.Url("/info/manager/edit")).
 	//	WithCookie(sesID.Name, sesID.Value).
 	//	Expect().Status(200).Body().Contains(errors.WrongID)
 
@@ -67,18 +69,20 @@ func managerTest(e *httpexpect.Expect, sesID *http.Cookie) {
 	res := e.POST(config.Url("/edit/manager")).
 		WithCookie(sesID.Name, sesID.Value).
 		WithMultipart().
-		WithForm(map[string]interface{}{
-			"username":            "admin",
-			"name":                "admin1",
-			"password":            "admin",
-			"password_again":      "admin",
-			"avatar__delete_flag": "0",
-			"role_id[]":           1,
-			"permission_id[]":     1,
-			form.PreviousKey:      config.Url("/info/manager?__page=1&__pageSize=10&__sort=id&__sort_type=desc"),
-			"id":                  "1",
-			form.TokenKey:         token[1],
-		}).Expect().Status(200)
+		WithForm(
+			map[string]interface{}{
+				"username":            "admin",
+				"name":                "admin1",
+				"password":            "admin",
+				"password_again":      "admin",
+				"avatar__delete_flag": "0",
+				"role_id[]":           1,
+				"permission_id[]":     1,
+				form.PreviousKey:      config.Url("/info/manager?__page=1&__pageSize=10&__sort=id&__sort_type=desc"),
+				"id":                  "1",
+				form.TokenKey:         token[1],
+			},
+		).Expect().Status(200)
 	res.Header("X-Pjax-Url").Contains(config.Url("/info/"))
 	res.Body().Contains("admin1")
 
@@ -97,40 +101,48 @@ func managerTest(e *httpexpect.Expect, sesID *http.Cookie) {
 	res = e.POST(config.Url("/new/manager")).
 		WithCookie(sesID.Name, sesID.Value).
 		WithMultipart().
-		WithForm(map[string]interface{}{
-			"username":            "tester",
-			"name":                "tester",
-			"password":            "tester",
-			"password_again":      "tester",
-			"avatar__delete_flag": "0",
-			"role_id[]":           1,
-			"permission_id[]":     1,
-			form.PreviousKey:      config.Url("/info/manager?__page=1&__pageSize=10&__sort=id&__sort_type=desc"),
-			"id":                  "1",
-			form.TokenKey:         token[1],
-		}).Expect().Status(200)
+		WithForm(
+			map[string]interface{}{
+				"username":            "tester",
+				"name":                "tester",
+				"password":            "tester",
+				"password_again":      "tester",
+				"avatar__delete_flag": "0",
+				"role_id[]":           1,
+				"permission_id[]":     1,
+				form.PreviousKey:      config.Url("/info/manager?__page=1&__pageSize=10&__sort=id&__sort_type=desc"),
+				"id":                  "1",
+				form.TokenKey:         token[1],
+			},
+		).Expect().Status(200)
 	res.Header("X-Pjax-Url").Contains(config.Url("/info/"))
 	res.Body().Contains("tester")
 
 	// tester login: wrong password
 
 	printlnWithColor("tester login: wrong password", "green")
-	e.POST(config.Url("/signin")).WithForm(map[string]string{
-		"username": "tester",
-		"password": "admin",
-	}).Expect().Status(400)
+	e.POST(config.Url("/signin")).WithForm(
+		map[string]string{
+			"username": "tester",
+			"password": "admin",
+		},
+	).Expect().Status(400)
 
 	// tester login success
 
 	printlnWithColor("tester login success", "green")
-	e.POST(config.Url("/signin")).WithForm(map[string]string{
-		"username": "tester",
-		"password": "tester",
-	}).Expect().Status(200).JSON().Equal(map[string]interface{}{
-		"code": 200,
-		"data": map[string]interface{}{
-			"url": "/" + config.GetUrlPrefix(),
+	e.POST(config.Url("/signin")).WithForm(
+		map[string]string{
+			"username": "tester",
+			"password": "tester",
 		},
-		"msg": "ok",
-	})
+	).Expect().Status(200).JSON().Equal(
+		map[string]interface{}{
+			"code": 200,
+			"data": map[string]interface{}{
+				"url": "/" + config.GetUrlPrefix(),
+			},
+			"msg": "ok",
+		},
+	)
 }

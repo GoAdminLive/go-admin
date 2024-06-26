@@ -11,14 +11,14 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/GoAdminGroup/go-admin/adapter"
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/engine"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/plugins"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/adapter"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/engine"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/plugins"
+	"github.com/go-hq/go-admin/plugins/admin/models"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	"github.com/go-hq/go-admin/template/types"
 	"github.com/labstack/echo/v4"
 )
 
@@ -52,9 +52,11 @@ type HandlerFunc func(ctx echo.Context) (types.Panel, error)
 
 func Content(handler HandlerFunc) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
-		engine.Content(ctx, func(ctx interface{}) (types.Panel, error) {
-			return handler(ctx.(echo.Context))
-		})
+		engine.Content(
+			ctx, func(ctx interface{}) (types.Panel, error) {
+				return handler(ctx.(echo.Context))
+			},
+		)
 		return nil
 	}
 }
@@ -74,30 +76,32 @@ func (e *Echo) SetApp(app interface{}) error {
 
 // AddHandler implements the method Adapter.AddHandler.
 func (e *Echo) AddHandler(method, path string, handlers context.Handlers) {
-	e.app.Add(strings.ToUpper(method), path, func(c echo.Context) error {
-		ctx := context.NewContext(c.Request())
+	e.app.Add(
+		strings.ToUpper(method), path, func(c echo.Context) error {
+			ctx := context.NewContext(c.Request())
 
-		for _, key := range c.ParamNames() {
-			if c.Request().URL.RawQuery == "" {
-				c.Request().URL.RawQuery += strings.ReplaceAll(key, ":", "") + "=" + c.Param(key)
-			} else {
-				c.Request().URL.RawQuery += "&" + strings.ReplaceAll(key, ":", "") + "=" + c.Param(key)
+			for _, key := range c.ParamNames() {
+				if c.Request().URL.RawQuery == "" {
+					c.Request().URL.RawQuery += strings.ReplaceAll(key, ":", "") + "=" + c.Param(key)
+				} else {
+					c.Request().URL.RawQuery += "&" + strings.ReplaceAll(key, ":", "") + "=" + c.Param(key)
+				}
 			}
-		}
 
-		ctx.SetHandlers(handlers).Next()
-		for key, head := range ctx.Response.Header {
-			c.Response().Header().Set(key, head[0])
-		}
-		if ctx.Response.Body != nil {
-			buf := new(bytes.Buffer)
-			_, _ = buf.ReadFrom(ctx.Response.Body)
-			_ = c.String(ctx.Response.StatusCode, buf.String())
-		} else {
-			c.Response().WriteHeader(ctx.Response.StatusCode)
-		}
-		return nil
-	})
+			ctx.SetHandlers(handlers).Next()
+			for key, head := range ctx.Response.Header {
+				c.Response().Header().Set(key, head[0])
+			}
+			if ctx.Response.Body != nil {
+				buf := new(bytes.Buffer)
+				_, _ = buf.ReadFrom(ctx.Response.Body)
+				_ = c.String(ctx.Response.StatusCode, buf.String())
+			} else {
+				c.Response().WriteHeader(ctx.Response.StatusCode)
+			}
+			return nil
+		},
+	)
 }
 
 // Name implements the method Adapter.Name.

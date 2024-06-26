@@ -5,12 +5,12 @@ import (
 	"html/template"
 	"strings"
 
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/modules/utils"
-	form2 "github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
-	"github.com/GoAdminGroup/go-admin/template/types"
-	"github.com/GoAdminGroup/go-admin/template/types/form"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/modules/utils"
+	form2 "github.com/go-hq/go-admin/plugins/admin/modules/form"
+	"github.com/go-hq/go-admin/template/types"
+	"github.com/go-hq/go-admin/template/types/form"
 )
 
 type FormAttribute struct {
@@ -149,13 +149,17 @@ func (compo *FormAttribute) GetDefaultBoxHeader(hideBack bool) template.HTML {
 	if hideBack {
 		return template.HTML(fmt.Sprintf(`<h3 class="box-title">%s</h3>`, language.GetFromHtml(compo.Title)))
 	}
-	return template.HTML(fmt.Sprintf(`<h3 class="box-title">%s</h3>
+	return template.HTML(
+		fmt.Sprintf(
+			`<h3 class="box-title">%s</h3>
             <div class="box-tools">
                 <div class="btn-group pull-right" style="margin-right: 10px">
                     <a href='%s' class="btn btn-sm btn-default form-history-back"><i
                                 class="fa fa-arrow-left"></i> %s</a>
                 </div>
-            </div>`, language.GetFromHtml(compo.Title), compo.HiddenFields[form2.PreviousKey], language.Get("Back")))
+            </div>`, language.GetFromHtml(compo.Title), compo.HiddenFields[form2.PreviousKey], language.Get("Back"),
+		),
+	)
 }
 
 func (compo *FormAttribute) GetDetailBoxHeader(editUrl, deleteUrl string) template.HTML {
@@ -166,29 +170,35 @@ func (compo *FormAttribute) GetDetailBoxHeader(editUrl, deleteUrl string) templa
 	)
 
 	if editUrl != "" {
-		editBtn = fmt.Sprintf(`
+		editBtn = fmt.Sprintf(
+			`
                 <div class="btn-group pull-right" style="margin-right: 10px">
                     <a href='%s' class="btn btn-sm btn-primary"><i
                                 class="fa fa-edit"></i> %s</a>
-                </div>`, editUrl, language.Get("Edit"))
+                </div>`, editUrl, language.Get("Edit"),
+		)
 	}
 
 	if deleteUrl != "" {
-		deleteBtn = fmt.Sprintf(`
+		deleteBtn = fmt.Sprintf(
+			`
                 <div class="btn-group pull-right" style="margin-right: 10px">
                     <a href='javascript:;' class="btn btn-sm btn-danger delete-btn"><i
                                 class="fa fa-trash"></i> %s</a>
-                </div>`, language.Get("Delete"))
+                </div>`, language.Get("Delete"),
+		)
 	}
 
-	return template.HTML(`<h3 class="box-title">`) + language.GetFromHtml(compo.Title) + template.HTML(`</h3>
+	return template.HTML(`<h3 class="box-title">`) + language.GetFromHtml(compo.Title) + template.HTML(
+		`</h3>
             <div class="box-tools">
 				`+deleteBtn+editBtn+`
                 <div class="btn-group pull-right" style="margin-right: 10px">
                     <a href='`+compo.HiddenFields[form2.PreviousKey]+`' class="btn btn-sm btn-default form-history-back"><i
                                 class="fa fa-arrow-left"></i> `+language.Get("Back")+`</a>
                 </div>
-            </div>`)
+            </div>`,
+	)
 }
 
 func (compo *FormAttribute) GetBoxHeaderNoButton() template.HTML {
@@ -222,11 +232,15 @@ func (compo *FormAttribute) GetContent() template.HTML {
 		}
 	}
 
-	return ComposeHtml(compo.TemplateList, compo.Separation, *compo, "form",
+	return ComposeHtml(
+		compo.TemplateList, compo.Separation, *compo, "form",
 		"form/default", "form/file", "form/multi_file", "form/textarea", "form/custom", "form/rate", "form/slider",
-		"form/selectbox", "form/text", "form/table", "form/radio", "form/switch", "form/checkbox", "form/checkbox_single",
+		"form/selectbox", "form/text", "form/table", "form/radio", "form/switch", "form/checkbox",
+		"form/checkbox_single",
 		"form/checkbox_stacked", "form/password", "form/code", "form/array", "form/select", "form/singleselect",
 		"form/richtext", "form/iconpicker", "form/datetime", "form/number", "form/number_range",
 		"form/email", "form/url", "form/ip", "form/color", "form/currency", "form_components", "form/datetime_range",
-		"form_layout_default", "form_layout_two_col", "form_layout_tab", "form_components_layout", "form_layout_flow", "form_layout_filter")
+		"form_layout_default", "form_layout_two_col", "form_layout_tab", "form_components_layout", "form_layout_flow",
+		"form_layout_filter",
+	)
 }

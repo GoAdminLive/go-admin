@@ -5,9 +5,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
+	"github.com/go-hq/go-admin/plugins/admin/modules"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	"github.com/go-hq/go-admin/plugins/admin/modules/form"
 )
 
 type Parameters struct {
@@ -54,20 +54,35 @@ const (
 )
 
 var operators = map[string]string{
-	"like": "like",
-	"gr":   ">",
-	"gq":   ">=",
-	"eq":   "=",
-	"ne":   "!=",
-	"le":   "<",
-	"lq":   "<=",
-	"free": "free",
+	"ilike": "ilike",
+	"like":  "like",
+	"gr":    ">",
+	"gq":    ">=",
+	"eq":    "=",
+	"ne":    "!=",
+	"le":    "<",
+	"lq":    "<=",
+	"free":  "free",
 }
 
-var keys = []string{Page, PageSize, Sort, Columns, Prefix, Pjax, form.NoAnimationKey}
+var keys = []string{
+	Page,
+	PageSize,
+	Sort,
+	Columns,
+	Prefix,
+	Pjax,
+	form.NoAnimationKey,
+}
 
 func BaseParam() Parameters {
-	return Parameters{Page: "1", PageSize: "10", PageInt: 1, PageSizeInt: 10, Fields: make(map[string][]string)}
+	return Parameters{
+		Page:        "1",
+		PageSize:    "10",
+		PageInt:     1,
+		PageSizeInt: 10,
+		Fields:      make(map[string][]string),
+	}
 }
 
 func GetParam(u *url.URL, defaultPageSize int, p ...string) Parameters {
@@ -372,8 +387,10 @@ func (param Parameters) GetFixedParamStrWithoutSort() string {
 	return "&" + p.Encode()
 }
 
-func (param Parameters) Statement(wheres, table, delimiter, delimiter2 string, whereArgs []interface{}, columns, existKeys []string,
-	filterProcess func(string, string, string) string) (string, []interface{}, []string) {
+func (param Parameters) Statement(
+	wheres, table, delimiter, delimiter2 string, whereArgs []interface{}, columns, existKeys []string,
+	filterProcess func(string, string, string) string,
+) (string, []interface{}, []string) {
 	var multiKey = make(map[string]uint8)
 	for key, value := range param.Fields {
 
@@ -415,11 +432,13 @@ func (param Parameters) Statement(wheres, table, delimiter, delimiter2 string, w
 				for range value {
 					qmark += "?,"
 				}
-				wheres += keys[0] + "." + modules.FilterField(keys[1], delimiter, delimiter2) + " " + op + " (" + qmark[:len(qmark)-1] + ") and "
+				wheres += keys[0] + "." + modules.FilterField(
+					keys[1], delimiter, delimiter2,
+				) + " " + op + " (" + qmark[:len(qmark)-1] + ") and "
 			} else {
 				wheres += keys[0] + "." + modules.FilterField(keys[1], delimiter, delimiter2) + " " + op + " ? and "
 			}
-			if op == "like" && !strings.Contains(val, "%") {
+			if strings.Contains(op, "like") && !strings.Contains(val, "%") {
 				whereArgs = append(whereArgs, "%"+val+"%")
 			} else {
 				for _, v := range value {
@@ -433,11 +452,15 @@ func (param Parameters) Statement(wheres, table, delimiter, delimiter2 string, w
 					for range value {
 						qmark += "?,"
 					}
-					wheres += modules.Delimiter(delimiter, delimiter2, table) + "." + modules.FilterField(key, delimiter, delimiter2) + " " + op + " (" + qmark[:len(qmark)-1] + ") and "
+					wheres += modules.Delimiter(delimiter, delimiter2, table) + "." + modules.FilterField(
+						key, delimiter, delimiter2,
+					) + " " + op + " (" + qmark[:len(qmark)-1] + ") and "
 				} else {
-					wheres += modules.Delimiter(delimiter, delimiter2, table) + "." + modules.FilterField(key, delimiter, delimiter2) + " " + op + " ? and "
+					wheres += modules.Delimiter(delimiter, delimiter2, table) + "." + modules.FilterField(
+						key, delimiter, delimiter2,
+					) + " " + op + " ? and "
 				}
-				if op == "like" && !strings.Contains(value[0], "%") {
+				if strings.Contains(op, "like") && !strings.Contains(value[0], "%") {
 					whereArgs = append(whereArgs, "%"+filterProcess(key, value[0], keyIndexSuffix)+"%")
 				} else {
 					for _, v := range value {

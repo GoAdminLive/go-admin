@@ -1,9 +1,9 @@
 package guard
 
 import (
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/errors"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/table"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/errors"
+	"github.com/go-hq/go-admin/plugins/admin/modules/table"
 )
 
 type DeleteParam struct {
@@ -27,11 +27,13 @@ func (g *Guard) Delete(ctx *context.Context) {
 		return
 	}
 
-	ctx.SetUserValue(deleteParamKey, &DeleteParam{
-		Panel:  panel,
-		Id:     id,
-		Prefix: prefix,
-	})
+	ctx.SetUserValue(
+		deleteParamKey, &DeleteParam{
+			Panel:  panel,
+			Id:     id,
+			Prefix: prefix,
+		},
+	)
 	ctx.Next()
 }
 

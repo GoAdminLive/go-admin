@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/modules/db/dialect"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/db/dialect"
 )
 
 // RoleModel is role model structure.
@@ -28,7 +28,10 @@ func Role() RoleModel {
 // RoleWithId return a default role model of given id.
 func RoleWithId(id string) RoleModel {
 	idInt, _ := strconv.Atoi(id)
-	return RoleModel{Base: Base{TableName: "goadmin_roles"}, Id: int64(idInt)}
+	return RoleModel{
+		Base: Base{TableName: "goadmin_roles"},
+		Id:   int64(idInt),
+	}
 }
 
 func (t RoleModel) SetConn(con db.Connection) RoleModel {
@@ -63,10 +66,12 @@ func (t RoleModel) IsSlugExist(slug string, id string) bool {
 // New create a role model.
 func (t RoleModel) New(name, slug string) (RoleModel, error) {
 
-	id, err := t.WithTx(t.Tx).Table(t.TableName).Insert(dialect.H{
-		"name": name,
-		"slug": slug,
-	})
+	id, err := t.WithTx(t.Tx).Table(t.TableName).Insert(
+		dialect.H{
+			"name": name,
+			"slug": slug,
+		},
+	)
 
 	t.Id = id
 	t.Name = name
@@ -80,11 +85,13 @@ func (t RoleModel) Update(name, slug string) (int64, error) {
 
 	return t.WithTx(t.Tx).Table(t.TableName).
 		Where("id", "=", t.Id).
-		Update(dialect.H{
-			"name":       name,
-			"slug":       slug,
-			"updated_at": time.Now().Format("2006-01-02 15:04:05"),
-		})
+		Update(
+			dialect.H{
+				"name":       name,
+				"slug":       slug,
+				"updated_at": time.Now().Format("2006-01-02 15:04:05"),
+			},
+		)
 }
 
 // CheckPermission check the permission of role.
@@ -108,10 +115,12 @@ func (t RoleModel) AddPermission(permissionId string) (int64, error) {
 	if permissionId != "" {
 		if !t.CheckPermission(permissionId) {
 			return t.WithTx(t.Tx).Table("goadmin_role_permissions").
-				Insert(dialect.H{
-					"permission_id": permissionId,
-					"role_id":       t.Id,
-				})
+				Insert(
+					dialect.H{
+						"permission_id": permissionId,
+						"role_id":       t.Id,
+					},
+				)
 		}
 	}
 	return 0, nil

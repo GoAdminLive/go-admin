@@ -5,7 +5,7 @@ import (
 	"os/exec"
 	"testing"
 
-	_ "github.com/GoAdminGroup/go-admin/modules/db/drivers/mysql"
+	_ "github.com/go-hq/go-admin/modules/db/drivers/mysql"
 )
 
 var driverTestMysqlConn Connection
@@ -21,8 +21,10 @@ func InitMysql() {
 		panic(err)
 	}
 
-	cmd := exec.Command("mysql", "-u", "root", "-proot", driverTestDBName,
-		"-e", "source "+testCurrentPath()+"/../../data/admin.sql")
+	cmd := exec.Command(
+		"mysql", "-u", "root", "-proot", driverTestDBName,
+		"-e", "source "+testCurrentPath()+"/../../data/admin.sql",
+	)
 	err = cmd.Run()
 	if err != nil {
 		panic(err)

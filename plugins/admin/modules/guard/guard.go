@@ -1,15 +1,15 @@
 package guard
 
 import (
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/modules/errors"
-	"github.com/GoAdminGroup/go-admin/modules/service"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/response"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/table"
-	"github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/errors"
+	"github.com/go-hq/go-admin/modules/service"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	"github.com/go-hq/go-admin/plugins/admin/modules/response"
+	"github.com/go-hq/go-admin/plugins/admin/modules/table"
+	"github.com/go-hq/go-admin/template"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 type Guard struct {
@@ -41,8 +41,10 @@ func (g *Guard) CheckPrefix(ctx *context.Context) {
 		if ctx.Headers(constant.PjaxHeader) == "" && ctx.Method() != "GET" {
 			response.BadRequest(ctx, errors.Msg)
 		} else {
-			response.Alert(ctx, errors.Msg, errors.Msg, "table model not found", g.conn, g.navBtns,
-				template.Missing404Page)
+			response.Alert(
+				ctx, errors.Msg, errors.Msg, "table model not found", g.conn, g.navBtns,
+				template.Missing404Page,
+			)
 		}
 		ctx.Abort()
 		return

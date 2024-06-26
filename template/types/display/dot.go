@@ -3,8 +3,8 @@ package display
 import (
 	"html/template"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 type Dot struct {
@@ -24,16 +24,20 @@ func (d *Dot) Get(ctx *context.Context, args ...interface{}) types.FieldFilterFn
 		}
 		for k, style := range icons {
 			if k == value.Value {
-				return template.HTML(`<span class="label-`+style+`"
+				return template.HTML(
+					`<span class="label-`+style+`"
 					style="width: 8px;height: 8px;padding: 0;border-radius: 50%;display: inline-block;">
-					</span>&nbsp;&nbsp;`) +
+					</span>&nbsp;&nbsp;`,
+				) +
 					template.HTML(value.Value)
 			}
 		}
 		if defaultDot != "" {
-			return template.HTML(`<span class="label-`+defaultDot+`"
+			return template.HTML(
+				`<span class="label-`+defaultDot+`"
 					style="width: 8px;height: 8px;padding: 0;border-radius: 50%;display: inline-block;">
-					</span>&nbsp;&nbsp;`) +
+					</span>&nbsp;&nbsp;`,
+			) +
 				template.HTML(value.Value)
 		}
 		return value.Value

@@ -3,13 +3,13 @@ package admin
 import (
 	"net/http"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/auth"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/trace"
-	"github.com/GoAdminGroup/go-admin/modules/utils"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/response"
-	"github.com/GoAdminGroup/go-admin/template"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/auth"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/trace"
+	"github.com/go-hq/go-admin/modules/utils"
+	"github.com/go-hq/go-admin/plugins/admin/modules/response"
+	"github.com/go-hq/go-admin/template"
 )
 
 // initRouter initialize the router and return the context.
@@ -96,7 +96,9 @@ func (admin *Admin) initRouter() *Admin {
 		apiRoute.POST("/edit/:__prefix", admin.guardian.EditForm, admin.handler.ApiUpdate).Name("api_edit")
 		apiRoute.GET("/edit/form/:__prefix", admin.guardian.ShowForm, admin.handler.ApiUpdateForm).Name("api_show_edit")
 		apiRoute.POST("/create/:__prefix", admin.guardian.NewForm, admin.handler.ApiCreate).Name("api_new")
-		apiRoute.GET("/create/form/:__prefix", admin.guardian.ShowNewForm, admin.handler.ApiCreateForm).Name("api_show_new")
+		apiRoute.GET(
+			"/create/form/:__prefix", admin.guardian.ShowNewForm, admin.handler.ApiCreateForm,
+		).Name("api_show_new")
 		apiRoute.POST("/export/:__prefix", admin.guardian.Export, admin.handler.Export).Name("api_export")
 		apiRoute.POST("/update/:__prefix", admin.guardian.Update, admin.handler.Update).Name("api_update")
 	}
@@ -145,10 +147,12 @@ func (admin *Admin) themeMiddleware(ctx *context.Context) {
 
 	cookieTheme := ctx.Cookie(context.ThemeKey)
 	if cookieTheme != theme {
-		ctx.SetCookie(&http.Cookie{
-			Name:  context.ThemeKey,
-			Value: theme,
-		})
+		ctx.SetCookie(
+			&http.Cookie{
+				Name:  context.ThemeKey,
+				Value: theme,
+			},
+		)
 	}
 	ctx.Next()
 }

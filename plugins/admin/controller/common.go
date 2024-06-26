@@ -8,22 +8,22 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/GoAdminGroup/go-admin/template/types/action"
+	"github.com/go-hq/go-admin/template/types/action"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/auth"
-	c "github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/modules/menu"
-	"github.com/GoAdminGroup/go-admin/modules/service"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/table"
-	"github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/icon"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/auth"
+	c "github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/modules/menu"
+	"github.com/go-hq/go-admin/modules/service"
+	"github.com/go-hq/go-admin/plugins/admin/models"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	"github.com/go-hq/go-admin/plugins/admin/modules/form"
+	"github.com/go-hq/go-admin/plugins/admin/modules/table"
+	"github.com/go-hq/go-admin/template"
+	"github.com/go-hq/go-admin/template/icon"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 type Handler struct {
@@ -89,24 +89,40 @@ func (h *Handler) table(prefix string, ctx *context.Context) table.Table {
 	authHandler := auth.Middleware(db.GetConnection(h.services))
 	for _, cb := range t.GetInfo().Callbacks {
 		if cb.Value[constant.ContextNodeNeedAuth] == 1 {
-			h.AddOperation(context.Node{
-				Path:     cb.Path,
-				Method:   cb.Method,
-				Handlers: append([]context.Handler{authHandler}, cb.Handlers...),
-			})
+			h.AddOperation(
+				context.Node{
+					Path:     cb.Path,
+					Method:   cb.Method,
+					Handlers: append([]context.Handler{authHandler}, cb.Handlers...),
+				},
+			)
 		} else {
-			h.AddOperation(context.Node{Path: cb.Path, Method: cb.Method, Handlers: cb.Handlers})
+			h.AddOperation(
+				context.Node{
+					Path:     cb.Path,
+					Method:   cb.Method,
+					Handlers: cb.Handlers,
+				},
+			)
 		}
 	}
 	for _, cb := range t.GetForm().Callbacks {
 		if cb.Value[constant.ContextNodeNeedAuth] == 1 {
-			h.AddOperation(context.Node{
-				Path:     cb.Path,
-				Method:   cb.Method,
-				Handlers: append([]context.Handler{authHandler}, cb.Handlers...),
-			})
+			h.AddOperation(
+				context.Node{
+					Path:     cb.Path,
+					Method:   cb.Method,
+					Handlers: append([]context.Handler{authHandler}, cb.Handlers...),
+				},
+			)
 		} else {
-			h.AddOperation(context.Node{Path: cb.Path, Method: cb.Method, Handlers: cb.Handlers})
+			h.AddOperation(
+				context.Node{
+					Path:     cb.Path,
+					Method:   cb.Method,
+					Handlers: cb.Handlers,
+				},
+			)
 		}
 	}
 	return t
@@ -166,14 +182,18 @@ func (h *Handler) OperationHandler(path string, ctx *context.Context) bool {
 	return false
 }
 
-func (h *Handler) HTML(ctx *context.Context, user models.UserModel, panel types.Panel,
-	options ...template.ExecuteOptions) {
+func (h *Handler) HTML(
+	ctx *context.Context, user models.UserModel, panel types.Panel,
+	options ...template.ExecuteOptions,
+) {
 	buf := h.Execute(ctx, user, panel, "", options...)
 	ctx.HTML(http.StatusOK, buf.String())
 }
 
-func (h *Handler) HTMLPlug(ctx *context.Context, user models.UserModel, panel types.Panel, plugName string,
-	options ...template.ExecuteOptions) {
+func (h *Handler) HTMLPlug(
+	ctx *context.Context, user models.UserModel, panel types.Panel, plugName string,
+	options ...template.ExecuteOptions,
+) {
 	var btns types.Buttons
 	if plugName == "" {
 		btns = (*h.navButtons).CheckPermission(user)
@@ -182,58 +202,78 @@ func (h *Handler) HTMLPlug(ctx *context.Context, user models.UserModel, panel ty
 			RemoveToolNavButton().
 			RemoveSiteNavButton().
 			RemoveInfoNavButton().
-			Add(types.GetDropDownButton("", icon.Gear, []*types.NavDropDownItemButton{
-				types.GetDropDownItemButton(language.GetFromHtml("plugin setting"),
-					action.Jump(h.config.Url("/info/plugin_"+plugName+"/edit"))),
-				types.GetDropDownItemButton(language.GetFromHtml("menus manage"),
-					action.Jump(h.config.Url("/menu?__plugin_name="+plugName))),
-			})).
+			Add(
+				types.GetDropDownButton(
+					"", icon.Gear, []*types.NavDropDownItemButton{
+						types.GetDropDownItemButton(
+							language.GetFromHtml("plugin setting"),
+							action.Jump(h.config.Url("/info/plugin_"+plugName+"/edit")),
+						),
+						types.GetDropDownItemButton(
+							language.GetFromHtml("menus manage"),
+							action.Jump(h.config.Url("/menu?__plugin_name="+plugName)),
+						),
+					},
+				),
+			).
 			CheckPermission(user)
 	}
 	buf := h.ExecuteWithBtns(ctx, user, panel, plugName, btns, options...)
 	ctx.HTML(http.StatusOK, buf.String())
 }
 
-func (h *Handler) ExecuteWithBtns(ctx *context.Context, user models.UserModel, panel types.Panel, plugName string, btns types.Buttons,
-	options ...template.ExecuteOptions) *bytes.Buffer {
+func (h *Handler) ExecuteWithBtns(
+	ctx *context.Context, user models.UserModel, panel types.Panel, plugName string, btns types.Buttons,
+	options ...template.ExecuteOptions,
+) *bytes.Buffer {
 
 	tmpl, tmplName := aTemplate(ctx).GetTemplate(isPjax(ctx))
 	option := template.GetExecuteOptions(options)
 
-	return template.Execute(ctx, &template.ExecuteParam{
-		User:       user,
-		TmplName:   tmplName,
-		Tmpl:       tmpl,
-		Panel:      panel,
-		Config:     h.config,
-		Menu:       menu.GetGlobalMenu(user, h.conn, ctx.Lang(), plugName).SetActiveClass(h.config.URLRemovePrefix(ctx.Path())),
-		Animation:  option.Animation,
-		Buttons:    btns,
-		Iframe:     ctx.IsIframe(),
-		IsPjax:     isPjax(ctx),
-		NoCompress: option.NoCompress,
-	})
+	return template.Execute(
+		ctx, &template.ExecuteParam{
+			User:     user,
+			TmplName: tmplName,
+			Tmpl:     tmpl,
+			Panel:    panel,
+			Config:   h.config,
+			Menu: menu.GetGlobalMenu(
+				user, h.conn, ctx.Lang(), plugName,
+			).SetActiveClass(h.config.URLRemovePrefix(ctx.Path())),
+			Animation:  option.Animation,
+			Buttons:    btns,
+			Iframe:     ctx.IsIframe(),
+			IsPjax:     isPjax(ctx),
+			NoCompress: option.NoCompress,
+		},
+	)
 }
 
-func (h *Handler) Execute(ctx *context.Context, user models.UserModel, panel types.Panel, plugName string,
-	options ...template.ExecuteOptions) *bytes.Buffer {
+func (h *Handler) Execute(
+	ctx *context.Context, user models.UserModel, panel types.Panel, plugName string,
+	options ...template.ExecuteOptions,
+) *bytes.Buffer {
 
 	tmpl, tmplName := aTemplate(ctx).GetTemplate(isPjax(ctx))
 	option := template.GetExecuteOptions(options)
 
-	return template.Execute(ctx, &template.ExecuteParam{
-		User:       user,
-		TmplName:   tmplName,
-		Tmpl:       tmpl,
-		Panel:      panel,
-		Config:     h.config,
-		Menu:       menu.GetGlobalMenu(user, h.conn, ctx.Lang(), plugName).SetActiveClass(h.config.URLRemovePrefix(ctx.Path())),
-		Animation:  option.Animation,
-		Buttons:    (*h.navButtons).CheckPermission(user),
-		Iframe:     ctx.IsIframe(),
-		IsPjax:     isPjax(ctx),
-		NoCompress: option.NoCompress,
-	})
+	return template.Execute(
+		ctx, &template.ExecuteParam{
+			User:     user,
+			TmplName: tmplName,
+			Tmpl:     tmpl,
+			Panel:    panel,
+			Config:   h.config,
+			Menu: menu.GetGlobalMenu(
+				user, h.conn, ctx.Lang(), plugName,
+			).SetActiveClass(h.config.URLRemovePrefix(ctx.Path())),
+			Animation:  option.Animation,
+			Buttons:    (*h.navButtons).CheckPermission(user),
+			Iframe:     ctx.IsIframe(),
+			IsPjax:     isPjax(ctx),
+			NoCompress: option.NoCompress,
+		},
+	)
 }
 
 func isInfoUrl(s string) bool {
@@ -312,39 +352,49 @@ func isPjax(ctx *context.Context) bool {
 	return ctx.IsPjax()
 }
 
-func formFooter(ctx *context.Context, page string, isHideEdit, isHideNew, isHideReset bool, btnWord template2.HTML) template2.HTML {
+func formFooter(
+	ctx *context.Context, page string, isHideEdit, isHideNew, isHideReset bool, btnWord template2.HTML,
+) template2.HTML {
 	col1 := aCol(ctx).SetSize(types.SizeMD(2)).GetContent()
 
 	var (
 		checkBoxs  template2.HTML
 		checkBoxJS template2.HTML
 
-		editCheckBox = template.HTML(`
+		editCheckBox = template.HTML(
+			`
 			<label class="pull-right" style="margin: 5px 10px 0 0;">
                 <input type="checkbox" class="continue_edit" style="position: absolute; opacity: 0;"> ` + language.Get("continue editing") + `
-            </label>`)
-		newCheckBox = template.HTML(`
+            </label>`,
+		)
+		newCheckBox = template.HTML(
+			`
 			<label class="pull-right" style="margin: 5px 10px 0 0;">
                 <input type="checkbox" class="continue_new" style="position: absolute; opacity: 0;"> ` + language.Get("continue creating") + `
-            </label>`)
+            </label>`,
+		)
 
-		editWithNewCheckBoxJs = template.HTML(`$('.continue_edit').iCheck({checkboxClass: 'icheckbox_minimal-blue'}).on('ifChanged', function (event) {
+		editWithNewCheckBoxJs = template.HTML(
+			`$('.continue_edit').iCheck({checkboxClass: 'icheckbox_minimal-blue'}).on('ifChanged', function (event) {
 		if (this.checked) {
 			$('.continue_new').iCheck('uncheck');
 			$('input[name="` + form.PreviousKey + `"]').val(location.href)
 		} else {
 			$('input[name="` + form.PreviousKey + `"]').val(previous_url_goadmin)
 		}
-	});	`)
+	});	`,
+		)
 
-		newWithEditCheckBoxJs = template.HTML(`$('.continue_new').iCheck({checkboxClass: 'icheckbox_minimal-blue'}).on('ifChanged', function (event) {
+		newWithEditCheckBoxJs = template.HTML(
+			`$('.continue_new').iCheck({checkboxClass: 'icheckbox_minimal-blue'}).on('ifChanged', function (event) {
 		if (this.checked) {
 			$('.continue_edit').iCheck('uncheck');
 			$('input[name="` + form.PreviousKey + `"]').val(location.href.replace('/edit', '/new'))
 		} else {
 			$('input[name="` + form.PreviousKey + `"]').val(previous_url_goadmin)
 		}
-	});`)
+	});`,
+		)
 	)
 
 	if page == "edit" {
@@ -364,7 +414,8 @@ func formFooter(ctx *context.Context, page string, isHideEdit, isHideNew, isHide
 `
 	} else if page == "edit_only" && !isHideEdit {
 		checkBoxs = editCheckBox
-		checkBoxJS = template.HTML(`	<script>
+		checkBoxJS = template.HTML(
+			`	<script>
 	let previous_url_goadmin = $('input[name="` + form.PreviousKey + `"]').attr("value")
 	$('.continue_edit').iCheck({checkboxClass: 'icheckbox_minimal-blue'}).on('ifChanged', function (event) {
 		if (this.checked) {
@@ -374,10 +425,12 @@ func formFooter(ctx *context.Context, page string, isHideEdit, isHideNew, isHide
 		}
 	});
 </script>
-`)
+`,
+		)
 	} else if page == "new" && !isHideNew {
 		checkBoxs = newCheckBox
-		checkBoxJS = template.HTML(`	<script>
+		checkBoxJS = template.HTML(
+			`	<script>
 	let previous_url_goadmin = $('input[name="` + form.PreviousKey + `"]').attr("value")
 	$('.continue_new').iCheck({checkboxClass: 'icheckbox_minimal-blue'}).on('ifChanged', function (event) {
 		if (this.checked) {
@@ -387,7 +440,8 @@ func formFooter(ctx *context.Context, page string, isHideEdit, isHideNew, isHide
 		}
 	});
 </script>
-`)
+`,
+		)
 	}
 
 	btn1 := aButton(ctx).
@@ -436,7 +490,9 @@ func filterFormFooter(ctx *context.Context, infoUrl string) template2.HTML {
 	return col1 + col2
 }
 
-func formContent(ctx *context.Context, form types.FormAttribute, isTab, iframe, isHideBack bool, header template2.HTML) template2.HTML {
+func formContent(
+	ctx *context.Context, form types.FormAttribute, isTab, iframe, isHideBack bool, header template2.HTML,
+) template2.HTML {
 	if isTab {
 		return form.GetContent()
 	}
@@ -454,7 +510,9 @@ func formContent(ctx *context.Context, form types.FormAttribute, isTab, iframe, 
 		GetContent()
 }
 
-func detailContent(ctx *context.Context, form types.FormAttribute, editUrl, deleteUrl string, iframe bool) template2.HTML {
+func detailContent(
+	ctx *context.Context, form types.FormAttribute, editUrl, deleteUrl string, iframe bool,
+) template2.HTML {
 	return aBox(ctx).
 		SetHeader(form.GetDetailBoxHeader(editUrl, deleteUrl)).
 		WithHeadBorder().

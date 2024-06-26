@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"html/template"
 
-	template2 "github.com/GoAdminGroup/go-admin/template"
+	template2 "github.com/go-hq/go-admin/template"
 )
 
 type LineChart struct {
@@ -303,10 +303,12 @@ func (l *LineChart) SetLabels(s []string) *LineChart {
 
 func (l *LineChart) AddDataSet(s string) *LineChart {
 	l.dataSetIndex++
-	l.JsContent.Data.DataSets = l.JsContent.Data.DataSets.Add(&LineDataSet{
-		Type:  "line",
-		Label: s,
-	})
+	l.JsContent.Data.DataSets = l.JsContent.Data.DataSets.Add(
+		&LineDataSet{
+			Type:  "line",
+			Label: s,
+		},
+	)
 	return l
 }
 

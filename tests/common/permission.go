@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
 	"github.com/gavv/httpexpect"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	"github.com/go-hq/go-admin/plugins/admin/modules/form"
 )
 
 func permissionTest(e *httpexpect.Expect, sesID *http.Cookie) {
@@ -41,21 +41,23 @@ func permissionTest(e *httpexpect.Expect, sesID *http.Cookie) {
 		WithCookie(sesID.Name, sesID.Value).
 		WithMultipart().
 		WithFormField("http_method[]", "GET").
-		WithForm(map[string]interface{}{
-			"name": "tester",
-			"slug": "tester",
-			"http_path": `/
+		WithForm(
+			map[string]interface{}{
+				"name": "tester",
+				"slug": "tester",
+				"http_path": `/
 /admin/info/op`,
-			form.PreviousKey: config.Url("/info/permission?__page=1&__pageSize=10&__sort=id&__sort_type=desc"),
-			form.TokenKey:    token[1],
-		}).Expect().Status(200)
+				form.PreviousKey: config.Url("/info/permission?__page=1&__pageSize=10&__sort=id&__sort_type=desc"),
+				form.TokenKey:    token[1],
+			},
+		).Expect().Status(200)
 	res.Header("X-Pjax-Url").Contains(config.Url("/info/"))
 	res.Body().Contains("tester").Contains("GET")
 
 	// show form: without id
 
-	//printlnWithColor("show form: without id", "green")
-	//e.GET(config.Url("/info/permission/edit")).
+	// printlnWithColor("show form: without id", "green")
+	// e.GET(config.Url("/info/permission/edit")).
 	//	WithCookie(sesID.Name, sesID.Value).
 	//	Expect().Status(200).Body().Contains(errors.WrongID)
 
@@ -77,15 +79,17 @@ func permissionTest(e *httpexpect.Expect, sesID *http.Cookie) {
 		WithMultipart().
 		WithFormField("http_method[]", "GET").
 		WithFormField("http_method[]", "POST").
-		WithForm(map[string]interface{}{
-			"name": "tester",
-			"slug": "tester",
-			"http_path": `/
+		WithForm(
+			map[string]interface{}{
+				"name": "tester",
+				"slug": "tester",
+				"http_path": `/
 /admin/info/op`,
-			form.PreviousKey: config.Url("/info/permission?__page=1&__pageSize=10&__sort=id&__sort_type=desc"),
-			form.TokenKey:    token[1],
-			"id":             "3",
-		}).Expect().Status(200)
+				form.PreviousKey: config.Url("/info/permission?__page=1&__pageSize=10&__sort=id&__sort_type=desc"),
+				form.TokenKey:    token[1],
+				"id":             "3",
+			},
+		).Expect().Status(200)
 	res.Header("X-Pjax-Url").Contains(config.Url("/info/"))
 	res.Body().Contains("tester").Contains("GET,POST")
 
@@ -105,14 +109,16 @@ func permissionTest(e *httpexpect.Expect, sesID *http.Cookie) {
 		WithCookie(sesID.Name, sesID.Value).
 		WithMultipart().
 		WithFormField("http_method[]", "GET").
-		WithForm(map[string]interface{}{
-			"name": "tester2",
-			"slug": "tester2",
-			"http_path": `/
+		WithForm(
+			map[string]interface{}{
+				"name": "tester2",
+				"slug": "tester2",
+				"http_path": `/
 /admin/info/op`,
-			form.PreviousKey: config.Url("/info/permission?__page=1&__pageSize=10&__sort=id&__sort_type=desc"),
-			form.TokenKey:    token[1],
-		}).Expect().Status(200)
+				form.PreviousKey: config.Url("/info/permission?__page=1&__pageSize=10&__sort=id&__sort_type=desc"),
+				form.TokenKey:    token[1],
+			},
+		).Expect().Status(200)
 
 	// delete tester2
 

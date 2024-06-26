@@ -4,10 +4,10 @@ import (
 	"html/template"
 	"strconv"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/auth"
-	"github.com/GoAdminGroup/go-admin/modules/errors"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/auth"
+	"github.com/go-hq/go-admin/modules/errors"
+	"github.com/go-hq/go-admin/plugins/admin/modules/form"
 )
 
 type MenuNewParam struct {
@@ -47,16 +47,18 @@ func (g *Guard) MenuNew(ctx *context.Context) {
 
 	parentIdInt, _ := strconv.Atoi(parentId)
 
-	ctx.SetUserValue(newMenuParamKey, &MenuNewParam{
-		Title:      ctx.FormValue("title"),
-		Header:     ctx.FormValue("header"),
-		PluginName: ctx.FormValue("plugin_name"),
-		ParentId:   int64(parentIdInt),
-		Icon:       ctx.FormValue("icon"),
-		Uri:        ctx.FormValue("uri"),
-		Roles:      ctx.Request.Form["roles[]"],
-		Alert:      alert,
-	})
+	ctx.SetUserValue(
+		newMenuParamKey, &MenuNewParam{
+			Title:      ctx.FormValue("title"),
+			Header:     ctx.FormValue("header"),
+			PluginName: ctx.FormValue("plugin_name"),
+			ParentId:   int64(parentIdInt),
+			Icon:       ctx.FormValue("icon"),
+			Uri:        ctx.FormValue("uri"),
+			Roles:      ctx.Request.Form["roles[]"],
+			Alert:      alert,
+		},
+	)
 	ctx.Next()
 }
 

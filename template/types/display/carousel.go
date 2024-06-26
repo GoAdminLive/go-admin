@@ -4,8 +4,8 @@ import (
 	"html/template"
 	"strconv"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 type Carousel struct {
@@ -53,7 +53,8 @@ style="max-width:` + width + `px;max-height:` + height + `px;display: block;marg
         </div>`
 		}
 
-		return template.HTML(`
+		return template.HTML(
+			`
 <div id="carousel-value-` + value.ID + `" class="carousel slide" data-ride="carousel" width="` + width + `" height="` + height + `" 
 style="padding: 5px;border: 1px solid #f4f4f4;background-color:white;width:` + width + `px;">
     <ol class="carousel-indicators">
@@ -69,6 +70,7 @@ style="padding: 5px;border: 1px solid #f4f4f4;background-color:white;width:` + w
         <span class="fa fa-angle-right"></span>
     </a>
 </div>
-`)
+`,
+		)
 	}
 }

@@ -8,14 +8,14 @@ import (
 	"log"
 	"sync"
 
-	"github.com/GoAdminGroup/go-admin/modules/db/dialect"
-	"github.com/GoAdminGroup/go-admin/modules/logger"
+	"github.com/go-hq/go-admin/modules/db/dialect"
+	"github.com/go-hq/go-admin/modules/logger"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/modules/service"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/service"
+	"github.com/go-hq/go-admin/plugins/admin/models"
+	"github.com/go-hq/go-admin/plugins/admin/modules"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -125,10 +125,12 @@ func (s *TokenService) AddToken() string {
 	defer s.lock.Unlock()
 	tokenStr := modules.Uuid()
 	s.tokens = append(s.tokens, tokenStr)
-	_, err := db.WithDriver(s.conn).Table("goadmin_session").Insert(dialect.H{
-		"sid":    tokenStr,
-		"values": "__csrf_token__",
-	})
+	_, err := db.WithDriver(s.conn).Table("goadmin_session").Insert(
+		dialect.H{
+			"sid":    tokenStr,
+			"values": "__csrf_token__",
+		},
+	)
 	if db.CheckError(err, db.INSERT) {
 		logger.Error("csrf token insert into database error: ", err)
 	}

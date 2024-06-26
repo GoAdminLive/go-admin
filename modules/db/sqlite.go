@@ -7,7 +7,7 @@ package db
 import (
 	"database/sql"
 
-	"github.com/GoAdminGroup/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/config"
 )
 
 // Sqlite is a Connection of sqlite.
@@ -41,7 +41,10 @@ func (db *Sqlite) GetDelimiter2() string {
 
 // GetDelimiters implements the method Connection.GetDelimiters.
 func (db *Sqlite) GetDelimiters() []string {
-	return []string{"`", "`"}
+	return []string{
+		"`",
+		"`",
+	}
 }
 
 // QueryWithConnection implements the method Connection.QueryWithConnection.
@@ -81,26 +84,28 @@ func (db *Sqlite) ExecWith(tx *sql.Tx, conn, query string, args ...interface{}) 
 // InitDB implements the method Connection.InitDB.
 func (db *Sqlite) InitDB(cfgList map[string]config.Database) Connection {
 	db.Configs = cfgList
-	db.Once.Do(func() {
-		for conn, cfg := range cfgList {
-			sqlDB, err := sql.Open("sqlite3", cfg.GetDSN())
+	db.Once.Do(
+		func() {
+			for conn, cfg := range cfgList {
+				sqlDB, err := sql.Open("sqlite3", cfg.GetDSN())
 
-			if err != nil {
-				panic(err)
+				if err != nil {
+					panic(err)
+				}
+
+				sqlDB.SetMaxIdleConns(cfg.MaxIdleConns)
+				sqlDB.SetMaxOpenConns(cfg.MaxOpenConns)
+				sqlDB.SetConnMaxLifetime(cfg.ConnMaxLifetime)
+				sqlDB.SetConnMaxIdleTime(cfg.ConnMaxIdleTime)
+
+				db.DbList[conn] = sqlDB
+
+				if err := sqlDB.Ping(); err != nil {
+					panic(err)
+				}
 			}
-
-			sqlDB.SetMaxIdleConns(cfg.MaxIdleConns)
-			sqlDB.SetMaxOpenConns(cfg.MaxOpenConns)
-			sqlDB.SetConnMaxLifetime(cfg.ConnMaxLifetime)
-			sqlDB.SetConnMaxIdleTime(cfg.ConnMaxIdleTime)
-
-			db.DbList[conn] = sqlDB
-
-			if err := sqlDB.Ping(); err != nil {
-				panic(err)
-			}
-		}
-	})
+		},
+	)
 	return db
 }
 

@@ -3,16 +3,16 @@ package controller
 import (
 	"fmt"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/auth"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	form2 "github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/parameter"
-	"github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/types"
-	"github.com/GoAdminGroup/go-admin/template/types/form"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/auth"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/plugins/admin/modules"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	form2 "github.com/go-hq/go-admin/plugins/admin/modules/form"
+	"github.com/go-hq/go-admin/plugins/admin/modules/parameter"
+	"github.com/go-hq/go-admin/template"
+	"github.com/go-hq/go-admin/template/types"
+	"github.com/go-hq/go-admin/template/types/form"
 )
 
 func (h *Handler) ShowDetail(ctx *context.Context) {
@@ -56,15 +56,19 @@ func (h *Handler) ShowDetail(ctx *context.Context) {
 		formModel.Table = info.Table
 	}
 
-	param := parameter.GetParam(ctx.Request.URL,
+	param := parameter.GetParam(
+		ctx.Request.URL,
 		info.DefaultPageSize,
 		info.SortField,
-		info.GetSort())
+		info.GetSort(),
+	)
 
 	paramStr := param.DeleteDetailPk().GetRouteParamStr()
 
-	editUrl := modules.AorEmpty(!info.IsHideEditButton, h.routePathWithPrefix("show_edit", prefix)+paramStr+
-		"&"+constant.EditPKKey+"="+ctx.Query(constant.DetailPKKey))
+	editUrl := modules.AorEmpty(
+		!info.IsHideEditButton, h.routePathWithPrefix("show_edit", prefix)+paramStr+
+			"&"+constant.EditPKKey+"="+ctx.Query(constant.DetailPKKey),
+	)
 	deleteUrl := modules.AorEmpty(!info.IsHideDeleteButton, h.routePathWithPrefix("delete", prefix)+paramStr)
 	infoUrl := h.routePathWithPrefix("info", prefix) + paramStr
 
@@ -74,7 +78,8 @@ func (h *Handler) ShowDetail(ctx *context.Context) {
 	deleteJs := ""
 
 	if deleteUrl != "" {
-		deleteJs = fmt.Sprintf(`<script>
+		deleteJs = fmt.Sprintf(
+			`<script>
 function DeletePost(id) {
 	swal({
 			title: '%s',
@@ -111,7 +116,8 @@ $('.delete-btn').on('click', function (event) {
 });
 
 </script>`, language.Get("are you sure to delete"), language.Get("yes"),
-			language.Get("cancel"), deleteUrl, infoUrl, id)
+			language.Get("cancel"), deleteUrl, infoUrl, id,
+		)
 	}
 
 	title := ""
@@ -136,22 +142,30 @@ $('.delete-btn').on('click', function (event) {
 	formInfo, err := newPanel.GetDataWithId(param.WithPKs(id))
 
 	if err != nil {
-		h.HTML(ctx, user, template.WarningPanelWithDescAndTitle(ctx, err.Error(), desc, title),
-			template.ExecuteOptions{Animation: param.Animation})
+		h.HTML(
+			ctx, user, template.WarningPanelWithDescAndTitle(ctx, err.Error(), desc, title),
+			template.ExecuteOptions{Animation: param.Animation},
+		)
 		return
 	}
 
-	h.HTML(ctx, user, types.Panel{
-		Content: detailContent(ctx, aForm(ctx).
-			SetTitle(template.HTML(title)).
-			SetContent(formInfo.FieldList).
-			SetHeader(detail.HeaderHtml).
-			SetFooter(template.HTML(deleteJs)+detail.FooterHtml).
-			SetHiddenFields(map[string]string{
-				form2.PreviousKey: infoUrl,
-			}).
-			SetPrefix(h.config.PrefixFixSlash()), editUrl, deleteUrl, !isNotIframe),
-		Description: template.HTML(desc),
-		Title:       template.HTML(title),
-	}, template.ExecuteOptions{Animation: param.Animation})
+	h.HTML(
+		ctx, user, types.Panel{
+			Content: detailContent(
+				ctx, aForm(ctx).
+					SetTitle(template.HTML(title)).
+					SetContent(formInfo.FieldList).
+					SetHeader(detail.HeaderHtml).
+					SetFooter(template.HTML(deleteJs)+detail.FooterHtml).
+					SetHiddenFields(
+						map[string]string{
+							form2.PreviousKey: infoUrl,
+						},
+					).
+					SetPrefix(h.config.PrefixFixSlash()), editUrl, deleteUrl, !isNotIframe,
+			),
+			Description: template.HTML(desc),
+			Title:       template.HTML(title),
+		}, template.ExecuteOptions{Animation: param.Animation},
+	)
 }

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"html/template"
 
-	template2 "github.com/GoAdminGroup/go-admin/template"
+	template2 "github.com/go-hq/go-admin/template"
 )
 
 type PieChart struct {
@@ -150,10 +150,12 @@ func (l *PieChart) SetLabels(s []string) *PieChart {
 
 func (l *PieChart) AddDataSet(s string) *PieChart {
 	l.dataSetIndex++
-	l.JsContent.Data.DataSets = l.JsContent.Data.DataSets.Add(&PieDataSet{
-		Type:  "pie",
-		Label: s,
-	})
+	l.JsContent.Data.DataSets = l.JsContent.Data.DataSets.Add(
+		&PieDataSet{
+			Type:  "pie",
+			Label: s,
+		},
+	)
 	return l
 }
 

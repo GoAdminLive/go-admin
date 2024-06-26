@@ -6,9 +6,9 @@ import (
 	"html/template"
 	"strings"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/template/types/form"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/template/types/form"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 )
@@ -44,11 +44,15 @@ func (f FieldDisplay) ToDisplay(value FieldModel) interface{} {
 	if len(f.DisplayProcessChains) > 0 && f.IsNotSelectRes(val) {
 		valStr := fmt.Sprintf("%v", val)
 		for _, process := range f.DisplayProcessChains {
-			valStr = fmt.Sprintf("%v", process(FieldModel{
-				Row:   value.Row,
-				Value: valStr,
-				ID:    value.ID,
-			}))
+			valStr = fmt.Sprintf(
+				"%v", process(
+					FieldModel{
+						Row:   value.Row,
+						Value: valStr,
+						ID:    value.ID,
+					},
+				),
+			)
 		}
 		return valStr
 	}
@@ -148,54 +152,66 @@ func (f FieldDisplay) ToDisplayStringArrayArray(value FieldModel) [][]string {
 }
 
 func (f FieldDisplay) AddLimit(limit int) DisplayProcessFnChains {
-	return f.DisplayProcessChains.Add(func(value FieldModel) interface{} {
-		if limit > len(value.Value) {
-			return value.Value
-		} else if limit < 0 {
-			return ""
-		} else {
-			return value.Value[:limit]
-		}
-	})
+	return f.DisplayProcessChains.Add(
+		func(value FieldModel) interface{} {
+			if limit > len(value.Value) {
+				return value.Value
+			} else if limit < 0 {
+				return ""
+			} else {
+				return value.Value[:limit]
+			}
+		},
+	)
 }
 
 func (f FieldDisplay) AddTrimSpace() DisplayProcessFnChains {
-	return f.DisplayProcessChains.Add(func(value FieldModel) interface{} {
-		return strings.TrimSpace(value.Value)
-	})
+	return f.DisplayProcessChains.Add(
+		func(value FieldModel) interface{} {
+			return strings.TrimSpace(value.Value)
+		},
+	)
 }
 
 func (f FieldDisplay) AddSubstr(start int, end int) DisplayProcessFnChains {
-	return f.DisplayProcessChains.Add(func(value FieldModel) interface{} {
-		if start > end || start > len(value.Value) || end < 0 {
-			return ""
-		}
-		if start < 0 {
-			start = 0
-		}
-		if end > len(value.Value) {
-			end = len(value.Value)
-		}
-		return value.Value[start:end]
-	})
+	return f.DisplayProcessChains.Add(
+		func(value FieldModel) interface{} {
+			if start > end || start > len(value.Value) || end < 0 {
+				return ""
+			}
+			if start < 0 {
+				start = 0
+			}
+			if end > len(value.Value) {
+				end = len(value.Value)
+			}
+			return value.Value[start:end]
+		},
+	)
 }
 
 func (f FieldDisplay) AddToTitle() DisplayProcessFnChains {
-	return f.DisplayProcessChains.Add(func(value FieldModel) interface{} {
-		return cases.Title(language.Und).String(value.Value)
-	})
+	return f.DisplayProcessChains.Add(
+		func(value FieldModel) interface{} {
+			return cases.Title(language.Und).String(value.Value)
+		},
+	)
 }
 
 func (f FieldDisplay) AddToUpper() DisplayProcessFnChains {
-	return f.DisplayProcessChains.Add(func(value FieldModel) interface{} {
-		return strings.ToUpper(value.Value)
-	})
+	return f.DisplayProcessChains.Add(
+		func(value FieldModel) interface{} {
+			return strings.ToUpper(value.Value)
+		},
+	)
 }
 
 func (f FieldDisplay) AddToLower() DisplayProcessFnChains {
-	return f.DisplayProcessChains.Add(func(value FieldModel) interface{} {
-		return strings.ToLower(value.Value)
-	})
+	return f.DisplayProcessChains.Add(
+		func(value FieldModel) interface{} {
+			return strings.ToLower(value.Value)
+		},
+	)
 }
 
 type DisplayProcessFnChains []FieldFilterFn
@@ -268,74 +284,90 @@ func AddXssJsFilter() DisplayProcessFnChains {
 }
 
 func addLimit(limit int, chains DisplayProcessFnChains) DisplayProcessFnChains {
-	chains = chains.Add(func(value FieldModel) interface{} {
-		if limit > len(value.Value) {
-			return value
-		} else if limit < 0 {
-			return ""
-		} else {
-			return value.Value[:limit]
-		}
-	})
+	chains = chains.Add(
+		func(value FieldModel) interface{} {
+			if limit > len(value.Value) {
+				return value
+			} else if limit < 0 {
+				return ""
+			} else {
+				return value.Value[:limit]
+			}
+		},
+	)
 	return chains
 }
 
 func addTrimSpace(chains DisplayProcessFnChains) DisplayProcessFnChains {
-	chains = chains.Add(func(value FieldModel) interface{} {
-		return strings.TrimSpace(value.Value)
-	})
+	chains = chains.Add(
+		func(value FieldModel) interface{} {
+			return strings.TrimSpace(value.Value)
+		},
+	)
 	return chains
 }
 
 func addSubstr(start int, end int, chains DisplayProcessFnChains) DisplayProcessFnChains {
-	chains = chains.Add(func(value FieldModel) interface{} {
-		if start > end || start > len(value.Value) || end < 0 {
-			return ""
-		}
-		if start < 0 {
-			start = 0
-		}
-		if end > len(value.Value) {
-			end = len(value.Value)
-		}
-		return value.Value[start:end]
-	})
+	chains = chains.Add(
+		func(value FieldModel) interface{} {
+			if start > end || start > len(value.Value) || end < 0 {
+				return ""
+			}
+			if start < 0 {
+				start = 0
+			}
+			if end > len(value.Value) {
+				end = len(value.Value)
+			}
+			return value.Value[start:end]
+		},
+	)
 	return chains
 }
 
 func addToTitle(chains DisplayProcessFnChains) DisplayProcessFnChains {
-	chains = chains.Add(func(value FieldModel) interface{} {
-		return cases.Title(language.Und).String(value.Value)
-	})
+	chains = chains.Add(
+		func(value FieldModel) interface{} {
+			return cases.Title(language.Und).String(value.Value)
+		},
+	)
 	return chains
 }
 
 func addToUpper(chains DisplayProcessFnChains) DisplayProcessFnChains {
-	chains = chains.Add(func(value FieldModel) interface{} {
-		return strings.ToUpper(value.Value)
-	})
+	chains = chains.Add(
+		func(value FieldModel) interface{} {
+			return strings.ToUpper(value.Value)
+		},
+	)
 	return chains
 }
 
 func addToLower(chains DisplayProcessFnChains) DisplayProcessFnChains {
-	chains = chains.Add(func(value FieldModel) interface{} {
-		return strings.ToLower(value.Value)
-	})
+	chains = chains.Add(
+		func(value FieldModel) interface{} {
+			return strings.ToLower(value.Value)
+		},
+	)
 	return chains
 }
 
 func addXssFilter(chains DisplayProcessFnChains) DisplayProcessFnChains {
-	chains = chains.Add(func(value FieldModel) interface{} {
-		return html.EscapeString(value.Value)
-	})
+	chains = chains.Add(
+		func(value FieldModel) interface{} {
+			return html.EscapeString(value.Value)
+		},
+	)
 	return chains
 }
 
 func addXssJsFilter(chains DisplayProcessFnChains) DisplayProcessFnChains {
-	chains = chains.Add(func(value FieldModel) interface{} {
-		replacer := strings.NewReplacer("<script>", "&lt;script&gt;", "</script>", "&lt;/script&gt;")
-		return replacer.Replace(value.Value)
-	})
+	chains = chains.Add(
+		func(value FieldModel) interface{} {
+			replacer := strings.NewReplacer("<script>", "&lt;script&gt;", "</script>", "&lt;/script&gt;")
+			return replacer.Replace(value.Value)
+		},
+	)
 	return chains
 }
 

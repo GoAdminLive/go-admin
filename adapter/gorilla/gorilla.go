@@ -12,14 +12,14 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/GoAdminGroup/go-admin/adapter"
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/engine"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/plugins"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/adapter"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/engine"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/plugins"
+	"github.com/go-hq/go-admin/plugins/admin/models"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	"github.com/go-hq/go-admin/template/types"
 	"github.com/gorilla/mux"
 )
 
@@ -45,7 +45,9 @@ func (g *Gorilla) Use(app interface{}, plugs []plugins.Plugin) error {
 }
 
 // Content implements the method Adapter.Content.
-func (g *Gorilla) Content(ctx interface{}, getPanelFn types.GetPanelFn, fn context.NodeProcessor, btns ...types.Button) {
+func (g *Gorilla) Content(
+	ctx interface{}, getPanelFn types.GetPanelFn, fn context.NodeProcessor, btns ...types.Button,
+) {
 	g.GetContent(ctx, getPanelFn, g, btns, fn)
 }
 
@@ -57,9 +59,11 @@ func Content(handler HandlerFunc) http.HandlerFunc {
 			Request:  request,
 			Response: writer,
 		}
-		engine.Content(ctx, func(ctx interface{}) (types.Panel, error) {
-			return handler(ctx.(Context))
-		})
+		engine.Content(
+			ctx, func(ctx interface{}) (types.Panel, error) {
+				return handler(ctx.(Context))
+			},
+		)
 	}
 }
 
@@ -86,40 +90,42 @@ func (g *Gorilla) AddHandler(method, path string, handlers context.Handlers) {
 	u = reg1.ReplaceAllString(u, "{$1}/")
 	u = reg2.ReplaceAllString(u, "{$1}")
 
-	g.app.HandleFunc(u, func(w http.ResponseWriter, r *http.Request) {
-		ctx := context.NewContext(r)
+	g.app.HandleFunc(
+		u, func(w http.ResponseWriter, r *http.Request) {
+			ctx := context.NewContext(r)
 
-		params := mux.Vars(r)
+			params := mux.Vars(r)
 
-		for key, param := range params {
-			if r.URL.RawQuery == "" {
-				r.URL.RawQuery += strings.ReplaceAll(key, ":", "") + "=" + param
-			} else {
-				r.URL.RawQuery += "&" + strings.ReplaceAll(key, ":", "") + "=" + param
+			for key, param := range params {
+				if r.URL.RawQuery == "" {
+					r.URL.RawQuery += strings.ReplaceAll(key, ":", "") + "=" + param
+				} else {
+					r.URL.RawQuery += "&" + strings.ReplaceAll(key, ":", "") + "=" + param
+				}
 			}
-		}
 
-		ctx.SetHandlers(handlers).Next()
-		for key, head := range ctx.Response.Header {
-			w.Header().Add(key, head[0])
-		}
+			ctx.SetHandlers(handlers).Next()
+			for key, head := range ctx.Response.Header {
+				w.Header().Add(key, head[0])
+			}
 
-		if ctx.Response.Body == nil {
+			if ctx.Response.Body == nil {
+				w.WriteHeader(ctx.Response.StatusCode)
+				return
+			}
+
 			w.WriteHeader(ctx.Response.StatusCode)
-			return
-		}
 
-		w.WriteHeader(ctx.Response.StatusCode)
+			buf := new(bytes.Buffer)
+			_, _ = buf.ReadFrom(ctx.Response.Body)
 
-		buf := new(bytes.Buffer)
-		_, _ = buf.ReadFrom(ctx.Response.Body)
-
-		_, err := w.Write(buf.Bytes())
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-	}).Methods(strings.ToUpper(method))
+			_, err := w.Write(buf.Bytes())
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+		},
+	).Methods(strings.ToUpper(method))
 }
 
 // Context wraps the Request and Response object of Gorilla.

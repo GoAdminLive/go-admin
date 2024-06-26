@@ -5,7 +5,7 @@ import (
 	"html/template"
 	"testing"
 
-	"github.com/GoAdminGroup/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/config"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -22,9 +22,11 @@ func TestAdd(t *testing.T) {
 }
 
 func TestGetWithScope(t *testing.T) {
-	config.Initialize(&config.Config{
-		Language: CN,
-	})
+	config.Initialize(
+		&config.Config{
+			Language: CN,
+		},
+	)
 	cn["foo"] = "bar"
 	assert.Equal(t, GetWithScope("foo"), "bar")
 	cn["user.table.foo2"] = "bar"
@@ -34,9 +36,11 @@ func TestGetWithScope(t *testing.T) {
 }
 
 func TestGet(t *testing.T) {
-	config.Initialize(&config.Config{
-		Language: CN,
-	})
+	config.Initialize(
+		&config.Config{
+			Language: CN,
+		},
+	)
 	cn["foo"] = "bar"
 	assert.Equal(t, Get("foo"), "bar")
 }
@@ -46,9 +50,11 @@ func TestWithScopes(t *testing.T) {
 }
 
 func TestGetFromHtml(t *testing.T) {
-	config.Initialize(&config.Config{
-		Language: CN,
-	})
+	config.Initialize(
+		&config.Config{
+			Language: CN,
+		},
+	)
 	cn["user.table.foo"] = "bar"
 	assert.Equal(t, GetFromHtml("foo", "user", "table"), template.HTML("bar"))
 }

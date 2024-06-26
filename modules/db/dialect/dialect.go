@@ -7,7 +7,7 @@ package dialect
 import (
 	"strings"
 
-	"github.com/GoAdminGroup/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/config"
 )
 
 // Dialect is methods set of different driver.
@@ -50,26 +50,44 @@ func GetDialectByDriver(driver string) Dialect {
 	switch driver {
 	case "mysql":
 		return mysql{
-			commonDialect: commonDialect{delimiter: "`", delimiter2: "`"},
+			commonDialect: commonDialect{
+				delimiter:  "`",
+				delimiter2: "`",
+			},
 		}
 	case "mssql":
 		return mssql{
-			commonDialect: commonDialect{delimiter: "[", delimiter2: "]"},
+			commonDialect: commonDialect{
+				delimiter:  "[",
+				delimiter2: "]",
+			},
 		}
 	case "postgresql":
 		return postgresql{
-			commonDialect: commonDialect{delimiter: `"`, delimiter2: `"`},
+			commonDialect: commonDialect{
+				delimiter:  `"`,
+				delimiter2: `"`,
+			},
 		}
 	case "sqlite":
 		return sqlite{
-			commonDialect: commonDialect{delimiter: "`", delimiter2: "`"},
+			commonDialect: commonDialect{
+				delimiter:  "`",
+				delimiter2: "`",
+			},
 		}
 	case "oceanbase":
 		return oceanbase{
-			commonDialect: commonDialect{delimiter: "`", delimiter2: "`"},
+			commonDialect: commonDialect{
+				delimiter:  "`",
+				delimiter2: "`",
+			},
 		}
 	default:
-		return commonDialect{delimiter: "`", delimiter2: "`"}
+		return commonDialect{
+			delimiter:  "`",
+			delimiter2: "`",
+		}
 	}
 }
 
@@ -213,7 +231,9 @@ func (sql *SQLComponent) getWheres(delimiter, delimiter2 string) string {
 	for _, where := range sql.Wheres {
 		arr = strings.Split(where.Field, ".")
 		if len(arr) > 1 {
-			wheres += arr[0] + "." + wrap(delimiter, delimiter2, arr[1]) + " " + where.Operation + " " + where.Qmark + " and "
+			wheres += arr[0] + "." + wrap(
+				delimiter, delimiter2, arr[1],
+			) + " " + where.Operation + " " + where.Qmark + " and "
 		} else {
 			wheres += wrap(delimiter, delimiter2, where.Field) + " " + where.Operation + " " + where.Qmark + " and "
 		}
@@ -266,7 +286,9 @@ func (sql *SQLComponent) prepareUpdate(delimiter, delimiter2 string) {
 		sql.Args = append(args, sql.Args...)
 	}
 
-	sql.Statement = "update " + delimiter + sql.TableName + delimiter2 + " set " + fields + sql.getWheres(delimiter, delimiter2)
+	sql.Statement = "update " + delimiter + sql.TableName + delimiter2 + " set " + fields + sql.getWheres(
+		delimiter, delimiter2,
+	)
 }
 
 func (sql *SQLComponent) prepareInsert(delimiter, delimiter2 string) {

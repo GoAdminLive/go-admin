@@ -3,9 +3,9 @@ package guard
 import (
 	"strings"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/errors"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/table"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/errors"
+	"github.com/go-hq/go-admin/plugins/admin/modules/table"
 )
 
 type ExportParam struct {
@@ -29,12 +29,14 @@ func (g *Guard) Export(ctx *context.Context) {
 		idStr = strings.Split(ctx.FormValue("id"), ",")
 	}
 
-	ctx.SetUserValue(exportParamKey, &ExportParam{
-		Panel:  panel,
-		Id:     idStr,
-		Prefix: prefix,
-		IsAll:  ctx.FormValue("is_all") == "true",
-	})
+	ctx.SetUserValue(
+		exportParamKey, &ExportParam{
+			Panel:  panel,
+			Id:     idStr,
+			Prefix: prefix,
+			IsAll:  ctx.FormValue("is_all") == "true",
+		},
+	)
 	ctx.Next()
 }
 

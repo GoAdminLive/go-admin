@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/GoAdminGroup/go-admin/modules/auth"
-	"github.com/GoAdminGroup/go-admin/modules/config"
 	"github.com/gavv/httpexpect"
+	"github.com/go-hq/go-admin/modules/auth"
+	"github.com/go-hq/go-admin/modules/config"
 )
 
 func authTest(e *httpexpect.Expect) *http.Cookie {
@@ -19,18 +19,22 @@ func authTest(e *httpexpect.Expect) *http.Cookie {
 	printlnWithColor("login: show", "green")
 	e.GET(config.Url(config.GetLoginUrl())).Expect().Status(200)
 	printlnWithColor("login: empty password", "green")
-	e.POST(config.Url("/signin")).WithJSON(map[string]string{
-		"username": "admin",
-		"password": "",
-	}).Expect().Status(400)
+	e.POST(config.Url("/signin")).WithJSON(
+		map[string]string{
+			"username": "admin",
+			"password": "",
+		},
+	).Expect().Status(400)
 
 	// login
 
 	printlnWithColor("login", "green")
-	sesID := e.POST(config.Url("/signin")).WithForm(map[string]string{
-		"username": "admin",
-		"password": "admin",
-	}).Expect().Status(200).Cookie(auth.DefaultCookieKey).Raw()
+	sesID := e.POST(config.Url("/signin")).WithForm(
+		map[string]string{
+			"username": "admin",
+			"password": "admin",
+		},
+	).Expect().Status(200).Cookie(auth.DefaultCookieKey).Raw()
 
 	// logout: without login
 
@@ -47,16 +51,20 @@ func authTest(e *httpexpect.Expect) *http.Cookie {
 	// login again
 
 	printlnWithColor("login again", "green")
-	cookie1 := e.POST(config.Url("/signin")).WithForm(map[string]string{
-		"username": "admin",
-		"password": "admin",
-	}).Expect().Status(200).Cookie(auth.DefaultCookieKey).Raw()
+	cookie1 := e.POST(config.Url("/signin")).WithForm(
+		map[string]string{
+			"username": "admin",
+			"password": "admin",
+		},
+	).Expect().Status(200).Cookie(auth.DefaultCookieKey).Raw()
 
 	printlnWithColor("login again：restrict users from logging in at the same time", "green")
-	cookie2 := e.POST(config.Url("/signin")).WithForm(map[string]string{
-		"username": "admin",
-		"password": "admin",
-	}).Expect().Status(200).Cookie(auth.DefaultCookieKey).Raw()
+	cookie2 := e.POST(config.Url("/signin")).WithForm(
+		map[string]string{
+			"username": "admin",
+			"password": "admin",
+		},
+	).Expect().Status(200).Cookie(auth.DefaultCookieKey).Raw()
 
 	// login success
 

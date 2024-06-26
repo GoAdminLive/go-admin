@@ -8,7 +8,7 @@ import (
 	"html/template"
 	"strings"
 
-	"github.com/GoAdminGroup/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/config"
 	"golang.org/x/text/language"
 )
 
@@ -39,7 +39,12 @@ func FixedLanguageKey(key string) string {
 	return key
 }
 
-var Langs = [...]string{EN, CN, JP, TC}
+var Langs = [...]string{
+	EN,
+	CN,
+	JP,
+	TC,
+}
 
 // Get return the value of default scope.
 func Get(value string) string {

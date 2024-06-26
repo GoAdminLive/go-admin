@@ -5,15 +5,15 @@ import (
 	"mime/multipart"
 	"strings"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/auth"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/modules/errors"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/parameter"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/table"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/auth"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/errors"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	"github.com/go-hq/go-admin/plugins/admin/modules/form"
+	"github.com/go-hq/go-admin/plugins/admin/modules/parameter"
+	"github.com/go-hq/go-admin/plugins/admin/modules/table"
 )
 
 type ShowNewFormParam struct {
@@ -50,12 +50,16 @@ func (g *Guard) ShowNewForm(ctx *context.Context) {
 		return
 	}
 
-	ctx.SetUserValue(showNewFormParam, &ShowNewFormParam{
-		Panel:  panel,
-		Prefix: prefix,
-		Param: parameter.GetParam(ctx.Request.URL, panel.GetInfo().DefaultPageSize, panel.GetInfo().SortField,
-			panel.GetInfo().GetSort()),
-	})
+	ctx.SetUserValue(
+		showNewFormParam, &ShowNewFormParam{
+			Panel:  panel,
+			Prefix: prefix,
+			Param: parameter.GetParam(
+				ctx.Request.URL, panel.GetInfo().DefaultPageSize, panel.GetInfo().SortField,
+				panel.GetInfo().GetSort(),
+			),
+		},
+	)
 	ctx.Next()
 }
 
@@ -97,8 +101,10 @@ func (g *Guard) NewForm(ctx *context.Context) {
 	}
 
 	fromList := isInfoUrl(previous)
-	param := parameter.GetParamFromURL(previous, panel.GetInfo().DefaultPageSize,
-		panel.GetInfo().GetSort(), panel.GetPrimaryKey().Name)
+	param := parameter.GetParamFromURL(
+		previous, panel.GetInfo().DefaultPageSize,
+		panel.GetInfo().GetSort(), panel.GetPrimaryKey().Name,
+	)
 
 	if fromList {
 		previous = config.Url("/info/" + prefix + param.GetRouteParamStr())
@@ -106,18 +112,20 @@ func (g *Guard) NewForm(ctx *context.Context) {
 
 	values := ctx.Request.MultipartForm.Value
 
-	ctx.SetUserValue(newFormParamKey, &NewFormParam{
-		Panel:        panel,
-		Id:           "",
-		Prefix:       prefix,
-		Param:        param,
-		IsIframe:     form.Values(values).Get(constant.IframeKey) == "true",
-		IframeID:     form.Values(values).Get(constant.IframeIDKey),
-		Path:         strings.Split(previous, "?")[0],
-		MultiForm:    ctx.Request.MultipartForm,
-		PreviousPath: previous,
-		FromList:     fromList,
-	})
+	ctx.SetUserValue(
+		newFormParamKey, &NewFormParam{
+			Panel:        panel,
+			Id:           "",
+			Prefix:       prefix,
+			Param:        param,
+			IsIframe:     form.Values(values).Get(constant.IframeKey) == "true",
+			IframeID:     form.Values(values).Get(constant.IframeIDKey),
+			Path:         strings.Split(previous, "?")[0],
+			MultiForm:    ctx.Request.MultipartForm,
+			PreviousPath: previous,
+			FromList:     fromList,
+		},
+	)
 	ctx.Next()
 }
 

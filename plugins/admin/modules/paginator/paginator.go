@@ -6,13 +6,13 @@ import (
 	"math"
 	"strconv"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/parameter"
-	template2 "github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/components"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/plugins/admin/modules/form"
+	"github.com/go-hq/go-admin/plugins/admin/modules/parameter"
+	template2 "github.com/go-hq/go-admin/template"
+	"github.com/go-hq/go-admin/template/components"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 type Config struct {
@@ -48,7 +48,12 @@ func Get(ctx *context.Context, cfg Config) types.PaginatorAttribute {
 	paginator.Total = strconv.Itoa(cfg.Size)
 
 	if len(cfg.PageSizeList) == 0 {
-		cfg.PageSizeList = []string{"10", "20", "50", "100"}
+		cfg.PageSizeList = []string{
+			"10",
+			"20",
+			"50",
+			"100",
+		}
 	}
 
 	paginator.Option = make(map[string]template.HTML, len(cfg.PageSizeList))
@@ -132,8 +137,14 @@ func Get(ctx *context.Context, cfg Config) types.PaginatorAttribute {
 		endNum = paginator.Total
 	}
 
-	paginator.SetEntriesInfo(template.HTML(fmt.Sprintf(language.Get("showing <b>%s</b> to <b>%s</b> of <b>%s</b> entries"),
-		paginator.CurPageStartIndex, endNum, paginator.Total)))
+	paginator.SetEntriesInfo(
+		template.HTML(
+			fmt.Sprintf(
+				language.Get("showing <b>%s</b> to <b>%s</b> of <b>%s</b> entries"),
+				paginator.CurPageStartIndex, endNum, paginator.Total,
+			),
+		),
+	)
 
 	return paginator.SetPageSizeList(cfg.PageSizeList)
 }
@@ -149,10 +160,12 @@ func addPageLink(arr []map[string]string, params parameter.Parameters, page int,
 		pageStr = ""
 	}
 
-	return append(arr, map[string]string{
-		"page":    pageStr,
-		"active":  active,
-		"isSplit": isSplit,
-		"url":     params.URLNoAnimation(pageStr),
-	})
+	return append(
+		arr, map[string]string{
+			"page":    pageStr,
+			"active":  active,
+			"isSplit": isSplit,
+			"url":     params.URLNoAnimation(pageStr),
+		},
+	)
 }

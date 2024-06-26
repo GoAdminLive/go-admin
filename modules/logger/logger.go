@@ -10,9 +10,9 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/trace"
-	"github.com/GoAdminGroup/go-admin/modules/utils"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/trace"
+	"github.com/go-hq/go-admin/modules/utils"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -45,17 +45,23 @@ var (
 		Level:   zapcore.InfoLevel,
 	}
 
-	infoLevelEnabler = zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl == zapcore.InfoLevel
-	})
+	infoLevelEnabler = zap.LevelEnablerFunc(
+		func(lvl zapcore.Level) bool {
+			return lvl == zapcore.InfoLevel
+		},
+	)
 
-	errorLevelEnabler = zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl >= zapcore.ErrorLevel
-	})
+	errorLevelEnabler = zap.LevelEnablerFunc(
+		func(lvl zapcore.Level) bool {
+			return lvl >= zapcore.ErrorLevel
+		},
+	)
 
-	accessLevelEnabler = zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl == zapcore.WarnLevel
-	})
+	accessLevelEnabler = zap.LevelEnablerFunc(
+		func(lvl zapcore.Level) bool {
+			return lvl == zapcore.WarnLevel
+		},
+	)
 )
 
 func init() {
@@ -108,11 +114,13 @@ type RotateCfg struct {
 }
 
 func (l *Logger) Init() {
-	zapLogger := zap.New(zapcore.NewTee(
-		zapcore.NewCore(l.getEncoder(l.encoder.LevelKey), l.getLogWriter(l.infoLogPath), infoLevelEnabler),
-		zapcore.NewCore(l.getEncoder(l.encoder.LevelKey), l.getLogWriter(l.errorLogPath), errorLevelEnabler),
-		zapcore.NewCore(l.getEncoder(""), l.getLogWriter(l.accessLogPath), accessLevelEnabler),
-	), zap.AddCaller(), zap.AddCallerSkip(1), zap.AddStacktrace(errorLevelEnabler))
+	zapLogger := zap.New(
+		zapcore.NewTee(
+			zapcore.NewCore(l.getEncoder(l.encoder.LevelKey), l.getLogWriter(l.infoLogPath), infoLevelEnabler),
+			zapcore.NewCore(l.getEncoder(l.encoder.LevelKey), l.getLogWriter(l.errorLogPath), errorLevelEnabler),
+			zapcore.NewCore(l.getEncoder(""), l.getLogWriter(l.accessLogPath), accessLevelEnabler),
+		), zap.AddCaller(), zap.AddCallerSkip(1), zap.AddStacktrace(errorLevelEnabler),
+	)
 	l.sugaredLogger = zapLogger.Sugar()
 	l.logger = zapLogger
 }
@@ -362,18 +370,22 @@ func Access(ctx *context.Context) {
 	if !logger.accessLogOff && logger.Level <= zapcore.InfoLevel {
 		if logger.accessAssetsLogOff {
 			if filepath.Ext(ctx.Path()) == "" {
-				logger.logger.Info("[GoAdmin] access log",
+				logger.logger.Info(
+					"[GoAdmin] access log",
 					zap.String("traceID", trace.GetTraceID(ctx)),
 					zap.String("statuscode", strconv.Itoa(ctx.Response.StatusCode)),
 					zap.String("method", string(ctx.Method())),
-					zap.String("path", ctx.Path()))
+					zap.String("path", ctx.Path()),
+				)
 			}
 		} else {
-			logger.logger.Info("[GoAdmin] access log",
+			logger.logger.Info(
+				"[GoAdmin] access log",
 				zap.String("traceID", trace.GetTraceID(ctx)),
 				zap.String("statuscode", strconv.Itoa(ctx.Response.StatusCode)),
 				zap.String("method", string(ctx.Method())),
-				zap.String("path", ctx.Path()))
+				zap.String("path", ctx.Path()),
+			)
 		}
 	}
 }

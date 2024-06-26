@@ -7,18 +7,20 @@ package page
 import (
 	"bytes"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/modules/logger"
-	"github.com/GoAdminGroup/go-admin/modules/menu"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
-	"github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/logger"
+	"github.com/go-hq/go-admin/modules/menu"
+	"github.com/go-hq/go-admin/plugins/admin/models"
+	"github.com/go-hq/go-admin/template"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 // SetPageContent set and return the panel of page content.
-func SetPageContent(ctx *context.Context, user models.UserModel, c func(ctx interface{}) (types.Panel, error), conn db.Connection) {
+func SetPageContent(
+	ctx *context.Context, user models.UserModel, c func(ctx interface{}) (types.Panel, error), conn db.Connection,
+) {
 
 	panel, err := c(ctx)
 
@@ -33,15 +35,21 @@ func SetPageContent(ctx *context.Context, user models.UserModel, c func(ctx inte
 
 	buf := new(bytes.Buffer)
 
-	err = tmpl.ExecuteTemplate(buf, tmplName, types.NewPage(ctx, &types.NewPageParam{
-		User:         user,
-		Menu:         menu.GetGlobalMenu(user, conn, ctx.Lang()).SetActiveClass(config.URLRemovePrefix(ctx.Path())),
-		Panel:        panel.GetContent(config.IsProductionEnvironment()),
-		Assets:       template.GetComponentAssetImportHTML(ctx),
-		TmplHeadHTML: template.Default(ctx).GetHeadHTML(),
-		TmplFootJS:   template.Default(ctx).GetFootJS(),
-		Iframe:       ctx.IsIframe(),
-	}))
+	err = tmpl.ExecuteTemplate(
+		buf, tmplName, types.NewPage(
+			ctx, &types.NewPageParam{
+				User: user,
+				Menu: menu.GetGlobalMenu(
+					user, conn, ctx.Lang(),
+				).SetActiveClass(config.URLRemovePrefix(ctx.Path())),
+				Panel:        panel.GetContent(config.IsProductionEnvironment()),
+				Assets:       template.GetComponentAssetImportHTML(ctx),
+				TmplHeadHTML: template.Default(ctx).GetHeadHTML(),
+				TmplFootJS:   template.Default(ctx).GetFootJS(),
+				Iframe:       ctx.IsIframe(),
+			},
+		),
+	)
 	if err != nil {
 		logger.ErrorCtx(ctx, "SetPageContent %+v", err)
 	}

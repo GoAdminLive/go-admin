@@ -3,9 +3,9 @@ package guard
 import (
 	"net/http"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/table"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/plugins/admin/modules/form"
+	"github.com/go-hq/go-admin/plugins/admin/modules/table"
 )
 
 type UpdateParam struct {
@@ -22,9 +22,11 @@ func (g *Guard) Update(ctx *context.Context) {
 	id := ctx.FormValue("pk")
 
 	if id == "" {
-		ctx.JSON(http.StatusBadRequest, map[string]interface{}{
-			"msg": "wrong " + pname,
-		})
+		ctx.JSON(
+			http.StatusBadRequest, map[string]interface{}{
+				"msg": "wrong " + pname,
+			},
+		)
 		ctx.Abort()
 		return
 	}
@@ -34,11 +36,13 @@ func (g *Guard) Update(ctx *context.Context) {
 	f.Add(pname, id)
 	f.Add(ctx.FormValue("name"), ctx.FormValue("value"))
 
-	ctx.SetUserValue(updateParamKey, &UpdateParam{
-		Panel:  panel,
-		Prefix: prefix,
-		Value:  f,
-	})
+	ctx.SetUserValue(
+		updateParamKey, &UpdateParam{
+			Panel:  panel,
+			Prefix: prefix,
+			Value:  f,
+		},
+	)
 	ctx.Next()
 }
 

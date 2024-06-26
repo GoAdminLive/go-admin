@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/GoAdminGroup/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/config"
 )
 
 // Postgresql is a Connection of postgresql.
@@ -43,11 +43,16 @@ func (db *Postgresql) GetDelimiter2() string {
 
 // GetDelimiters implements the method Connection.GetDelimiters.
 func (db *Postgresql) GetDelimiters() []string {
-	return []string{`"`, `"`}
+	return []string{
+		`"`,
+		`"`,
+	}
 }
 
 // QueryWithConnection implements the method Connection.QueryWithConnection.
-func (db *Postgresql) QueryWithConnection(con string, query string, args ...interface{}) ([]map[string]interface{}, error) {
+func (db *Postgresql) QueryWithConnection(con string, query string, args ...interface{}) (
+	[]map[string]interface{}, error,
+) {
 	return CommonQuery(db.DbList[con], filterQuery(query), args...)
 }
 
@@ -93,28 +98,30 @@ func filterQuery(query string) string {
 // InitDB implements the method Connection.InitDB.
 func (db *Postgresql) InitDB(cfgList map[string]config.Database) Connection {
 	db.Configs = cfgList
-	db.Once.Do(func() {
-		for conn, cfg := range cfgList {
-			sqlDB, err := sql.Open("postgres", cfg.GetDSN())
-			if err != nil {
-				if sqlDB != nil {
-					_ = sqlDB.Close()
+	db.Once.Do(
+		func() {
+			for conn, cfg := range cfgList {
+				sqlDB, err := sql.Open("postgres", cfg.GetDSN())
+				if err != nil {
+					if sqlDB != nil {
+						_ = sqlDB.Close()
+					}
+					panic(err)
 				}
-				panic(err)
+
+				sqlDB.SetMaxIdleConns(cfg.MaxIdleConns)
+				sqlDB.SetMaxOpenConns(cfg.MaxOpenConns)
+				sqlDB.SetConnMaxLifetime(cfg.ConnMaxLifetime)
+				sqlDB.SetConnMaxIdleTime(cfg.ConnMaxIdleTime)
+
+				db.DbList[conn] = sqlDB
+
+				if err := sqlDB.Ping(); err != nil {
+					panic(err)
+				}
 			}
-
-			sqlDB.SetMaxIdleConns(cfg.MaxIdleConns)
-			sqlDB.SetMaxOpenConns(cfg.MaxOpenConns)
-			sqlDB.SetConnMaxLifetime(cfg.ConnMaxLifetime)
-			sqlDB.SetConnMaxIdleTime(cfg.ConnMaxIdleTime)
-
-			db.DbList[conn] = sqlDB
-
-			if err := sqlDB.Ping(); err != nil {
-				panic(err)
-			}
-		}
-	})
+		},
+	)
 	return db
 }
 

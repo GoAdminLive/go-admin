@@ -12,15 +12,15 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/GoAdminGroup/go-admin/adapter"
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/engine"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/utils"
-	"github.com/GoAdminGroup/go-admin/plugins"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/adapter"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/engine"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/utils"
+	"github.com/go-hq/go-admin/plugins"
+	"github.com/go-hq/go-admin/plugins/admin/models"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	"github.com/go-hq/go-admin/template/types"
 	"github.com/gogf/gf/net/ghttp"
 )
 
@@ -54,9 +54,11 @@ type HandlerFunc func(ctx *ghttp.Request) (types.Panel, error)
 
 func Content(handler HandlerFunc) ghttp.HandlerFunc {
 	return func(ctx *ghttp.Request) {
-		engine.Content(ctx, func(ctx interface{}) (types.Panel, error) {
-			return handler(ctx.(*ghttp.Request))
-		})
+		engine.Content(
+			ctx, func(ctx interface{}) (types.Panel, error) {
+				return handler(ctx.(*ghttp.Request))
+			},
+		)
 	}
 }
 
@@ -75,41 +77,43 @@ func (gf *Gf) SetApp(app interface{}) error {
 
 // AddHandler implements the method Adapter.AddHandler.
 func (gf *Gf) AddHandler(method, path string, handlers context.Handlers) {
-	gf.app.BindHandler(strings.ToUpper(method)+":"+path, func(c *ghttp.Request) {
-		ctx := context.NewContext(c.Request)
+	gf.app.BindHandler(
+		strings.ToUpper(method)+":"+path, func(c *ghttp.Request) {
+			ctx := context.NewContext(c.Request)
 
-		newPath := path
+			newPath := path
 
-		reg1 := regexp.MustCompile(":(.*?)/")
-		reg2 := regexp.MustCompile(":(.*?)$")
+			reg1 := regexp.MustCompile(":(.*?)/")
+			reg2 := regexp.MustCompile(":(.*?)$")
 
-		params := reg1.FindAllString(newPath, -1)
-		newPath = reg1.ReplaceAllString(newPath, "")
-		params = append(params, reg2.FindAllString(newPath, -1)...)
+			params := reg1.FindAllString(newPath, -1)
+			newPath = reg1.ReplaceAllString(newPath, "")
+			params = append(params, reg2.FindAllString(newPath, -1)...)
 
-		for _, param := range params {
-			p := utils.ReplaceAll(param, ":", "", "/", "")
+			for _, param := range params {
+				p := utils.ReplaceAll(param, ":", "", "/", "")
 
-			if c.Request.URL.RawQuery == "" {
-				c.Request.URL.RawQuery += p + "=" + c.GetRequestString(p)
-			} else {
-				c.Request.URL.RawQuery += "&" + p + "=" + c.GetRequestString(p)
+				if c.Request.URL.RawQuery == "" {
+					c.Request.URL.RawQuery += p + "=" + c.GetRequestString(p)
+				} else {
+					c.Request.URL.RawQuery += "&" + p + "=" + c.GetRequestString(p)
+				}
 			}
-		}
 
-		ctx.SetHandlers(handlers).Next()
-		for key, head := range ctx.Response.Header {
-			c.Response.Header().Add(key, head[0])
-		}
+			ctx.SetHandlers(handlers).Next()
+			for key, head := range ctx.Response.Header {
+				c.Response.Header().Add(key, head[0])
+			}
 
-		if ctx.Response.Body != nil {
-			buf := new(bytes.Buffer)
-			_, _ = buf.ReadFrom(ctx.Response.Body)
-			c.Response.WriteStatus(ctx.Response.StatusCode, buf.Bytes())
-		} else {
-			c.Response.WriteStatus(ctx.Response.StatusCode)
-		}
-	})
+			if ctx.Response.Body != nil {
+				buf := new(bytes.Buffer)
+				_, _ = buf.ReadFrom(ctx.Response.Body)
+				c.Response.WriteStatus(ctx.Response.StatusCode, buf.Bytes())
+			} else {
+				c.Response.WriteStatus(ctx.Response.StatusCode)
+			}
+		},
+	)
 }
 
 // Name implements the method Adapter.Name.

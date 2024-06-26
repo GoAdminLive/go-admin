@@ -1,11 +1,11 @@
 package controller
 
 import (
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/file"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/guard"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/response"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/file"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	"github.com/go-hq/go-admin/plugins/admin/modules/guard"
+	"github.com/go-hq/go-admin/plugins/admin/modules/response"
 )
 
 func (h *Handler) ApiCreate(ctx *context.Context) {
@@ -45,18 +45,22 @@ func (h *Handler) ApiCreateForm(ctx *context.Context) {
 		infoUrl = referer
 	}
 
-	response.OkWithData(ctx, map[string]interface{}{
-		"panel": formInfo,
-		"urls": map[string]string{
-			"info": infoUrl,
-			"new":  newUrl,
+	response.OkWithData(
+		ctx, map[string]interface{}{
+			"panel": formInfo,
+			"urls": map[string]string{
+				"info": infoUrl,
+				"new":  newUrl,
+			},
+			"pk":     panel.GetPrimaryKey().Name,
+			"header": f.HeaderHtml,
+			"footer": f.FooterHtml,
+			"prefix": h.config.PrefixFixSlash(),
+			"token":  h.authSrv().AddToken(),
+			"operation_footer": formFooter(
+				ctx, "new", f.IsHideContinueEditCheckBox, f.IsHideContinueNewCheckBox,
+				f.IsHideResetButton, f.FormNewBtnWord,
+			),
 		},
-		"pk":     panel.GetPrimaryKey().Name,
-		"header": f.HeaderHtml,
-		"footer": f.FooterHtml,
-		"prefix": h.config.PrefixFixSlash(),
-		"token":  h.authSrv().AddToken(),
-		"operation_footer": formFooter(ctx, "new", f.IsHideContinueEditCheckBox, f.IsHideContinueNewCheckBox,
-			f.IsHideResetButton, f.FormNewBtnWord),
-	})
+	)
 }

@@ -1,10 +1,10 @@
 package controller
 
 import (
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/logger"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/guard"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/response"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/logger"
+	"github.com/go-hq/go-admin/plugins/admin/modules/guard"
+	"github.com/go-hq/go-admin/plugins/admin/modules/response"
 )
 
 // Delete delete the row from database.
@@ -12,13 +12,13 @@ func (h *Handler) Delete(ctx *context.Context) {
 
 	param := guard.GetDeleteParam(ctx)
 
-	//token := ctx.FormValue("_t")
+	// token := ctx.FormValue("_t")
 	//
-	//if !auth.TokenHelper.CheckToken(token) {
+	// if !auth.TokenHelper.CheckToken(token) {
 	//	ctx.SetStatusCode(http.StatusBadRequest)
 	//	ctx.WriteString(`{"code":400, "msg":"delete fail"}`)
 	//	return
-	//}
+	// }
 
 	if err := h.table(param.Prefix, ctx).DeleteData(param.Id); err != nil {
 		logger.ErrorCtx(ctx, "Delete error %+v", err)
@@ -26,7 +26,9 @@ func (h *Handler) Delete(ctx *context.Context) {
 		return
 	}
 
-	response.OkWithData(ctx, map[string]interface{}{
-		"token": h.authSrv().AddToken(),
-	})
+	response.OkWithData(
+		ctx, map[string]interface{}{
+			"token": h.authSrv().AddToken(),
+		},
+	)
 }

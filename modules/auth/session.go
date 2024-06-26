@@ -10,12 +10,12 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/modules/db/dialect"
-	"github.com/GoAdminGroup/go-admin/modules/logger"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/db/dialect"
+	"github.com/go-hq/go-admin/modules/logger"
+	"github.com/go-hq/go-admin/plugins/admin/modules"
 )
 
 const DefaultCookieKey = "go_admin_session"
@@ -121,10 +121,12 @@ func (ses *Session) StartCtx(ctx *context.Context) (*Session, error) {
 func InitSession(ctx *context.Context, conn db.Connection) (*Session, error) {
 
 	sessions := new(Session)
-	sessions.UpdateConfig(Config{
-		Expires: time.Second * time.Duration(config.GetSessionLifeTime()),
-		Cookie:  DefaultCookieKey,
-	})
+	sessions.UpdateConfig(
+		Config{
+			Expires: time.Second * time.Duration(config.GetSessionLifeTime()),
+			Cookie:  DefaultCookieKey,
+		},
+	)
 
 	sessions.UseDriver(newDBDriver(conn))
 	sessions.Values = make(map[string]interface{})
@@ -212,19 +214,23 @@ func (driver *DBDriver) Update(sid string, values map[string]interface{}) error 
 					return err
 				}
 			}
-			_, err := driver.table().Insert(dialect.H{
-				"values": sesValue,
-				"sid":    sid,
-			})
+			_, err := driver.table().Insert(
+				dialect.H{
+					"values": sesValue,
+					"sid":    sid,
+				},
+			)
 			if db.CheckError(err, db.INSERT) {
 				return err
 			}
 		} else {
 			_, err := driver.table().
 				Where("sid", "=", sid).
-				Update(dialect.H{
-					"values": sesValue,
-				})
+				Update(
+					dialect.H{
+						"values": sesValue,
+					},
+				)
 			if db.CheckError(err, db.UPDATE) {
 				return err
 			}

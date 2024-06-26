@@ -3,7 +3,7 @@ package action
 import (
 	"html/template"
 
-	"github.com/GoAdminGroup/go-admin/context"
+	"github.com/go-hq/go-admin/context"
 )
 
 type JumpSelectBoxAction struct {
@@ -32,9 +32,11 @@ func (jump *JumpSelectBoxAction) ExtContent(ctx *context.Context) template.HTML 
 	}`
 	}
 
-	return template.HTML(`<script>
+	return template.HTML(
+		`<script>
 $("select` + jump.BtnId + `").on("select2:select",function(e){
 	` + cm + `
 })
-</script>`)
+</script>`,
+	)
 }

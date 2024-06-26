@@ -3,12 +3,12 @@ package models
 import (
 	"database/sql"
 
-	"github.com/GoAdminGroup/go-admin/modules/utils"
+	"github.com/go-hq/go-admin/modules/utils"
 
-	"github.com/GoAdminGroup/go-admin/modules/collection"
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/modules/db/dialect"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
+	"github.com/go-hq/go-admin/modules/collection"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/db/dialect"
+	"github.com/go-hq/go-admin/plugins/admin/modules/form"
 )
 
 // SiteModel is role model structure.
@@ -54,16 +54,18 @@ func (t SiteModel) Init(cfg map[string]string) SiteModel {
 	for key, value := range cfg {
 		row := itemsCol.Where("key", "=", key)
 		if row.Length() == 0 {
-			_, err := t.Table(t.TableName).Insert(dialect.H{
-				"key":   key,
-				"value": value,
-				"state": SiteItemOpenState,
-			})
+			_, err := t.Table(t.TableName).Insert(
+				dialect.H{
+					"key":   key,
+					"value": value,
+					"state": SiteItemOpenState,
+				},
+			)
 			if db.CheckError(err, db.INSERT) {
 				panic(err)
 			}
 		}
-		//else {
+		// else {
 		//	if value != "" {
 		//		_, err := t.Table(t.TableName).
 		//			Where("key", "=", key).Update(dialect.H{
@@ -73,7 +75,7 @@ func (t SiteModel) Init(cfg map[string]string) SiteModel {
 		//			panic(err)
 		//		}
 		//	}
-		//}
+		// }
 	}
 	return t
 }
@@ -113,17 +115,30 @@ func (t SiteModel) AllToMapInterface() map[string]interface{} {
 }
 
 var allowEmptyKeys = []string{
-	"animation_type", "custom_head_html", "custom_foot_html", "custom_404_html",
-	"custom_403_html", "custom_500_html", "footer_info", "bootstrap_file_path",
-	"info_log_path", "error_log_path", "access_log_path", "asset_url", "extra", "domain",
+	"animation_type",
+	"custom_head_html",
+	"custom_foot_html",
+	"custom_404_html",
+	"custom_403_html",
+	"custom_500_html",
+	"footer_info",
+	"bootstrap_file_path",
+	"info_log_path",
+	"error_log_path",
+	"access_log_path",
+	"asset_url",
+	"extra",
+	"domain",
 }
 
 func (t SiteModel) Update(v form.Values) error {
 	for key, vv := range v {
 		if len(vv) > 0 && (vv[0] != "" || utils.InArray(allowEmptyKeys, key)) {
-			_, err := t.Table(t.TableName).Where("key", "=", key).Update(dialect.H{
-				"value": vv[0],
-			})
+			_, err := t.Table(t.TableName).Where("key", "=", key).Update(
+				dialect.H{
+					"value": vv[0],
+				},
+			)
 			if db.CheckError(err, db.UPDATE) {
 				return err
 			}

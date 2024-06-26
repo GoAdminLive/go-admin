@@ -3,14 +3,14 @@ package controller
 import (
 	"net/url"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/auth"
-	"github.com/GoAdminGroup/go-admin/modules/file"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/guard"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/response"
-	"github.com/GoAdminGroup/go-admin/template/types/form"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/auth"
+	"github.com/go-hq/go-admin/modules/file"
+	"github.com/go-hq/go-admin/plugins/admin/modules"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	"github.com/go-hq/go-admin/plugins/admin/modules/guard"
+	"github.com/go-hq/go-admin/plugins/admin/modules/response"
+	"github.com/go-hq/go-admin/template/types/form"
 )
 
 func (h *Handler) ApiUpdate(ctx *context.Context) {
@@ -70,18 +70,22 @@ func (h *Handler) ApiUpdateForm(ctx *context.Context) {
 
 	f := panel.GetForm()
 
-	response.OkWithData(ctx, map[string]interface{}{
-		"panel": formInfo,
-		"urls": map[string]string{
-			"info": infoUrl,
-			"edit": editUrl,
+	response.OkWithData(
+		ctx, map[string]interface{}{
+			"panel": formInfo,
+			"urls": map[string]string{
+				"info": infoUrl,
+				"edit": editUrl,
+			},
+			"pk":     panel.GetPrimaryKey().Name,
+			"header": f.HeaderHtml,
+			"footer": f.FooterHtml,
+			"prefix": h.config.PrefixFixSlash(),
+			"token":  h.authSrv().AddToken(),
+			"operation_footer": formFooter(
+				ctx, footerKind, f.IsHideContinueEditCheckBox, f.IsHideContinueNewCheckBox,
+				f.IsHideResetButton, f.FormEditBtnWord,
+			),
 		},
-		"pk":     panel.GetPrimaryKey().Name,
-		"header": f.HeaderHtml,
-		"footer": f.FooterHtml,
-		"prefix": h.config.PrefixFixSlash(),
-		"token":  h.authSrv().AddToken(),
-		"operation_footer": formFooter(ctx, footerKind, f.IsHideContinueEditCheckBox, f.IsHideContinueNewCheckBox,
-			f.IsHideResetButton, f.FormEditBtnWord),
-	})
+	)
 }

@@ -19,7 +19,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/GoAdminGroup/go-admin/modules/constant"
+	"github.com/go-hq/go-admin/modules/constant"
 )
 
 const abortIndex int8 = math.MaxInt8 / 2
@@ -471,7 +471,9 @@ func (ctx *Context) User() interface{} {
 //
 // You can define your own "Content-Type" header also, after this function call
 // Doesn't implements resuming (by range), use ctx.SendFile instead
-func (ctx *Context) ServeContent(content io.ReadSeeker, filename string, modtime time.Time, gzipCompression bool) error {
+func (ctx *Context) ServeContent(
+	content io.ReadSeeker, filename string, modtime time.Time, gzipCompression bool,
+) error {
 	if modified, err := ctx.CheckIfModifiedSince(modtime); !modified && err == nil {
 		ctx.WriteNotModified()
 		return nil
@@ -548,10 +550,12 @@ type Handlers []Handler
 // the handler.
 func (app *App) AppendReqAndResp(url, method string, handler []Handler) {
 
-	app.Requests = append(app.Requests, Path{
-		URL:    join(app.Prefix, url),
-		Method: method,
-	})
+	app.Requests = append(
+		app.Requests, Path{
+			URL:    join(app.Prefix, url),
+			Method: method,
+		},
+	)
 	app.routeIndex++
 
 	app.Handlers[Path{
@@ -563,7 +567,10 @@ func (app *App) AppendReqAndResp(url, method string, handler []Handler) {
 // Find is public helper method for findPath of tree.
 func (app *App) Find(url, method string) []Handler {
 	app.routeANY = false
-	return app.Handlers[Path{URL: url, Method: method}]
+	return app.Handlers[Path{
+		URL:    url,
+		Method: method,
+	}]
 }
 
 // POST is a shortcut for app.AppendReqAndResp(url, "post", handler).
@@ -624,8 +631,15 @@ func (app *App) ANY(url string, handler ...Handler) *App {
 func (app *App) Name(name string) {
 	if app.routeANY {
 		app.Routers[name] = Router{
-			Methods: []string{"POST", "GET", "DELETE", "PUT", "OPTIONS", "HEAD"},
-			Patten:  app.Requests[app.routeIndex].URL,
+			Methods: []string{
+				"POST",
+				"GET",
+				"DELETE",
+				"PUT",
+				"OPTIONS",
+				"HEAD",
+			},
+			Patten: app.Requests[app.routeIndex].URL,
 		}
 	} else {
 		app.Routers[name] = Router{
@@ -662,10 +676,12 @@ type RouterGroup struct {
 // the handler.
 func (g *RouterGroup) AppendReqAndResp(url, method string, handler []Handler) {
 
-	g.app.Requests = append(g.app.Requests, Path{
-		URL:    join(g.Prefix, url),
-		Method: method,
-	})
+	g.app.Requests = append(
+		g.app.Requests, Path{
+			URL:    join(g.Prefix, url),
+			Method: method,
+		},
+	)
 	g.app.routeIndex++
 
 	var h = make([]Handler, len(g.Middlewares))

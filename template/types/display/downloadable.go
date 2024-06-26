@@ -3,8 +3,8 @@ package display
 import (
 	"html/template"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 type Downloadable struct {
@@ -25,10 +25,12 @@ func (d *Downloadable) Get(ctx *context.Context, args ...interface{}) types.Fiel
 			u = param[0] + u
 		}
 
-		return template.HTML(`
+		return template.HTML(
+			`
 <a href="` + u + `" download="` + value.Value + `" target="_blank" class="text-muted">
 	<i class="fa fa-download"></i> ` + value.Value + `
 </a>
-`)
+`,
+		)
 	}
 }

@@ -5,10 +5,10 @@ import (
 	"html/template"
 	"strings"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/constant"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 type AjaxAction struct {
@@ -175,15 +175,19 @@ func (ajax *AjaxAction) Js() template.JS {
 					});`
 	}
 
-	return template.JS(`$('`+ajax.BtnId+`').on('`+string(ajax.Event)+`', function (event) {
+	return template.JS(
+		`$('`+ajax.BtnId+`').on('`+string(ajax.Event)+`', function (event) {
 						let data = `+ajax.Data.JSON()+`;
-						`) + ajax.ParameterJS + template.JS(`
+						`,
+	) + ajax.ParameterJS + template.JS(
+		`
 						let id = $(this).attr("data-id");
 						if (id && id !== "") {
 							data["id"] = id;
 						}
 						`+ajaxStatement+`
-            		});`)
+            		});`,
+	)
 }
 
 func (ajax *AjaxAction) BtnAttribute() template.HTML { return template.HTML(`href="javascript:;"`) }

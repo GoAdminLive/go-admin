@@ -3,17 +3,17 @@ package datamodel
 import (
 	"html/template"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	tmpl "github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/chartjs"
-	"github.com/GoAdminGroup/go-admin/template/icon"
-	"github.com/GoAdminGroup/go-admin/template/types"
-	"github.com/GoAdminGroup/themes/adminlte/components/chart_legend"
-	"github.com/GoAdminGroup/themes/adminlte/components/description"
-	"github.com/GoAdminGroup/themes/adminlte/components/infobox"
-	"github.com/GoAdminGroup/themes/adminlte/components/productlist"
-	"github.com/GoAdminGroup/themes/adminlte/components/progress_group"
-	"github.com/GoAdminGroup/themes/adminlte/components/smallbox"
+	"github.com/go-hq/go-admin/context"
+	tmpl "github.com/go-hq/go-admin/template"
+	"github.com/go-hq/go-admin/template/chartjs"
+	"github.com/go-hq/go-admin/template/icon"
+	"github.com/go-hq/go-admin/template/types"
+	"github.com/go-hq/themes/adminlte/components/chart_legend"
+	"github.com/go-hq/themes/adminlte/components/description"
+	"github.com/go-hq/themes/adminlte/components/infobox"
+	"github.com/go-hq/themes/adminlte/components/productlist"
+	"github.com/go-hq/themes/adminlte/components/progress_group"
+	"github.com/go-hq/themes/adminlte/components/smallbox"
 )
 
 // GetContent return the content of index page.
@@ -65,34 +65,41 @@ func GetContent(ctx *context.Context) (types.Panel, error) {
 	 * Box
 	/**************************/
 
-	table := components.Table().SetInfoList([]map[string]types.InfoItem{
-		{
-			"Order ID":   {Content: "OR9842"},
-			"Item":       {Content: "Call of Duty IV"},
-			"Status":     {Content: "shipped"},
-			"Popularity": {Content: "90%"},
-		}, {
-			"Order ID":   {Content: "OR9842"},
-			"Item":       {Content: "Call of Duty IV"},
-			"Status":     {Content: "shipped"},
-			"Popularity": {Content: "90%"},
-		}, {
-			"Order ID":   {Content: "OR9842"},
-			"Item":       {Content: "Call of Duty IV"},
-			"Status":     {Content: "shipped"},
-			"Popularity": {Content: "90%"},
-		}, {
-			"Order ID":   {Content: "OR9842"},
-			"Item":       {Content: "Call of Duty IV"},
-			"Status":     {Content: "shipped"},
-			"Popularity": {Content: "90%"},
+	table := components.Table().SetInfoList(
+		[]map[string]types.InfoItem{
+			{
+				"Order ID":   {Content: "OR9842"},
+				"Item":       {Content: "Call of Duty IV"},
+				"Status":     {Content: "shipped"},
+				"Popularity": {Content: "90%"},
+			},
+			{
+				"Order ID":   {Content: "OR9842"},
+				"Item":       {Content: "Call of Duty IV"},
+				"Status":     {Content: "shipped"},
+				"Popularity": {Content: "90%"},
+			},
+			{
+				"Order ID":   {Content: "OR9842"},
+				"Item":       {Content: "Call of Duty IV"},
+				"Status":     {Content: "shipped"},
+				"Popularity": {Content: "90%"},
+			},
+			{
+				"Order ID":   {Content: "OR9842"},
+				"Item":       {Content: "Call of Duty IV"},
+				"Status":     {Content: "shipped"},
+				"Popularity": {Content: "90%"},
+			},
 		},
-	}).SetThead(types.Thead{
-		{Head: "Order ID"},
-		{Head: "Item"},
-		{Head: "Status"},
-		{Head: "Popularity"},
-	}).GetContent()
+	).SetThead(
+		types.Thead{
+			{Head: "Order ID"},
+			{Head: "Item"},
+			{Head: "Status"},
+			{Head: "Popularity"},
+		},
+	).GetContent()
 
 	boxInfo := components.Box().
 		WithHeadBorder().
@@ -108,37 +115,42 @@ func GetContent(ctx *context.Context) (types.Panel, error) {
 	 * Product List
 	/**************************/
 
-	productList := productlist.New().SetData([]map[string]string{
-		{
-			"img":         "http://adminlte.io/themes/AdminLTE/dist/img/default-50x50.gif",
-			"title":       "GoAdmin",
-			"has_tabel":   "true",
-			"labeltype":   "warning",
-			"label":       "free",
-			"description": `a framework help you build the dataviz system`,
-		}, {
-			"img":         "http://adminlte.io/themes/AdminLTE/dist/img/default-50x50.gif",
-			"title":       "GoAdmin",
-			"has_tabel":   "true",
-			"labeltype":   "warning",
-			"label":       "free",
-			"description": `a framework help you build the dataviz system`,
-		}, {
-			"img":         "http://adminlte.io/themes/AdminLTE/dist/img/default-50x50.gif",
-			"title":       "GoAdmin",
-			"has_tabel":   "true",
-			"labeltype":   "warning",
-			"label":       "free",
-			"description": `a framework help you build the dataviz system`,
-		}, {
-			"img":         "http://adminlte.io/themes/AdminLTE/dist/img/default-50x50.gif",
-			"title":       "GoAdmin",
-			"has_tabel":   "true",
-			"labeltype":   "warning",
-			"label":       "free",
-			"description": `a framework help you build the dataviz system`,
+	productList := productlist.New().SetData(
+		[]map[string]string{
+			{
+				"img":         "http://adminlte.io/themes/AdminLTE/dist/img/default-50x50.gif",
+				"title":       "GoAdmin",
+				"has_tabel":   "true",
+				"labeltype":   "warning",
+				"label":       "free",
+				"description": `a framework help you build the dataviz system`,
+			},
+			{
+				"img":         "http://adminlte.io/themes/AdminLTE/dist/img/default-50x50.gif",
+				"title":       "GoAdmin",
+				"has_tabel":   "true",
+				"labeltype":   "warning",
+				"label":       "free",
+				"description": `a framework help you build the dataviz system`,
+			},
+			{
+				"img":         "http://adminlte.io/themes/AdminLTE/dist/img/default-50x50.gif",
+				"title":       "GoAdmin",
+				"has_tabel":   "true",
+				"labeltype":   "warning",
+				"label":       "free",
+				"description": `a framework help you build the dataviz system`,
+			},
+			{
+				"img":         "http://adminlte.io/themes/AdminLTE/dist/img/default-50x50.gif",
+				"title":       "GoAdmin",
+				"has_tabel":   "true",
+				"labeltype":   "warning",
+				"label":       "free",
+				"description": `a framework help you build the dataviz system`,
+			},
 		},
-	}).GetContent()
+	).GetContent()
 
 	boxWarning := components.Box().SetTheme("warning").WithHeadBorder().SetHeader("Recently Added Products").
 		SetBody(productList).
@@ -159,14 +171,44 @@ func GetContent(ctx *context.Context) (types.Panel, error) {
 		SetID("salechart").
 		SetHeight(180).
 		SetTitle("Sales: 1 Jan, 2019 - 30 Jul, 2019").
-		SetLabels([]string{"January", "February", "March", "April", "May", "June", "July"}).
+		SetLabels(
+			[]string{
+				"January",
+				"February",
+				"March",
+				"April",
+				"May",
+				"June",
+				"July",
+			},
+		).
 		AddDataSet("Electronics").
-		DSData([]float64{65, 59, 80, 81, 56, 55, 40}).
+		DSData(
+			[]float64{
+				65,
+				59,
+				80,
+				81,
+				56,
+				55,
+				40,
+			},
+		).
 		DSFill(false).
 		DSBorderColor("rgb(210, 214, 222)").
 		DSLineTension(0.1).
 		AddDataSet("Digital Goods").
-		DSData([]float64{28, 48, 40, 19, 86, 27, 90}).
+		DSData(
+			[]float64{
+				28,
+				48,
+				40,
+				19,
+				86,
+				27,
+				90,
+			},
+		).
 		DSFill(false).
 		DSBorderColor("rgba(60,141,188,1)").
 		DSLineTension(0.1).
@@ -286,51 +328,89 @@ func GetContent(ctx *context.Context) (types.Panel, error) {
 
 	pie := chartjs.Pie().
 		SetHeight(170).
-		SetLabels([]string{"Navigator", "Opera", "Safari", "FireFox", "IE", "Chrome"}).
+		SetLabels(
+			[]string{
+				"Navigator",
+				"Opera",
+				"Safari",
+				"FireFox",
+				"IE",
+				"Chrome",
+			},
+		).
 		SetID("pieChart").
 		AddDataSet("Chrome").
-		DSData([]float64{100, 300, 600, 400, 500, 700}).
-		DSBackgroundColor([]chartjs.Color{
-			"rgb(255, 205, 86)", "rgb(54, 162, 235)", "rgb(255, 99, 132)", "rgb(255, 205, 86)", "rgb(54, 162, 235)", "rgb(255, 99, 132)",
-		}).
+		DSData(
+			[]float64{
+				100,
+				300,
+				600,
+				400,
+				500,
+				700,
+			},
+		).
+		DSBackgroundColor(
+			[]chartjs.Color{
+				"rgb(255, 205, 86)",
+				"rgb(54, 162, 235)",
+				"rgb(255, 99, 132)",
+				"rgb(255, 205, 86)",
+				"rgb(54, 162, 235)",
+				"rgb(255, 99, 132)",
+			},
+		).
 		GetContent()
 
-	legend := chart_legend.New().SetData([]map[string]string{
-		{
-			"label": " Chrome",
-			"color": "red",
-		}, {
-			"label": " IE",
-			"color": "Green",
-		}, {
-			"label": " FireFox",
-			"color": "yellow",
-		}, {
-			"label": " Sarafri",
-			"color": "blue",
-		}, {
-			"label": " Opera",
-			"color": "light-blue",
-		}, {
-			"label": " Navigator",
-			"color": "gray",
+	legend := chart_legend.New().SetData(
+		[]map[string]string{
+			{
+				"label": " Chrome",
+				"color": "red",
+			},
+			{
+				"label": " IE",
+				"color": "Green",
+			},
+			{
+				"label": " FireFox",
+				"color": "yellow",
+			},
+			{
+				"label": " Sarafri",
+				"color": "blue",
+			},
+			{
+				"label": " Opera",
+				"color": "light-blue",
+			},
+			{
+				"label": " Navigator",
+				"color": "gray",
+			},
 		},
-	}).GetContent()
+	).GetContent()
 
 	boxDanger := components.Box().SetTheme("danger").WithHeadBorder().SetHeader("Browser Usage").
-		SetBody(components.Row().
-			SetContent(colComp.SetSize(types.SizeMD(8)).
-				SetContent(pie).
-				GetContent() + colComp.SetSize(types.SizeMD(4)).
-				SetContent(legend).
-				GetContent()).GetContent()).
+		SetBody(
+			components.Row().
+				SetContent(
+					colComp.SetSize(types.SizeMD(8)).
+						SetContent(pie).
+						GetContent() + colComp.SetSize(types.SizeMD(4)).
+						SetContent(legend).
+						GetContent(),
+				).GetContent(),
+		).
 		SetFooter(`<p class="text-center"><a href="javascript:void(0)" class="uppercase">View All Users</a></p>`).
 		GetContent()
 
-	tabs := components.Tabs().SetData([]map[string]template.HTML{
-		{
-			"title": "tabs1",
-			"content": template.HTML(`<b>How to use:</b>
+	tabs := components.Tabs().SetData(
+		[]map[string]template.HTML{
+			{
+				"title": "tabs1",
+				"content": template.HTML(
+					`<b>How to use:</b>
 
                 <p>Exactly like the original bootstrap tabs except you should use
                   the custom wrapper <code>.nav-tabs-custom</code> to achieve this style.</p>
@@ -340,10 +420,13 @@ func GetContent(ctx *context.Context) (types.Panel, error) {
                 which was created for the bliss of souls like mine. I am so happy,
                 my dear friend, so absorbed in the exquisite sense of mere tranquil existence,
                 that I neglect my talents. I should be incapable of drawing a single stroke
-                at the present moment; and yet I feel that I never was a greater artist than now.`),
-		}, {
-			"title": "tabs2",
-			"content": template.HTML(`
+                at the present moment; and yet I feel that I never was a greater artist than now.`,
+				),
+			},
+			{
+				"title": "tabs2",
+				"content": template.HTML(
+					`
                 The European languages are members of the same family. Their separate existence is a myth.
                 For science, music, sport, etc, Europe uses the same vocabulary. The languages only differ
                 in their grammar, their pronunciation and their most common words. Everyone realizes why a
@@ -351,10 +434,13 @@ func GetContent(ctx *context.Context) (types.Panel, error) {
                 achieve this, it would be necessary to have uniform grammar, pronunciation and more common
                 words. If several languages coalesce, the grammar of the resulting language is more simple
                 and regular than that of the individual languages.
-              `),
-		}, {
-			"title": "tabs3",
-			"content": template.HTML(`
+              `,
+				),
+			},
+			{
+				"title": "tabs3",
+				"content": template.HTML(
+					`
                 Lorem Ipsum is simply dummy text of the printing and typesetting industry.
                 Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
                 when an unknown printer took a galley of type and scrambled it to make a type specimen book.
@@ -362,9 +448,11 @@ func GetContent(ctx *context.Context) (types.Panel, error) {
                 remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset
                 sheets containing Lorem Ipsum passages, and more recently with desktop publishing software
                 like Aldus PageMaker including versions of Lorem Ipsum.
-              `),
+              `,
+				),
+			},
 		},
-	}).GetContent()
+	).GetContent()
 
 	buttonTest := `<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Open modal for @mdo</button>`
 	popupForm := `<form>

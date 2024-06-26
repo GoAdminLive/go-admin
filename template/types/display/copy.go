@@ -3,8 +3,8 @@ package display
 import (
 	"html/template"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 type Copyable struct {
@@ -17,17 +17,20 @@ func init() {
 
 func (c *Copyable) Get(ctx *context.Context, args ...interface{}) types.FieldFilterFn {
 	return func(value types.FieldModel) interface{} {
-		return template.HTML(`
+		return template.HTML(
+			`
 <a href="javascript:void(0);" class="grid-column-copyable text-muted" data-content="` + value.Value + `" 
 title="Copied!" data-placement="bottom">
 <i class="fa fa-copy"></i>
 </a>&nbsp;` + value.Value + `
-`)
+`,
+		)
 	}
 }
 
 func (c *Copyable) JS() template.HTML {
-	return template.HTML(`
+	return template.HTML(
+		`
 $('body').on('click','.grid-column-copyable',(function (e) {
 	var content = $(this).data('content');
 	
@@ -40,5 +43,6 @@ $('body').on('click','.grid-column-copyable',(function (e) {
 	
 	$(this).tooltip('show');
 }));
-`)
+`,
+	)
 }

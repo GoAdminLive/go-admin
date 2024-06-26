@@ -12,8 +12,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/GoAdminGroup/go-admin/modules/db/dialect"
-	"github.com/GoAdminGroup/go-admin/modules/logger"
+	"github.com/go-hq/go-admin/modules/db/dialect"
+	"github.com/go-hq/go-admin/modules/logger"
 )
 
 // SQL wraps the Connection and driver dialect methods.
@@ -185,11 +185,13 @@ func (sql *SQL) Take(take int) *SQL {
 
 // Where add the where operation and argument value.
 func (sql *SQL) Where(field string, operation string, arg interface{}) *SQL {
-	sql.Wheres = append(sql.Wheres, dialect.Where{
-		Field:     field,
-		Operation: operation,
-		Qmark:     "?",
-	})
+	sql.Wheres = append(
+		sql.Wheres, dialect.Where{
+			Field:     field,
+			Operation: operation,
+			Qmark:     "?",
+		},
+	)
 	sql.Args = append(sql.Args, arg)
 	return sql
 }
@@ -199,11 +201,13 @@ func (sql *SQL) WhereIn(field string, arg []interface{}) *SQL {
 	if len(arg) == 0 {
 		panic("wrong parameter")
 	}
-	sql.Wheres = append(sql.Wheres, dialect.Where{
-		Field:     field,
-		Operation: "in",
-		Qmark:     "(" + strings.Repeat("?,", len(arg)-1) + "?)",
-	})
+	sql.Wheres = append(
+		sql.Wheres, dialect.Where{
+			Field:     field,
+			Operation: "in",
+			Qmark:     "(" + strings.Repeat("?,", len(arg)-1) + "?)",
+		},
+	)
 	sql.Args = append(sql.Args, arg...)
 	return sql
 }
@@ -213,11 +217,13 @@ func (sql *SQL) WhereNotIn(field string, arg []interface{}) *SQL {
 	if len(arg) == 0 {
 		panic("wrong parameter")
 	}
-	sql.Wheres = append(sql.Wheres, dialect.Where{
-		Field:     field,
-		Operation: "not in",
-		Qmark:     "(" + strings.Repeat("?,", len(arg)-1) + "?)",
-	})
+	sql.Wheres = append(
+		sql.Wheres, dialect.Where{
+			Field:     field,
+			Operation: "not in",
+			Qmark:     "(" + strings.Repeat("?,", len(arg)-1) + "?)",
+		},
+	)
 	sql.Args = append(sql.Args, arg...)
 	return sql
 }
@@ -335,21 +341,25 @@ func (sql *SQL) WhereRaw(raw string, args ...interface{}) *SQL {
 
 // UpdateRaw set UpdateRaw.
 func (sql *SQL) UpdateRaw(raw string, args ...interface{}) *SQL {
-	sql.UpdateRaws = append(sql.UpdateRaws, dialect.RawUpdate{
-		Expression: raw,
-		Args:       args,
-	})
+	sql.UpdateRaws = append(
+		sql.UpdateRaws, dialect.RawUpdate{
+			Expression: raw,
+			Args:       args,
+		},
+	)
 	return sql
 }
 
 // LeftJoin add a left join info.
 func (sql *SQL) LeftJoin(table string, fieldA string, operation string, fieldB string) *SQL {
-	sql.Leftjoins = append(sql.Leftjoins, dialect.Join{
-		FieldA:    fieldA,
-		FieldB:    fieldB,
-		Table:     table,
-		Operation: operation,
-	})
+	sql.Leftjoins = append(
+		sql.Leftjoins, dialect.Join{
+			FieldA:    fieldA,
+			FieldB:    fieldB,
+			Table:     table,
+			Operation: operation,
+		},
+	)
 	return sql
 }
 

@@ -4,10 +4,10 @@ import (
 	"html/template"
 	"net/url"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/modules/utils"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/modules/utils"
+	"github.com/go-hq/go-admin/plugins/admin/models"
 )
 
 type Button interface {
@@ -55,7 +55,9 @@ func GetDefaultButtonGroup(title template.HTML, icon string, action Action, colo
 	return defaultButton(title, "right", icon, action, true, colors...)
 }
 
-func defaultButton(title, direction template.HTML, icon string, action Action, group bool, colors ...template.HTML) *DefaultButton {
+func defaultButton(
+	title, direction template.HTML, icon string, action Action, group bool, colors ...template.HTML,
+) *DefaultButton {
 	id := btnUUID()
 	action.SetBtnId("." + id)
 
@@ -147,8 +149,10 @@ func GetActionButton(title template.HTML, action Action, ids ...string) *ActionB
 }
 
 func (b *ActionButton) Content(ctx *context.Context) (template.HTML, template.JS) {
-	h := template.HTML(`<li style="cursor: pointer;"><a data-id="{{.Id}}" class="`+template.HTML(b.Id)+` `+
-		b.Action.BtnClass()+`" `+b.Action.BtnAttribute()+`>`+b.Title+`</a></li>`) + b.Action.ExtContent(ctx)
+	h := template.HTML(
+		`<li style="cursor: pointer;"><a data-id="{{.Id}}" class="`+template.HTML(b.Id)+` `+
+			b.Action.BtnClass()+`" `+b.Action.BtnAttribute()+`>`+b.Title+`</a></li>`,
+	) + b.Action.ExtContent(ctx)
 	return h, b.Action.Js()
 }
 
@@ -181,8 +185,10 @@ func GetActionIconButton(icon string, action Action, ids ...string) *ActionIconB
 }
 
 func (b *ActionIconButton) Content(ctx *context.Context) (template.HTML, template.JS) {
-	h := template.HTML(`<a data-id="{{.Id}}" class="`+template.HTML(b.Id)+` `+
-		b.Action.BtnClass()+`" `+b.Action.BtnAttribute()+`><i class="fa `+b.Icon+`" style="font-size: 16px;"></i></a>`) + b.Action.ExtContent(ctx)
+	h := template.HTML(
+		`<a data-id="{{.Id}}" class="`+template.HTML(b.Id)+` `+
+			b.Action.BtnClass()+`" `+b.Action.BtnAttribute()+`><i class="fa `+b.Icon+`" style="font-size: 16px;"></i></a>`,
+	) + b.Action.ExtContent(ctx)
 	return h, b.Action.Js()
 }
 
@@ -354,12 +360,14 @@ func (n *NavButton) Content(ctx *context.Context) (template.HTML, template.JS) {
 		title = `<span>` + n.Title + `</span>`
 	}
 
-	h := template.HTML(`<li>
+	h := template.HTML(
+		`<li>
     <a class="`+template.HTML(n.Id)+` `+n.Action.BtnClass()+` dropdown-item" `+n.Action.BtnAttribute()+`>
       `+ico+`
       `+title+`
     </a>
-</li>`) + n.Action.ExtContent(ctx)
+</li>`,
+	) + n.Action.ExtContent(ctx)
 	return h, n.Action.Js()
 }
 
@@ -373,7 +381,9 @@ type NavDropDownItemButton struct {
 	*BaseButton
 }
 
-func GetDropDownButton(title template.HTML, icon string, items []*NavDropDownItemButton, names ...string) *NavDropDownButton {
+func GetDropDownButton(
+	title template.HTML, icon string, items []*NavDropDownItemButton, names ...string,
+) *NavDropDownButton {
 	id := btnUUID()
 	name := ""
 
@@ -426,7 +436,8 @@ func (n *NavDropDownButton) Content(ctx *context.Context) (template.HTML, templa
 
 	did := utils.Uuid(10)
 
-	h := template.HTML(`<li class="dropdown" id="` + template.HTML(did) + `">
+	h := template.HTML(
+		`<li class="dropdown" id="` + template.HTML(did) + `">
     <a class="` + template.HTML(n.Id) + ` dropdown-toggle" data-toggle="dropdown" style="cursor:pointer;">
       ` + ico + `
       ` + title + `
@@ -434,7 +445,8 @@ func (n *NavDropDownButton) Content(ctx *context.Context) (template.HTML, templa
 	<ul class="dropdown-menu"  aria-labelledby="` + template.HTML(did) + `">
     	` + content + `
 	</ul>
-</li>`)
+</li>`,
+	)
 
 	return h, js
 }
@@ -475,9 +487,11 @@ func (n *NavDropDownItemButton) Content(ctx *context.Context) (template.HTML, te
 		title = `<span>` + n.Title + `</span>`
 	}
 
-	h := template.HTML(`<li><a class="dropdown-item `+template.HTML(n.Id)+` `+
-		n.Action.BtnClass()+`" `+n.Action.BtnAttribute()+`>
+	h := template.HTML(
+		`<li><a class="dropdown-item `+template.HTML(n.Id)+` `+
+			n.Action.BtnClass()+`" `+n.Action.BtnAttribute()+`>
       `+title+`
-</a></li>`) + n.Action.ExtContent(ctx)
+</a></li>`,
+	) + n.Action.ExtContent(ctx)
 	return h, n.Action.Js()
 }

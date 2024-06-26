@@ -9,18 +9,18 @@ import (
 	"strings"
 	"time"
 
-	_ "github.com/GoAdminGroup/go-admin/adapter/chi"
-	_ "github.com/GoAdminGroup/go-admin/modules/db/drivers/mysql"
+	_ "github.com/go-hq/go-admin/adapter/chi"
+	_ "github.com/go-hq/go-admin/modules/db/drivers/mysql"
 
-	"github.com/GoAdminGroup/go-admin/engine"
-	"github.com/GoAdminGroup/go-admin/examples/datamodel"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/plugins/example"
-	"github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/chartjs"
-	"github.com/GoAdminGroup/themes/adminlte"
 	"github.com/go-chi/chi"
+	"github.com/go-hq/go-admin/engine"
+	"github.com/go-hq/go-admin/examples/datamodel"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/plugins/example"
+	"github.com/go-hq/go-admin/template"
+	"github.com/go-hq/go-admin/template/chartjs"
+	"github.com/go-hq/themes/adminlte"
 )
 
 func main() {
@@ -65,7 +65,7 @@ func main() {
 	// examplePlugin := plugins.LoadFromPlugin("../datamodel/example.so")
 
 	// customize the login page
-	// example: https://github.com/GoAdminGroup/demo.go-admin.cn/blob/master/main.go#L39
+	// example: https://github.com/go-hq/demo.go-admin.cn/blob/master/main.go#L39
 	//
 	// template.AddComp("login", datamodel.LoginPage)
 
@@ -121,7 +121,11 @@ func FileServer(r chi.Router, path string, root http.FileSystem) {
 	}
 	path += "*"
 
-	r.Get(path, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fs.ServeHTTP(w, r)
-	}))
+	r.Get(
+		path, http.HandlerFunc(
+			func(w http.ResponseWriter, r *http.Request) {
+				fs.ServeHTTP(w, r)
+			},
+		),
+	)
 }

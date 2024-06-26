@@ -1,17 +1,17 @@
 package tables
 
 import (
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/parameter"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/table"
-	"github.com/GoAdminGroup/go-admin/template/types/form"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/plugins/admin/modules/parameter"
+	"github.com/go-hq/go-admin/plugins/admin/modules/table"
+	"github.com/go-hq/go-admin/template/types/form"
 )
 
 // GetExternalTable return the model from external data source.
 func GetExternalTable(ctx *context.Context) (externalTable table.Table) {
 
-	externalTable = table.NewDefaultTable(ctx, )
+	externalTable = table.NewDefaultTable(ctx)
 
 	info := externalTable.GetInfo()
 	info.AddField("ID", "id", db.Int).FieldSortable()
@@ -20,23 +20,28 @@ func GetExternalTable(ctx *context.Context) (externalTable table.Table) {
 	info.SetTable("external").
 		SetTitle("Externals").
 		SetDescription("Externals").
-		SetGetDataFn(func(param parameter.Parameters) ([]map[string]interface{}, int) {
-			return []map[string]interface{}{
-				{
-					"id":    10,
-					"title": "this is a title",
-				}, {
-					"id":    11,
-					"title": "this is a title2",
-				}, {
-					"id":    12,
-					"title": "this is a title3",
-				}, {
-					"id":    13,
-					"title": "this is a title4",
-				},
-			}, 10
-		})
+		SetGetDataFn(
+			func(param parameter.Parameters) ([]map[string]interface{}, int) {
+				return []map[string]interface{}{
+					{
+						"id":    10,
+						"title": "this is a title",
+					},
+					{
+						"id":    11,
+						"title": "this is a title2",
+					},
+					{
+						"id":    12,
+						"title": "this is a title3",
+					},
+					{
+						"id":    13,
+						"title": "this is a title4",
+					},
+				}, 10
+			},
+		)
 
 	formList := externalTable.GetForm()
 	formList.AddField("ID", "id", db.Int, form.Default).FieldDisplayButCanNotEditWhenUpdate().FieldDisableWhenCreate()
@@ -49,14 +54,16 @@ func GetExternalTable(ctx *context.Context) (externalTable table.Table) {
 	detail.SetTable("external").
 		SetTitle("Externals").
 		SetDescription("Externals").
-		SetGetDataFn(func(param parameter.Parameters) ([]map[string]interface{}, int) {
-			return []map[string]interface{}{
-				{
-					"id":    10,
-					"title": "this is a title",
-				},
-			}, 1
-		})
+		SetGetDataFn(
+			func(param parameter.Parameters) ([]map[string]interface{}, int) {
+				return []map[string]interface{}{
+					{
+						"id":    10,
+						"title": "this is a title",
+					},
+				}, 1
+			},
+		)
 
 	return
 }

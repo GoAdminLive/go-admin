@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/GoAdminGroup/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/db"
 )
 
 // PermissionModel is permission model structure.
@@ -28,7 +28,10 @@ func Permission() PermissionModel {
 // PermissionWithId return a default permission model of given id.
 func PermissionWithId(id string) PermissionModel {
 	idInt, _ := strconv.Atoi(id)
-	return PermissionModel{Base: Base{TableName: "goadmin_permissions"}, Id: int64(idInt)}
+	return PermissionModel{
+		Base: Base{TableName: "goadmin_permissions"},
+		Id:   int64(idInt),
+	}
 }
 
 func (t PermissionModel) SetConn(con db.Connection) PermissionModel {

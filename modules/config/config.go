@@ -17,9 +17,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/GoAdminGroup/go-admin/modules/logger"
-	"github.com/GoAdminGroup/go-admin/modules/utils"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
+	"github.com/go-hq/go-admin/modules/logger"
+	"github.com/go-hq/go-admin/modules/utils"
+	"github.com/go-hq/go-admin/plugins/admin/modules/form"
 	"gopkg.in/ini.v1"
 	"gopkg.in/yaml.v2"
 )
@@ -63,12 +63,16 @@ func (d Database) GetDSN() string {
 			d.Name + d.ParamStr()
 	}
 	if d.Driver == DriverPostgresql {
-		return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s"+d.ParamStr(),
-			d.Host, d.Port, d.User, d.Pwd, d.Name)
+		return fmt.Sprintf(
+			"host=%s port=%s user=%s password=%s dbname=%s"+d.ParamStr(),
+			d.Host, d.Port, d.User, d.Pwd, d.Name,
+		)
 	}
 	if d.Driver == DriverMssql {
-		return fmt.Sprintf("user id=%s;password=%s;server=%s;port=%s;database=%s;"+d.ParamStr(),
-			d.User, d.Pwd, d.Host, d.Port, d.Name)
+		return fmt.Sprintf(
+			"user id=%s;password=%s;server=%s;port=%s;database=%s;"+d.ParamStr(),
+			d.User, d.Pwd, d.Host, d.Port, d.Name,
+		)
 	}
 	if d.Driver == DriverSqlite {
 		return d.File + d.ParamStr()
@@ -942,37 +946,39 @@ func Initialize(cfg *Config) *Config {
 }
 
 func initLogger(cfg *Config) {
-	logger.InitWithConfig(logger.Config{
-		InfoLogOff:         cfg.InfoLogOff,
-		ErrorLogOff:        cfg.ErrorLogOff,
-		AccessLogOff:       cfg.AccessLogOff,
-		SqlLogOpen:         cfg.SqlLog,
-		InfoLogPath:        cfg.InfoLogPath,
-		ErrorLogPath:       cfg.ErrorLogPath,
-		AccessLogPath:      cfg.AccessLogPath,
-		AccessAssetsLogOff: cfg.AccessAssetsLogOff,
-		Rotate: logger.RotateCfg{
-			MaxSize:    cfg.Logger.Rotate.MaxSize,
-			MaxBackups: cfg.Logger.Rotate.MaxBackups,
-			MaxAge:     cfg.Logger.Rotate.MaxAge,
-			Compress:   cfg.Logger.Rotate.Compress,
+	logger.InitWithConfig(
+		logger.Config{
+			InfoLogOff:         cfg.InfoLogOff,
+			ErrorLogOff:        cfg.ErrorLogOff,
+			AccessLogOff:       cfg.AccessLogOff,
+			SqlLogOpen:         cfg.SqlLog,
+			InfoLogPath:        cfg.InfoLogPath,
+			ErrorLogPath:       cfg.ErrorLogPath,
+			AccessLogPath:      cfg.AccessLogPath,
+			AccessAssetsLogOff: cfg.AccessAssetsLogOff,
+			Rotate: logger.RotateCfg{
+				MaxSize:    cfg.Logger.Rotate.MaxSize,
+				MaxBackups: cfg.Logger.Rotate.MaxBackups,
+				MaxAge:     cfg.Logger.Rotate.MaxAge,
+				Compress:   cfg.Logger.Rotate.Compress,
+			},
+			Encode: logger.EncoderCfg{
+				TimeKey:       cfg.Logger.Encoder.TimeKey,
+				LevelKey:      cfg.Logger.Encoder.LevelKey,
+				NameKey:       cfg.Logger.Encoder.NameKey,
+				CallerKey:     cfg.Logger.Encoder.CallerKey,
+				MessageKey:    cfg.Logger.Encoder.MessageKey,
+				StacktraceKey: cfg.Logger.Encoder.StacktraceKey,
+				Level:         cfg.Logger.Encoder.Level,
+				Time:          cfg.Logger.Encoder.Time,
+				Duration:      cfg.Logger.Encoder.Duration,
+				Caller:        cfg.Logger.Encoder.Caller,
+				Encoding:      cfg.Logger.Encoder.Encoding,
+			},
+			Debug: cfg.Debug,
+			Level: cfg.Logger.Level,
 		},
-		Encode: logger.EncoderCfg{
-			TimeKey:       cfg.Logger.Encoder.TimeKey,
-			LevelKey:      cfg.Logger.Encoder.LevelKey,
-			NameKey:       cfg.Logger.Encoder.NameKey,
-			CallerKey:     cfg.Logger.Encoder.CallerKey,
-			MessageKey:    cfg.Logger.Encoder.MessageKey,
-			StacktraceKey: cfg.Logger.Encoder.StacktraceKey,
-			Level:         cfg.Logger.Encoder.Level,
-			Time:          cfg.Logger.Encoder.Time,
-			Duration:      cfg.Logger.Encoder.Duration,
-			Caller:        cfg.Logger.Encoder.Caller,
-			Encoding:      cfg.Logger.Encoder.Encoding,
-		},
-		Debug: cfg.Debug,
-		Level: cfg.Logger.Level,
-	})
+	)
 }
 
 // AssertPrefix return the prefix of assert.

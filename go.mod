@@ -1,11 +1,9 @@
-module github.com/GoAdminGroup/go-admin
+module github.com/go-hq/go-admin
 
-go 1.21
+go 1.22
 
 require (
 	github.com/360EntSecGroup-Skylar/excelize v1.4.1
-	github.com/GoAdminGroup/html v0.0.1
-	github.com/GoAdminGroup/themes v0.0.45
 	github.com/NebulousLabs/fastrand v0.0.0-20181203155948-6fb6489aac4e
 	github.com/agiledragon/gomonkey v2.0.2+incompatible
 	github.com/astaxie/beego v1.12.1
@@ -15,6 +13,8 @@ require (
 	github.com/gavv/httpexpect v2.0.0+incompatible
 	github.com/gin-gonic/gin v1.3.0
 	github.com/go-chi/chi v1.5.5
+	github.com/go-hq/html v0.1.0
+	github.com/go-hq/themes v0.0.0-20240626113638-fb6217edeb67
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/gobuffalo/buffalo v1.1.0
 	github.com/gofiber/fiber/v2 v2.52.4
@@ -33,8 +33,8 @@ require (
 	github.com/teambition/gear v1.27.3
 	github.com/valyala/fasthttp v1.52.0
 	go.uber.org/zap v1.19.1
-	golang.org/x/crypto v0.20.0
-	golang.org/x/text v0.14.0
+	golang.org/x/crypto v0.24.0
+	golang.org/x/text v0.16.0
 	gopkg.in/ini.v1 v1.67.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gopkg.in/yaml.v2 v2.4.0
@@ -77,8 +77,6 @@ require (
 	github.com/gobuffalo/logger v1.0.7 // indirect
 	github.com/gobuffalo/meta v0.3.3 // indirect
 	github.com/gobuffalo/nulls v0.4.2 // indirect
-	github.com/gobuffalo/packd v1.0.1 // indirect
-	github.com/gobuffalo/packr/v2 v2.8.3 // indirect
 	github.com/gobuffalo/plush/v4 v4.1.18 // indirect
 	github.com/gobuffalo/refresh v1.13.3 // indirect
 	github.com/gobuffalo/tags/v3 v3.1.4 // indirect
@@ -103,7 +101,6 @@ require (
 	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/karrick/godirwalk v1.16.1 // indirect
 	github.com/kataras/blocks v0.0.8 // indirect
 	github.com/kataras/golog v0.1.11 // indirect
 	github.com/kataras/pio v0.0.13 // indirect
@@ -113,9 +110,6 @@ require (
 	github.com/labstack/gommon v0.4.2 // indirect
 	github.com/mailgun/raymond/v2 v2.0.48 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/markbates/errx v1.1.0 // indirect
-	github.com/markbates/oncer v1.0.0 // indirect
-	github.com/markbates/safe v1.0.1 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.15 // indirect
@@ -168,10 +162,10 @@ require (
 	go.opentelemetry.io/otel/trace v1.14.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
-	golang.org/x/exp v0.0.0-20240112132812-db7319d0e0e3 // indirect
+	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8 // indirect
 	golang.org/x/net v0.21.0 // indirect
-	golang.org/x/sys v0.17.0 // indirect
-	golang.org/x/term v0.17.0 // indirect
+	golang.org/x/sys v0.21.0 // indirect
+	golang.org/x/term v0.21.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	google.golang.org/protobuf v1.32.0 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect

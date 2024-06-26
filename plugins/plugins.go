@@ -13,24 +13,24 @@ import (
 	"plugin"
 	"time"
 
-	"github.com/GoAdminGroup/go-admin/template/icon"
-	"github.com/GoAdminGroup/go-admin/template/types/action"
+	"github.com/go-hq/go-admin/template/icon"
+	"github.com/go-hq/go-admin/template/types/action"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/auth"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/modules/logger"
-	"github.com/GoAdminGroup/go-admin/modules/menu"
-	"github.com/GoAdminGroup/go-admin/modules/remote_server"
-	"github.com/GoAdminGroup/go-admin/modules/service"
-	"github.com/GoAdminGroup/go-admin/modules/ui"
-	"github.com/GoAdminGroup/go-admin/modules/utils"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/table"
-	"github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/auth"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/modules/logger"
+	"github.com/go-hq/go-admin/modules/menu"
+	"github.com/go-hq/go-admin/modules/remote_server"
+	"github.com/go-hq/go-admin/modules/service"
+	"github.com/go-hq/go-admin/modules/ui"
+	"github.com/go-hq/go-admin/modules/utils"
+	"github.com/go-hq/go-admin/plugins/admin/models"
+	"github.com/go-hq/go-admin/plugins/admin/modules/table"
+	"github.com/go-hq/go-admin/template"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 // Plugin as one of the key components of goAdmin has three
@@ -130,21 +130,29 @@ func (b *Base) ExecuteTmpl(ctx *context.Context, panel types.Panel, options temp
 	return Execute(ctx, b.Conn, *b.UI.NavButtons, auth.Auth(ctx), panel, options)
 }
 
-func (b *Base) ExecuteTmplWithNavButtons(ctx *context.Context, panel types.Panel, btns types.Buttons,
-	options template.ExecuteOptions) *bytes.Buffer {
+func (b *Base) ExecuteTmplWithNavButtons(
+	ctx *context.Context, panel types.Panel, btns types.Buttons,
+	options template.ExecuteOptions,
+) *bytes.Buffer {
 	return Execute(ctx, b.Conn, btns, auth.Auth(ctx), panel, options)
 }
 
-func (b *Base) ExecuteTmplWithMenu(ctx *context.Context, panel types.Panel, options template.ExecuteOptions) *bytes.Buffer {
+func (b *Base) ExecuteTmplWithMenu(
+	ctx *context.Context, panel types.Panel, options template.ExecuteOptions,
+) *bytes.Buffer {
 	return ExecuteWithMenu(ctx, b.Conn, *b.UI.NavButtons, auth.Auth(ctx), panel, b.Name(), b.Title(), options)
 }
 
-func (b *Base) ExecuteTmplWithCustomMenu(ctx *context.Context, panel types.Panel, menu *menu.Menu, options template.ExecuteOptions) *bytes.Buffer {
+func (b *Base) ExecuteTmplWithCustomMenu(
+	ctx *context.Context, panel types.Panel, menu *menu.Menu, options template.ExecuteOptions,
+) *bytes.Buffer {
 	return ExecuteWithCustomMenu(ctx, *b.UI.NavButtons, auth.Auth(ctx), panel, menu, b.Title(), options)
 }
 
-func (b *Base) ExecuteTmplWithMenuAndNavButtons(ctx *context.Context, panel types.Panel, menu *menu.Menu,
-	btns types.Buttons, options template.ExecuteOptions) *bytes.Buffer {
+func (b *Base) ExecuteTmplWithMenuAndNavButtons(
+	ctx *context.Context, panel types.Panel, menu *menu.Menu,
+	btns types.Buttons, options template.ExecuteOptions,
+) *bytes.Buffer {
 	return ExecuteWithMenu(ctx, b.Conn, btns, auth.Auth(ctx), panel, b.Name(), b.Title(), options)
 }
 
@@ -157,7 +165,9 @@ func (b *Base) HTML(ctx *context.Context, panel types.Panel, options ...template
 	ctx.HTMLByte(http.StatusOK, buf.Bytes())
 }
 
-func (b *Base) HTMLCustomMenu(ctx *context.Context, panel types.Panel, menu *menu.Menu, options ...template.ExecuteOptions) {
+func (b *Base) HTMLCustomMenu(
+	ctx *context.Context, panel types.Panel, menu *menu.Menu, options ...template.ExecuteOptions,
+) {
 	buf := b.ExecuteTmplWithCustomMenu(ctx, panel, menu, template.GetExecuteOptions(options))
 	ctx.HTMLByte(http.StatusOK, buf.Bytes())
 }
@@ -167,17 +177,23 @@ func (b *Base) HTMLMenu(ctx *context.Context, panel types.Panel, options ...temp
 	ctx.HTMLByte(http.StatusOK, buf.Bytes())
 }
 
-func (b *Base) HTMLBtns(ctx *context.Context, panel types.Panel, btns types.Buttons, options ...template.ExecuteOptions) {
+func (b *Base) HTMLBtns(
+	ctx *context.Context, panel types.Panel, btns types.Buttons, options ...template.ExecuteOptions,
+) {
 	buf := b.ExecuteTmplWithNavButtons(ctx, panel, btns, template.GetExecuteOptions(options))
 	ctx.HTMLByte(http.StatusOK, buf.Bytes())
 }
 
-func (b *Base) HTMLMenuWithBtns(ctx *context.Context, panel types.Panel, menu *menu.Menu, btns types.Buttons, options ...template.ExecuteOptions) {
+func (b *Base) HTMLMenuWithBtns(
+	ctx *context.Context, panel types.Panel, menu *menu.Menu, btns types.Buttons, options ...template.ExecuteOptions,
+) {
 	buf := b.ExecuteTmplWithMenuAndNavButtons(ctx, panel, menu, btns, template.GetExecuteOptions(options))
 	ctx.HTMLByte(http.StatusOK, buf.Bytes())
 }
 
-func (b *Base) HTMLFile(ctx *context.Context, path string, data map[string]interface{}, options ...template.ExecuteOptions) {
+func (b *Base) HTMLFile(
+	ctx *context.Context, path string, data map[string]interface{}, options ...template.ExecuteOptions,
+) {
 
 	buf := new(bytes.Buffer)
 	var panel types.Panel
@@ -198,7 +214,9 @@ func (b *Base) HTMLFile(ctx *context.Context, path string, data map[string]inter
 	b.HTML(ctx, panel, options...)
 }
 
-func (b *Base) HTMLFiles(ctx *context.Context, data map[string]interface{}, files []string, options ...template.ExecuteOptions) {
+func (b *Base) HTMLFiles(
+	ctx *context.Context, data map[string]interface{}, files []string, options ...template.ExecuteOptions,
+) {
 	buf := new(bytes.Buffer)
 	var panel types.Panel
 
@@ -235,7 +253,11 @@ func NewBasePluginWithInfo(info Info) Plugin {
 }
 
 func NewBasePluginWithInfoAndIndexURL(info Info, u string, installed bool) Plugin {
-	return &BasePlugin{Info: info, IndexURL: u, Installed: installed}
+	return &BasePlugin{
+		Info:      info,
+		IndexURL:  u,
+		Installed: installed,
+	}
 }
 
 func GetPluginsWithInfos(info []Info) Plugins {
@@ -273,93 +295,117 @@ func LoadFromPlugin(mod string) Plugin {
 // GetHandler is a help method for Plugin GetHandler.
 func GetHandler(app *context.App) context.HandlerMap { return app.Handlers }
 
-func Execute(ctx *context.Context, conn db.Connection, navButtons types.Buttons, user models.UserModel,
-	panel types.Panel, options template.ExecuteOptions) *bytes.Buffer {
+func Execute(
+	ctx *context.Context, conn db.Connection, navButtons types.Buttons, user models.UserModel,
+	panel types.Panel, options template.ExecuteOptions,
+) *bytes.Buffer {
 	tmpl, tmplName := template.Get(ctx, config.GetTheme()).GetTemplate(ctx.IsPjax())
 
-	return template.Execute(ctx, &template.ExecuteParam{
-		User:       user,
-		TmplName:   tmplName,
-		Tmpl:       tmpl,
-		Panel:      panel,
-		Config:     config.Get(),
-		Menu:       menu.GetGlobalMenu(user, conn, ctx.Lang()).SetActiveClass(config.URLRemovePrefix(ctx.Path())),
-		Animation:  options.Animation,
-		Buttons:    navButtons.CheckPermission(user),
-		NoCompress: options.NoCompress,
-		IsPjax:     ctx.IsPjax(),
-		Iframe:     ctx.IsIframe(),
-	})
+	return template.Execute(
+		ctx, &template.ExecuteParam{
+			User:       user,
+			TmplName:   tmplName,
+			Tmpl:       tmpl,
+			Panel:      panel,
+			Config:     config.Get(),
+			Menu:       menu.GetGlobalMenu(user, conn, ctx.Lang()).SetActiveClass(config.URLRemovePrefix(ctx.Path())),
+			Animation:  options.Animation,
+			Buttons:    navButtons.CheckPermission(user),
+			NoCompress: options.NoCompress,
+			IsPjax:     ctx.IsPjax(),
+			Iframe:     ctx.IsIframe(),
+		},
+	)
 }
 
-func ExecuteWithCustomMenu(ctx *context.Context,
+func ExecuteWithCustomMenu(
+	ctx *context.Context,
 	navButtons types.Buttons,
 	user models.UserModel,
 	panel types.Panel,
-	menu *menu.Menu, logo string, options template.ExecuteOptions) *bytes.Buffer {
+	menu *menu.Menu, logo string, options template.ExecuteOptions,
+) *bytes.Buffer {
 
 	tmpl, tmplName := template.Get(ctx, config.GetTheme()).GetTemplate(ctx.IsPjax())
 
-	return template.Execute(ctx, &template.ExecuteParam{
-		User:       user,
-		TmplName:   tmplName,
-		Tmpl:       tmpl,
-		Panel:      panel,
-		Config:     config.Get(),
-		Menu:       menu,
-		Animation:  options.Animation,
-		Buttons:    navButtons.CheckPermission(user),
-		NoCompress: options.NoCompress,
-		Logo:       template2.HTML(logo),
-		IsPjax:     ctx.IsPjax(),
-		Iframe:     ctx.IsIframe(),
-	})
+	return template.Execute(
+		ctx, &template.ExecuteParam{
+			User:       user,
+			TmplName:   tmplName,
+			Tmpl:       tmpl,
+			Panel:      panel,
+			Config:     config.Get(),
+			Menu:       menu,
+			Animation:  options.Animation,
+			Buttons:    navButtons.CheckPermission(user),
+			NoCompress: options.NoCompress,
+			Logo:       template2.HTML(logo),
+			IsPjax:     ctx.IsPjax(),
+			Iframe:     ctx.IsIframe(),
+		},
+	)
 }
 
-func ExecuteWithMenu(ctx *context.Context,
+func ExecuteWithMenu(
+	ctx *context.Context,
 	conn db.Connection,
 	navButtons types.Buttons,
 	user models.UserModel,
 	panel types.Panel,
-	name, logo string, options template.ExecuteOptions) *bytes.Buffer {
+	name, logo string, options template.ExecuteOptions,
+) *bytes.Buffer {
 
 	tmpl, tmplName := template.Get(ctx, config.GetTheme()).GetTemplate(ctx.IsPjax())
 
 	btns := options.NavDropDownButton
 	if btns == nil {
 		btns = []*types.NavDropDownItemButton{
-			types.GetDropDownItemButton(language.GetFromHtml("plugin setting"),
-				action.Jump(config.Url("/info/plugin_"+name+"/edit"))),
-			types.GetDropDownItemButton(language.GetFromHtml("menus manage"),
-				action.Jump(config.Url("/menu?__plugin_name="+name))),
+			types.GetDropDownItemButton(
+				language.GetFromHtml("plugin setting"),
+				action.Jump(config.Url("/info/plugin_"+name+"/edit")),
+			),
+			types.GetDropDownItemButton(
+				language.GetFromHtml("menus manage"),
+				action.Jump(config.Url("/menu?__plugin_name="+name)),
+			),
 		}
 	} else {
-		btns = append(btns, []*types.NavDropDownItemButton{
-			types.GetDropDownItemButton(language.GetFromHtml("plugin setting"),
-				action.Jump(config.Url("/info/plugin_"+name+"/edit"))),
-			types.GetDropDownItemButton(language.GetFromHtml("menus manage"),
-				action.Jump(config.Url("/menu?__plugin_name="+name))),
-		}...)
+		btns = append(
+			btns, []*types.NavDropDownItemButton{
+				types.GetDropDownItemButton(
+					language.GetFromHtml("plugin setting"),
+					action.Jump(config.Url("/info/plugin_"+name+"/edit")),
+				),
+				types.GetDropDownItemButton(
+					language.GetFromHtml("menus manage"),
+					action.Jump(config.Url("/menu?__plugin_name="+name)),
+				),
+			}...,
+		)
 	}
 
-	return template.Execute(ctx, &template.ExecuteParam{
-		User:      user,
-		TmplName:  tmplName,
-		Tmpl:      tmpl,
-		Panel:     panel,
-		Config:    config.Get(),
-		Menu:      menu.GetGlobalMenu(user, conn, ctx.Lang(), name).SetActiveClass(config.URLRemovePrefix(ctx.Path())),
-		Animation: options.Animation,
-		Buttons: navButtons.Copy().
-			RemoveInfoNavButton().
-			RemoveSiteNavButton().
-			RemoveToolNavButton().
-			Add(types.GetDropDownButton("", icon.Gear, btns)).CheckPermission(user),
-		NoCompress: options.NoCompress,
-		Logo:       template2.HTML(logo),
-		IsPjax:     ctx.IsPjax(),
-		Iframe:     ctx.IsIframe(),
-	})
+	return template.Execute(
+		ctx, &template.ExecuteParam{
+			User:     user,
+			TmplName: tmplName,
+			Tmpl:     tmpl,
+			Panel:    panel,
+			Config:   config.Get(),
+			Menu: menu.GetGlobalMenu(
+				user, conn, ctx.Lang(), name,
+			).SetActiveClass(config.URLRemovePrefix(ctx.Path())),
+			Animation: options.Animation,
+			Buttons: navButtons.Copy().
+				RemoveInfoNavButton().
+				RemoveSiteNavButton().
+				RemoveToolNavButton().
+				Add(types.GetDropDownButton("", icon.Gear, btns)).CheckPermission(user),
+			NoCompress: options.NoCompress,
+			Logo:       template2.HTML(logo),
+			IsPjax:     ctx.IsPjax(),
+			Iframe:     ctx.IsIframe(),
+		},
+	)
 }
 
 type Plugins []Plugin

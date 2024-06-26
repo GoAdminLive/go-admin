@@ -8,17 +8,17 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/modules/errors"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/modules/logger"
-	"github.com/GoAdminGroup/go-admin/modules/page"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
-	template2 "github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/constant"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/errors"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/modules/logger"
+	"github.com/go-hq/go-admin/modules/page"
+	"github.com/go-hq/go-admin/plugins/admin/models"
+	template2 "github.com/go-hq/go-admin/template"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 // Invoker contains the callback functions which are used
@@ -44,9 +44,11 @@ func DefaultInvoker(conn db.Connection) *Invoker {
 				return
 			}
 			if ctx.Request.URL.Path == config.Url("/logout") {
-				ctx.Write(302, map[string]string{
-					"Location": config.Url(config.GetLoginUrl()),
-				}, ``)
+				ctx.Write(
+					302, map[string]string{
+						"Location": config.Url(config.GetLoginUrl()),
+					}, ``,
+				)
 				return
 			}
 			param := ""
@@ -61,12 +63,15 @@ func DefaultInvoker(conn db.Connection) *Invoker {
 			if (ctx.Headers(constant.PjaxHeader) == "" && ctx.Method() != "GET") ||
 				err != nil ||
 				referer == "" {
-				ctx.Write(302, map[string]string{
-					"Location": u,
-				}, ``)
+				ctx.Write(
+					302, map[string]string{
+						"Location": u,
+					}, ``,
+				)
 			} else {
 				msg := language.Get("login overdue, please login again")
-				ctx.HTML(http.StatusOK, `<script>
+				ctx.HTML(
+					http.StatusOK, `<script>
 	if (typeof(swal) === "function") {
 		swal({
 			type: "info",
@@ -81,19 +86,26 @@ func DefaultInvoker(conn db.Connection) *Invoker {
 		alert("`+msg+`")
 		location.href = "`+u+`"
     }
-</script>`)
+</script>`,
+				)
 			}
 		},
 		permissionDenyCallback: func(rawCtx *context.Context) {
 			if rawCtx.Headers(constant.PjaxHeader) == "" && rawCtx.Method() != "GET" {
-				rawCtx.JSON(http.StatusForbidden, map[string]interface{}{
-					"code": http.StatusForbidden,
-					"msg":  language.Get(errors.PermissionDenied),
-				})
+				rawCtx.JSON(
+					http.StatusForbidden, map[string]interface{}{
+						"code": http.StatusForbidden,
+						"msg":  language.Get(errors.PermissionDenied),
+					},
+				)
 			} else {
-				page.SetPageContent(rawCtx, Auth(rawCtx), func(ctx interface{}) (types.Panel, error) {
-					return template2.WarningPanel(rawCtx, errors.PermissionDenied, template2.NoPermission403Page), nil
-				}, conn)
+				page.SetPageContent(
+					rawCtx, Auth(rawCtx), func(ctx interface{}) (types.Panel, error) {
+						return template2.WarningPanel(
+							rawCtx, errors.PermissionDenied, template2.NoPermission403Page,
+						), nil
+					}, conn,
+				)
 			}
 		},
 		conn: conn,

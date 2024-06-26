@@ -2,29 +2,29 @@ package fasthttp
 
 import (
 	// add fasthttp adapter
-	ada "github.com/GoAdminGroup/go-admin/adapter/fasthttp"
+	ada "github.com/go-hq/go-admin/adapter/fasthttp"
 	// add mysql driver
-	_ "github.com/GoAdminGroup/go-admin/modules/db/drivers/mysql"
+	_ "github.com/go-hq/go-admin/modules/db/drivers/mysql"
 	// add postgresql driver
-	_ "github.com/GoAdminGroup/go-admin/modules/db/drivers/postgres"
+	_ "github.com/go-hq/go-admin/modules/db/drivers/postgres"
 	// add sqlite driver
-	_ "github.com/GoAdminGroup/go-admin/modules/db/drivers/sqlite"
+	_ "github.com/go-hq/go-admin/modules/db/drivers/sqlite"
 	// add mssql driver
-	_ "github.com/GoAdminGroup/go-admin/modules/db/drivers/mssql"
+	_ "github.com/go-hq/go-admin/modules/db/drivers/mssql"
 	// add adminlte ui theme
-	"github.com/GoAdminGroup/themes/adminlte"
+	"github.com/go-hq/themes/adminlte"
 
 	"os"
 
-	"github.com/GoAdminGroup/go-admin/engine"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/plugins/admin"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/table"
-	"github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/chartjs"
-	"github.com/GoAdminGroup/go-admin/tests/tables"
 	"github.com/buaazp/fasthttprouter"
+	"github.com/go-hq/go-admin/engine"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/plugins/admin"
+	"github.com/go-hq/go-admin/plugins/admin/modules/table"
+	"github.com/go-hq/go-admin/template"
+	"github.com/go-hq/go-admin/template/chartjs"
+	"github.com/go-hq/go-admin/tests/tables"
 	"github.com/valyala/fasthttp"
 )
 
@@ -58,18 +58,20 @@ func NewHandler(dbs config.DatabaseList, gens table.GeneratorList) fasthttp.Requ
 
 	template.AddComp(chartjs.NewChart())
 
-	if err := eng.AddConfig(&config.Config{
-		Databases: dbs,
-		UrlPrefix: "admin",
-		Store: config.Store{
-			Path:   "./uploads",
-			Prefix: "uploads",
+	if err := eng.AddConfig(
+		&config.Config{
+			Databases: dbs,
+			UrlPrefix: "admin",
+			Store: config.Store{
+				Path:   "./uploads",
+				Prefix: "uploads",
+			},
+			Language:    language.EN,
+			IndexUrl:    "/",
+			Debug:       true,
+			ColorScheme: adminlte.ColorschemeSkinBlack,
 		},
-		Language:    language.EN,
-		IndexUrl:    "/",
-		Debug:       true,
-		ColorScheme: adminlte.ColorschemeSkinBlack,
-	}).
+	).
 		AddAdapter(new(ada.Fasthttp)).
 		AddGenerators(gens).
 		Use(router); err != nil {

@@ -8,12 +8,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/modules/db/dialect"
-	"github.com/GoAdminGroup/go-admin/modules/logger"
-	"github.com/GoAdminGroup/go-admin/modules/utils"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/db/dialect"
+	"github.com/go-hq/go-admin/modules/logger"
+	"github.com/go-hq/go-admin/modules/utils"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
 )
 
 // UserModel is user model structure.
@@ -46,7 +46,10 @@ func User() UserModel {
 // UserWithId return a default user model of given id.
 func UserWithId(id string) UserModel {
 	idInt, _ := strconv.Atoi(id)
-	return UserModel{Base: Base{TableName: config.GetAuthUserTable()}, Id: int64(idInt)}
+	return UserModel{
+		Base: Base{TableName: config.GetAuthUserTable()},
+		Id:   int64(idInt),
+	}
 }
 
 func (t UserModel) SetConn(con db.Connection) UserModel {
@@ -108,8 +111,10 @@ func (t UserModel) HideUserCenterEntrance() bool {
 
 func (t UserModel) Template(str string) string {
 	if t.cacheReplacer == nil {
-		t.cacheReplacer = strings.NewReplacer("{{.AuthId}}", strconv.Itoa(int(t.Id)),
-			"{{.AuthName}}", t.Name, "{{.AuthUserName}}", t.UserName)
+		t.cacheReplacer = strings.NewReplacer(
+			"{{.AuthId}}", strconv.Itoa(int(t.Id)),
+			"{{.AuthName}}", t.Name, "{{.AuthUserName}}", t.UserName,
+		)
 	}
 	return t.cacheReplacer.Replace(str)
 }
@@ -246,8 +251,10 @@ func (t UserModel) WithRoles() UserModel {
 	roleModel, _ := t.Table("goadmin_role_users").
 		LeftJoin("goadmin_roles", "goadmin_roles.id", "=", "goadmin_role_users.role_id").
 		Where("user_id", "=", t.Id).
-		Select("goadmin_roles.id", "goadmin_roles.name", "goadmin_roles.slug",
-			"goadmin_roles.created_at", "goadmin_roles.updated_at").
+		Select(
+			"goadmin_roles.id", "goadmin_roles.name", "goadmin_roles.slug",
+			"goadmin_roles.created_at", "goadmin_roles.updated_at",
+		).
 		All()
 
 	for _, role := range roleModel {
@@ -284,18 +291,22 @@ func (t UserModel) WithPermissions() UserModel {
 		permissions, _ = t.Table("goadmin_role_permissions").
 			LeftJoin("goadmin_permissions", "goadmin_permissions.id", "=", "goadmin_role_permissions.permission_id").
 			WhereIn("role_id", roleIds).
-			Select("goadmin_permissions.http_method", "goadmin_permissions.http_path",
+			Select(
+				"goadmin_permissions.http_method", "goadmin_permissions.http_path",
 				"goadmin_permissions.id", "goadmin_permissions.name", "goadmin_permissions.slug",
-				"goadmin_permissions.created_at", "goadmin_permissions.updated_at").
+				"goadmin_permissions.created_at", "goadmin_permissions.updated_at",
+			).
 			All()
 	}
 
 	userPermissions, _ := t.Table("goadmin_user_permissions").
 		LeftJoin("goadmin_permissions", "goadmin_permissions.id", "=", "goadmin_user_permissions.permission_id").
 		Where("user_id", "=", t.Id).
-		Select("goadmin_permissions.http_method", "goadmin_permissions.http_path",
+		Select(
+			"goadmin_permissions.http_method", "goadmin_permissions.http_path",
 			"goadmin_permissions.id", "goadmin_permissions.name", "goadmin_permissions.slug",
-			"goadmin_permissions.created_at", "goadmin_permissions.updated_at").
+			"goadmin_permissions.created_at", "goadmin_permissions.updated_at",
+		).
 		All()
 
 	permissions = append(permissions, userPermissions...)
@@ -360,12 +371,14 @@ func (t UserModel) WithMenus() UserModel {
 // New create a user model.
 func (t UserModel) New(username, password, name, avatar string) (UserModel, error) {
 
-	id, err := t.WithTx(t.Tx).Table(t.TableName).Insert(dialect.H{
-		"username": username,
-		"password": password,
-		"name":     name,
-		"avatar":   avatar,
-	})
+	id, err := t.WithTx(t.Tx).Table(t.TableName).Insert(
+		dialect.H{
+			"username": username,
+			"password": password,
+			"name":     name,
+			"avatar":   avatar,
+		},
+	)
 
 	t.Id = id
 	t.UserName = username
@@ -403,9 +416,11 @@ func (t UserModel) UpdatePwd(password string) UserModel {
 
 	_, _ = t.Table(t.TableName).
 		Where("id", "=", t.Id).
-		Update(dialect.H{
-			"password": password,
-		})
+		Update(
+			dialect.H{
+				"password": password,
+			},
+		)
 
 	t.Password = password
 	return t
@@ -432,10 +447,12 @@ func (t UserModel) AddRole(roleId string) (int64, error) {
 	if roleId != "" {
 		if !t.CheckRoleId(roleId) {
 			return t.WithTx(t.Tx).Table("goadmin_role_users").
-				Insert(dialect.H{
-					"role_id": roleId,
-					"user_id": t.Id,
-				})
+				Insert(
+					dialect.H{
+						"role_id": roleId,
+						"user_id": t.Id,
+					},
+				)
 		}
 	}
 	return 0, nil
@@ -484,10 +501,12 @@ func (t UserModel) AddPermission(permissionId string) (int64, error) {
 	if permissionId != "" {
 		if !t.CheckPermissionById(permissionId) {
 			return t.WithTx(t.Tx).Table("goadmin_user_permissions").
-				Insert(dialect.H{
-					"permission_id": permissionId,
-					"user_id":       t.Id,
-				})
+				Insert(
+					dialect.H{
+						"permission_id": permissionId,
+						"user_id":       t.Id,
+					},
+				)
 		}
 	}
 	return 0, nil

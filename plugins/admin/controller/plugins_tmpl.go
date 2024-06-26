@@ -4,17 +4,19 @@ import (
 	"bytes"
 	"html/template"
 
-	"github.com/GoAdminGroup/go-admin/modules/remote_server"
+	"github.com/go-hq/go-admin/modules/remote_server"
 
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/modules/logger"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/modules/logger"
 )
 
 func GetPluginsPageJS(data PluginsPageJSData) template.JS {
-	t := template.New("plugins_page_js").Funcs(map[string]interface{}{
-		"lang":     language.Get,
-		"plugWord": plugWord,
-	})
+	t := template.New("plugins_page_js").Funcs(
+		map[string]interface{}{
+			"lang":     language.Get,
+			"plugWord": plugWord,
+		},
+	)
 	t, err := t.Parse(pluginsPageJS)
 	if err != nil {
 		logger.Error(err)
@@ -227,7 +229,8 @@ function pluginRebootInstall() {
 }
 `
 
-var pluginsPageCSS = template.CSS(`
+var pluginsPageCSS = template.CSS(
+	`
 	.plugin-item-img {
 		text-align: center;
 	}
@@ -262,9 +265,11 @@ var pluginsPageCSS = template.CSS(`
 		top: 5px;
 		right: 5px;
 	}
-`)
+`,
+)
 
-var pluginsStorePageCSS = template.CSS(`
+var pluginsStorePageCSS = template.CSS(
+	`
 	.plugin-item-content {
 		margin-left: 15px;
 	}
@@ -341,16 +346,20 @@ var pluginsStorePageCSS = template.CSS(`
 		float: left;
 		margin-left: 10px;
 	}
-`)
+`,
+)
 
 var pluginStore404 = func() template.HTML {
-	return template.HTML(`
+	return template.HTML(
+		`
 <div class="plugin-store-404-content"><p>` + plugWord("can not connect to the goadmin remote server") + `</p></div>
-`)
+`,
+	)
 }
 
 var pluginsPageDetailPopupBody = func() template.HTML {
-	return template.HTML(`
+	return template.HTML(
+		`
 <div class="plugin-detail">
 	<div class="plugin-detail-head">
 		<div class="plugin-detail-head-logo">
@@ -386,5 +395,6 @@ var pluginsPageDetailPopupBody = func() template.HTML {
 		<a target="_blank" href=""><div class="plugin-detail-info-item-head">` + plugWord("learn more") + `</div></a>
 	</div>
 </div>
-</div>`)
+</div>`,
+	)
 }

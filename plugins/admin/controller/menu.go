@@ -5,21 +5,21 @@ import (
 	template2 "html/template"
 	"net/url"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/auth"
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/modules/errors"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/modules/menu"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	form2 "github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/guard"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/parameter"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/response"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/table"
-	"github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/auth"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/errors"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/modules/menu"
+	"github.com/go-hq/go-admin/plugins/admin/models"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	form2 "github.com/go-hq/go-admin/plugins/admin/modules/form"
+	"github.com/go-hq/go-admin/plugins/admin/modules/guard"
+	"github.com/go-hq/go-admin/plugins/admin/modules/parameter"
+	"github.com/go-hq/go-admin/plugins/admin/modules/response"
+	"github.com/go-hq/go-admin/plugins/admin/modules/table"
+	"github.com/go-hq/go-admin/template"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 // ShowMenu show menu info page.
@@ -65,24 +65,34 @@ func (h *Handler) showNewMenu(ctx *context.Context, err error) {
 		alert = aAlert(ctx).Warning(err.Error())
 	}
 
-	h.HTMLPlug(ctx, user, types.Panel{
-		Content: alert + formContent(ctx, aForm(ctx).
-			SetContent(formInfo.FieldList).
-			SetTabContents(formInfo.GroupFieldList).
-			SetTabHeaders(formInfo.GroupFieldHeaders).
-			SetPrefix(h.config.PrefixFixSlash()).
-			SetPrimaryKey(panel.GetPrimaryKey().Name).
-			SetUrl(h.routePath("menu_edit")).
-			SetHiddenFields(map[string]string{
-				form2.TokenKey:    h.authSrv().AddToken(),
-				form2.PreviousKey: h.routePath("menu") + getMenuPlugNameParams(plugName),
-			}).
-			SetOperationFooter(formFooter(ctx, "new", false, false, false,
-				panel.GetForm().FormNewBtnWord)),
-			false, ctx.IsIframe(), false, ""),
-		Description: template2.HTML(panel.GetForm().Description),
-		Title:       template2.HTML(panel.GetForm().Title),
-	}, plugName)
+	h.HTMLPlug(
+		ctx, user, types.Panel{
+			Content: alert + formContent(
+				ctx, aForm(ctx).
+					SetContent(formInfo.FieldList).
+					SetTabContents(formInfo.GroupFieldList).
+					SetTabHeaders(formInfo.GroupFieldHeaders).
+					SetPrefix(h.config.PrefixFixSlash()).
+					SetPrimaryKey(panel.GetPrimaryKey().Name).
+					SetUrl(h.routePath("menu_edit")).
+					SetHiddenFields(
+						map[string]string{
+							form2.TokenKey:    h.authSrv().AddToken(),
+							form2.PreviousKey: h.routePath("menu") + getMenuPlugNameParams(plugName),
+						},
+					).
+					SetOperationFooter(
+						formFooter(
+							ctx, "new", false, false, false,
+							panel.GetForm().FormNewBtnWord,
+						),
+					),
+				false, ctx.IsIframe(), false, "",
+			),
+			Description: template2.HTML(panel.GetForm().Description),
+			Title:       template2.HTML(panel.GetForm().Title),
+		}, plugName,
+	)
 }
 
 // ShowEditMenu show edit menu page.
@@ -104,8 +114,12 @@ func (h *Handler) ShowEditMenu(ctx *context.Context) {
 	user := auth.Auth(ctx)
 
 	if err != nil {
-		h.HTMLPlug(ctx, user, template.WarningPanelWithDescAndTitle(ctx, err.Error(),
-			model.GetForm().Description, model.GetForm().Title), plugName)
+		h.HTMLPlug(
+			ctx, user, template.WarningPanelWithDescAndTitle(
+				ctx, err.Error(),
+				model.GetForm().Description, model.GetForm().Title,
+			), plugName,
+		)
 		return
 	}
 
@@ -124,23 +138,33 @@ func (h *Handler) showEditMenu(ctx *context.Context, plugName string, formInfo t
 
 	panel := h.table("menu", ctx)
 
-	h.HTMLPlug(ctx, auth.Auth(ctx), types.Panel{
-		Content: alert + formContent(ctx, aForm(ctx).
-			SetContent(formInfo.FieldList).
-			SetTabContents(formInfo.GroupFieldList).
-			SetTabHeaders(formInfo.GroupFieldHeaders).
-			SetPrefix(h.config.PrefixFixSlash()).
-			SetPrimaryKey(panel.GetPrimaryKey().Name).
-			SetUrl(h.routePath("menu_edit")).
-			SetOperationFooter(formFooter(ctx, "edit", false, false, false,
-				panel.GetForm().FormEditBtnWord)).
-			SetHiddenFields(map[string]string{
-				form2.TokenKey:    h.authSrv().AddToken(),
-				form2.PreviousKey: h.routePath("menu") + params,
-			}), false, ctx.IsIframe(), false, ""),
-		Description: template2.HTML(formInfo.Description),
-		Title:       template2.HTML(formInfo.Title),
-	}, plugName)
+	h.HTMLPlug(
+		ctx, auth.Auth(ctx), types.Panel{
+			Content: alert + formContent(
+				ctx, aForm(ctx).
+					SetContent(formInfo.FieldList).
+					SetTabContents(formInfo.GroupFieldList).
+					SetTabHeaders(formInfo.GroupFieldHeaders).
+					SetPrefix(h.config.PrefixFixSlash()).
+					SetPrimaryKey(panel.GetPrimaryKey().Name).
+					SetUrl(h.routePath("menu_edit")).
+					SetOperationFooter(
+						formFooter(
+							ctx, "edit", false, false, false,
+							panel.GetForm().FormEditBtnWord,
+						),
+					).
+					SetHiddenFields(
+						map[string]string{
+							form2.TokenKey:    h.authSrv().AddToken(),
+							form2.PreviousKey: h.routePath("menu") + params,
+						},
+					), false, ctx.IsIframe(), false, "",
+			),
+			Description: template2.HTML(formInfo.Description),
+			Title:       template2.HTML(formInfo.Title),
+		}, plugName,
+	)
 }
 
 // DeleteMenu delete the menu of given id.
@@ -213,8 +237,10 @@ func (h *Handler) NewMenu(ctx *context.Context) {
 
 	// TODO: use transaction
 	menuModel, createErr := models.Menu().SetConn(h.conn).
-		New(param.Title, param.Icon, param.Uri, param.Header, param.PluginName, param.ParentId,
-			(menu.GetGlobalMenu(user, h.conn, ctx.Lang(), param.PluginName)).MaxOrder+1)
+		New(
+			param.Title, param.Icon, param.Uri, param.Header, param.PluginName, param.ParentId,
+			(menu.GetGlobalMenu(user, h.conn, ctx.Lang(), param.PluginName)).MaxOrder+1,
+		)
 
 	if db.CheckError(createErr, db.INSERT) {
 		h.showNewMenu(ctx, createErr)
@@ -270,28 +296,38 @@ func (h *Handler) getMenuInfoPanel(ctx *context.Context, plugName string, alert 
 		formInfo = panel.GetNewFormInfo()
 	)
 
-	newForm := menuFormContent(ctx, aForm(ctx).
-		SetPrefix(h.config.PrefixFixSlash()).
-		SetUrl(h.routePath("menu_new")).
-		SetPrimaryKey(panel.GetPrimaryKey().Name).
-		SetHiddenFields(map[string]string{
-			form2.TokenKey:    h.authSrv().AddToken(),
-			form2.PreviousKey: h.routePath("menu") + getMenuPlugNameParams(plugName),
-		}).
-		SetOperationFooter(formFooter(ctx, "menu", false, false, false,
-			panel.GetForm().FormNewBtnWord)).
-		SetTitle("New").
-		SetContent(formInfo.FieldList).
-		SetTabContents(formInfo.GroupFieldList).
-		SetTabHeaders(formInfo.GroupFieldHeaders))
+	newForm := menuFormContent(
+		ctx, aForm(ctx).
+			SetPrefix(h.config.PrefixFixSlash()).
+			SetUrl(h.routePath("menu_new")).
+			SetPrimaryKey(panel.GetPrimaryKey().Name).
+			SetHiddenFields(
+				map[string]string{
+					form2.TokenKey:    h.authSrv().AddToken(),
+					form2.PreviousKey: h.routePath("menu") + getMenuPlugNameParams(plugName),
+				},
+			).
+			SetOperationFooter(
+				formFooter(
+					ctx, "menu", false, false, false,
+					panel.GetForm().FormNewBtnWord,
+				),
+			).
+			SetTitle("New").
+			SetContent(formInfo.FieldList).
+			SetTabContents(formInfo.GroupFieldList).
+			SetTabHeaders(formInfo.GroupFieldHeaders),
+	)
 
 	col2 := aCol(ctx).SetSize(types.SizeMD(6)).SetContent(newForm).GetContent()
 
 	row := aRow(ctx).SetContent(col1 + col2).GetContent()
 
-	h.HTMLPlug(ctx, user, types.Panel{
-		Content:     alert + row,
-		Description: "Menus Manage",
-		Title:       "Menus",
-	}, plugName)
+	h.HTMLPlug(
+		ctx, user, types.Panel{
+			Content:     alert + row,
+			Description: "Menus Manage",
+			Title:       "Menus",
+		}, plugName,
+	)
 }

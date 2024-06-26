@@ -6,23 +6,23 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/GoAdminGroup/go-admin/modules/logger"
+	"github.com/go-hq/go-admin/modules/logger"
 
-	"github.com/GoAdminGroup/go-admin/template"
+	"github.com/go-hq/go-admin/template"
 
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/response"
+	"github.com/go-hq/go-admin/plugins/admin/modules/response"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/auth"
-	"github.com/GoAdminGroup/go-admin/modules/file"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	form2 "github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/guard"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/parameter"
-	"github.com/GoAdminGroup/go-admin/template/types"
-	"github.com/GoAdminGroup/go-admin/template/types/form"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/auth"
+	"github.com/go-hq/go-admin/modules/file"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/plugins/admin/modules"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	form2 "github.com/go-hq/go-admin/plugins/admin/modules/form"
+	"github.com/go-hq/go-admin/plugins/admin/modules/guard"
+	"github.com/go-hq/go-admin/plugins/admin/modules/parameter"
+	"github.com/go-hq/go-admin/template/types"
+	"github.com/go-hq/go-admin/template/types/form"
 )
 
 // ShowForm show form page.
@@ -31,19 +31,28 @@ func (h *Handler) ShowForm(ctx *context.Context) {
 	h.showForm(ctx, "", param.Prefix, param.Param, false)
 }
 
-func (h *Handler) showForm(ctx *context.Context, alert template2.HTML, prefix string, param parameter.Parameters, isEdit bool, animation ...bool) {
+func (h *Handler) showForm(
+	ctx *context.Context, alert template2.HTML, prefix string, param parameter.Parameters, isEdit bool,
+	animation ...bool,
+) {
 
 	panel := h.table(prefix, ctx)
 
 	if panel.GetForm().HasError() {
 		if panel.GetForm().PageErrorHTML != template2.HTML("") {
-			h.HTML(ctx, auth.Auth(ctx),
-				types.Panel{Content: panel.GetForm().PageErrorHTML}, template.ExecuteOptions{Animation: param.Animation})
+			h.HTML(
+				ctx, auth.Auth(ctx),
+				types.Panel{Content: panel.GetForm().PageErrorHTML}, template.ExecuteOptions{Animation: param.Animation},
+			)
 			return
 		}
-		h.HTML(ctx, auth.Auth(ctx),
-			template.WarningPanel(ctx, panel.GetForm().PageError.Error(),
-				template.GetPageTypeFromPageError(panel.GetForm().PageError)), template.ExecuteOptions{Animation: param.Animation})
+		h.HTML(
+			ctx, auth.Auth(ctx),
+			template.WarningPanel(
+				ctx, panel.GetForm().PageError.Error(),
+				template.GetPageTypeFromPageError(panel.GetForm().PageError),
+			), template.ExecuteOptions{Animation: param.Animation},
+		)
 		return
 	}
 
@@ -62,13 +71,17 @@ func (h *Handler) showForm(ctx *context.Context, alert template2.HTML, prefix st
 
 	if err != nil {
 		logger.ErrorCtx(ctx, "receive data error: %+v", err)
-		h.HTML(ctx, user, template.
-			WarningPanelWithDescAndTitle(ctx, err.Error(), panel.GetForm().Description, panel.GetForm().Title),
-			template.ExecuteOptions{Animation: alert == "" || ((len(animation) > 0) && animation[0])})
+		h.HTML(
+			ctx, user, template.
+				WarningPanelWithDescAndTitle(ctx, err.Error(), panel.GetForm().Description, panel.GetForm().Title),
+			template.ExecuteOptions{Animation: alert == "" || ((len(animation) > 0) && animation[0])},
+		)
 
 		if isEdit {
-			ctx.AddHeader(constant.PjaxUrlHeader, h.routePathWithPrefix("show_edit", prefix)+
-				param.DeletePK().GetRouteParamStr())
+			ctx.AddHeader(
+				constant.PjaxUrlHeader, h.routePathWithPrefix("show_edit", prefix)+
+					param.DeletePK().GetRouteParamStr(),
+			)
 		}
 		return
 	}
@@ -99,37 +112,48 @@ func (h *Handler) showForm(ctx *context.Context, alert template2.HTML, prefix st
 		hiddenFields[constant.IframeIDKey] = ctx.Query(constant.IframeIDKey)
 	}
 
-	content := formContent(ctx, aForm(ctx).
-		SetContent(formInfo.FieldList).
-		SetFieldsHTML(f.HTMLContent).
-		SetTabContents(formInfo.GroupFieldList).
-		SetTabHeaders(formInfo.GroupFieldHeaders).
-		SetPrefix(h.config.PrefixFixSlash()).
-		SetInputWidth(f.InputWidth).
-		SetHeadWidth(f.HeadWidth).
-		SetPrimaryKey(panel.GetPrimaryKey().Name).
-		SetUrl(editUrl).
-		SetTitle(f.FormEditTitle).
-		SetAjax(f.AjaxSuccessJS, f.AjaxErrorJS).
-		SetLayout(f.Layout).
-		SetHiddenFields(hiddenFields).
-		SetOperationFooter(formFooter(ctx, footerKind,
-			f.IsHideContinueEditCheckBox,
-			f.IsHideContinueNewCheckBox,
-			f.IsHideResetButton, f.FormEditBtnWord)).
-		SetHeader(f.HeaderHtml).
-		SetFooter(f.FooterHtml), len(formInfo.GroupFieldHeaders) > 0, !isNotIframe, f.IsHideBackButton, f.Header)
+	content := formContent(
+		ctx, aForm(ctx).
+			SetContent(formInfo.FieldList).
+			SetFieldsHTML(f.HTMLContent).
+			SetTabContents(formInfo.GroupFieldList).
+			SetTabHeaders(formInfo.GroupFieldHeaders).
+			SetPrefix(h.config.PrefixFixSlash()).
+			SetInputWidth(f.InputWidth).
+			SetHeadWidth(f.HeadWidth).
+			SetPrimaryKey(panel.GetPrimaryKey().Name).
+			SetUrl(editUrl).
+			SetTitle(f.FormEditTitle).
+			SetAjax(f.AjaxSuccessJS, f.AjaxErrorJS).
+			SetLayout(f.Layout).
+			SetHiddenFields(hiddenFields).
+			SetOperationFooter(
+				formFooter(
+					ctx, footerKind,
+					f.IsHideContinueEditCheckBox,
+					f.IsHideContinueNewCheckBox,
+					f.IsHideResetButton, f.FormEditBtnWord,
+				),
+			).
+			SetHeader(f.HeaderHtml).
+			SetFooter(f.FooterHtml), len(formInfo.GroupFieldHeaders) > 0, !isNotIframe, f.IsHideBackButton, f.Header,
+	)
 
 	if f.Wrapper != nil {
 		content = f.Wrapper(content)
 	}
 
-	h.HTML(ctx, user, types.Panel{
-		Content:     alert + content,
-		Description: template2.HTML(formInfo.Description),
-		Title:       modules.AorBHTML(isNotIframe, template2.HTML(formInfo.Title), ""),
-		MiniSidebar: f.HideSideBar,
-	}, template.ExecuteOptions{Animation: alert == "" || ((len(animation) > 0) && animation[0]), NoCompress: f.NoCompress})
+	h.HTML(
+		ctx, user, types.Panel{
+			Content:     alert + content,
+			Description: template2.HTML(formInfo.Description),
+			Title:       modules.AorBHTML(isNotIframe, template2.HTML(formInfo.Title), ""),
+			MiniSidebar: f.HideSideBar,
+		}, template.ExecuteOptions{
+			Animation:  alert == "" || ((len(animation) > 0) && animation[0]),
+			NoCompress: f.NoCompress,
+		},
+	)
 
 	if isEdit {
 		ctx.AddHeader(constant.PjaxUrlHeader, showEditUrl)
@@ -173,9 +197,11 @@ func (h *Handler) EditForm(ctx *context.Context) {
 	if err != nil {
 		logger.ErrorCtx(ctx, "update data error: %+v", err)
 		if ctx.WantJSON() {
-			response.Error(ctx, err.Error(), map[string]interface{}{
-				"token": h.authSrv().AddToken(),
-			})
+			response.Error(
+				ctx, err.Error(), map[string]interface{}{
+					"token": h.authSrv().AddToken(),
+				},
+			)
 		} else {
 			h.showForm(ctx, aAlert(ctx).Warning(err.Error()), param.Prefix, param.Param, true)
 		}
@@ -188,10 +214,12 @@ func (h *Handler) EditForm(ctx *context.Context) {
 	}
 
 	if ctx.WantJSON() && !param.IsIframe {
-		response.OkWithData(ctx, map[string]interface{}{
-			"url":   param.PreviousPath,
-			"token": h.authSrv().AddToken(),
-		})
+		response.OkWithData(
+			ctx, map[string]interface{}{
+				"url":   param.PreviousPath,
+				"token": h.authSrv().AddToken(),
+			},
+		)
 		return
 	}
 
@@ -213,13 +241,17 @@ func (h *Handler) EditForm(ctx *context.Context) {
 	}
 
 	if param.IsIframe {
-		ctx.HTML(http.StatusOK, fmt.Sprintf(`<script>
+		ctx.HTML(
+			http.StatusOK, fmt.Sprintf(
+				`<script>
 		swal('%s', '', 'success');
 		setTimeout(function(){
 			$("#%s", window.parent.document).hide();
 			$('.modal-backdrop.fade.in', window.parent.document).hide();
 		}, 1000)
-</script>`, language.Get("success"), param.IframeID))
+</script>`, language.Get("success"), param.IframeID,
+			),
+		)
 		return
 	}
 

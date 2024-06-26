@@ -6,18 +6,18 @@ import (
 	"os/signal"
 	"time"
 
-	_ "github.com/GoAdminGroup/go-admin/adapter/gf2"
-	_ "github.com/GoAdminGroup/go-admin/modules/db/drivers/mysql"
+	_ "github.com/go-hq/go-admin/adapter/gf2"
+	_ "github.com/go-hq/go-admin/modules/db/drivers/mysql"
 
-	"github.com/GoAdminGroup/go-admin/engine"
-	"github.com/GoAdminGroup/go-admin/examples/datamodel"
-	"github.com/GoAdminGroup/go-admin/modules/config"
+	"github.com/go-hq/go-admin/engine"
+	"github.com/go-hq/go-admin/examples/datamodel"
+	"github.com/go-hq/go-admin/modules/config"
 
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/plugins/example"
-	"github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/chartjs"
-	"github.com/GoAdminGroup/themes/adminlte"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/plugins/example"
+	"github.com/go-hq/go-admin/template"
+	"github.com/go-hq/go-admin/template/chartjs"
+	"github.com/go-hq/themes/adminlte"
 	"github.com/gogf/gf/v2/frame/g"
 )
 
@@ -40,8 +40,8 @@ func main() {
 				ConnMaxLifetime: time.Hour,
 				Driver:          config.DriverMysql,
 
-				//Driver: config.DriverSqlite,
-				//File:   "../datamodel/admin.db",
+				// Driver: config.DriverSqlite,
+				// File:   "../datamodel/admin.db",
 			},
 		},
 		UrlPrefix: "admin",

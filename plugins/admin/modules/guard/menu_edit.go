@@ -4,10 +4,10 @@ import (
 	"html/template"
 	"strconv"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/auth"
-	"github.com/GoAdminGroup/go-admin/modules/errors"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/auth"
+	"github.com/go-hq/go-admin/modules/errors"
+	"github.com/go-hq/go-admin/plugins/admin/modules/form"
 )
 
 type MenuEditParam struct {
@@ -47,17 +47,19 @@ func (g *Guard) MenuEdit(ctx *context.Context) {
 		alert = checkEmpty(ctx, "id", "title", "icon")
 	}
 
-	ctx.SetUserValue(editMenuParamKey, &MenuEditParam{
-		Id:         ctx.FormValue("id"),
-		Title:      ctx.FormValue("title"),
-		Header:     ctx.FormValue("header"),
-		PluginName: ctx.FormValue("plugin_name"),
-		ParentId:   int64(parentIdInt),
-		Icon:       ctx.FormValue("icon"),
-		Uri:        ctx.FormValue("uri"),
-		Roles:      ctx.Request.Form["roles[]"],
-		Alert:      alert,
-	})
+	ctx.SetUserValue(
+		editMenuParamKey, &MenuEditParam{
+			Id:         ctx.FormValue("id"),
+			Title:      ctx.FormValue("title"),
+			Header:     ctx.FormValue("header"),
+			PluginName: ctx.FormValue("plugin_name"),
+			ParentId:   int64(parentIdInt),
+			Icon:       ctx.FormValue("icon"),
+			Uri:        ctx.FormValue("uri"),
+			Roles:      ctx.Request.Form["roles[]"],
+			Alert:      alert,
+		},
+	)
 	ctx.Next()
 }
 

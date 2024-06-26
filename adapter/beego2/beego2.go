@@ -7,16 +7,16 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/GoAdminGroup/go-admin/adapter"
-	gctx "github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/engine"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/plugins"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
-	"github.com/GoAdminGroup/go-admin/template/types"
 	"github.com/beego/beego/v2/server/web"
 	"github.com/beego/beego/v2/server/web/context"
+	"github.com/go-hq/go-admin/adapter"
+	gctx "github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/engine"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/constant"
+	"github.com/go-hq/go-admin/plugins"
+	"github.com/go-hq/go-admin/plugins/admin/models"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 type Beego2 struct {
@@ -37,7 +37,9 @@ func (bee2 *Beego2) Use(app interface{}, plugins []plugins.Plugin) error {
 	return bee2.GetUse(app, plugins, bee2)
 }
 
-func (bee2 *Beego2) Content(ctx interface{}, getPanelFn types.GetPanelFn, fn gctx.NodeProcessor, navButtons ...types.Button) {
+func (bee2 *Beego2) Content(
+	ctx interface{}, getPanelFn types.GetPanelFn, fn gctx.NodeProcessor, navButtons ...types.Button,
+) {
 	bee2.GetContent(ctx, getPanelFn, bee2, navButtons, fn)
 }
 
@@ -46,26 +48,28 @@ func (bee2 *Beego2) User(ctx interface{}) (models.UserModel, bool) {
 }
 
 func (bee2 *Beego2) AddHandler(method, path string, handlers gctx.Handlers) {
-	bee2.app.Handlers.AddMethod(method, path, func(c *context.Context) {
-		for key, value := range c.Input.Params() {
-			if c.Request.URL.RawQuery == "" {
-				c.Request.URL.RawQuery += strings.ReplaceAll(key, ":", "") + "=" + value
-			} else {
-				c.Request.URL.RawQuery += "&" + strings.ReplaceAll(key, ":", "") + "=" + value
+	bee2.app.Handlers.AddMethod(
+		method, path, func(c *context.Context) {
+			for key, value := range c.Input.Params() {
+				if c.Request.URL.RawQuery == "" {
+					c.Request.URL.RawQuery += strings.ReplaceAll(key, ":", "") + "=" + value
+				} else {
+					c.Request.URL.RawQuery += "&" + strings.ReplaceAll(key, ":", "") + "=" + value
+				}
 			}
-		}
-		ctx := gctx.NewContext(c.Request)
-		ctx.SetHandlers(handlers).Next()
-		for key, head := range ctx.Response.Header {
-			c.ResponseWriter.Header().Add(key, head[0])
-		}
-		c.ResponseWriter.WriteHeader(ctx.Response.StatusCode)
-		if ctx.Response.Body != nil {
-			buf := new(bytes.Buffer)
-			_, _ = buf.ReadFrom(ctx.Response.Body)
-			c.WriteString(buf.String())
-		}
-	})
+			ctx := gctx.NewContext(c.Request)
+			ctx.SetHandlers(handlers).Next()
+			for key, head := range ctx.Response.Header {
+				c.ResponseWriter.Header().Add(key, head[0])
+			}
+			c.ResponseWriter.WriteHeader(ctx.Response.StatusCode)
+			if ctx.Response.Body != nil {
+				buf := new(bytes.Buffer)
+				_, _ = buf.ReadFrom(ctx.Response.Body)
+				c.WriteString(buf.String())
+			}
+		},
+	)
 }
 
 func (bee2 *Beego2) SetApp(app interface{}) error {

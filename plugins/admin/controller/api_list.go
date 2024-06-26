@@ -1,10 +1,10 @@
 package controller
 
 import (
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/parameter"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/response"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	"github.com/go-hq/go-admin/plugins/admin/modules/parameter"
+	"github.com/go-hq/go-admin/plugins/admin/modules/response"
 )
 
 func (h *Handler) ApiList(ctx *context.Context) {
@@ -12,8 +12,10 @@ func (h *Handler) ApiList(ctx *context.Context) {
 
 	panel := h.table(prefix, ctx)
 
-	params := parameter.GetParam(ctx.Request.URL, panel.GetInfo().DefaultPageSize, panel.GetInfo().SortField,
-		panel.GetInfo().GetSort())
+	params := parameter.GetParam(
+		ctx.Request.URL, panel.GetInfo().DefaultPageSize, panel.GetInfo().SortField,
+		panel.GetInfo().GetSort(),
+	)
 
 	panel, panelInfo, urls, err := h.showTableData(ctx, prefix, params, panel, "api_")
 	if err != nil {
@@ -21,19 +23,21 @@ func (h *Handler) ApiList(ctx *context.Context) {
 		return
 	}
 
-	response.OkWithData(ctx, map[string]interface{}{
-		"panel":  panelInfo,
-		"footer": panelInfo.Paginator.GetContent() + panel.GetInfo().FooterHtml,
-		"header": aDataTable(ctx).GetDataTableHeader() + panel.GetInfo().HeaderHtml,
-		"prefix": h.config.PrefixFixSlash(),
-		"urls": map[string]string{
-			"edit":   urls[0],
-			"new":    urls[1],
-			"delete": urls[2],
-			"export": urls[3],
-			"detail": urls[4],
-			"info":   urls[5],
-			"update": urls[6],
+	response.OkWithData(
+		ctx, map[string]interface{}{
+			"panel":  panelInfo,
+			"footer": panelInfo.Paginator.GetContent() + panel.GetInfo().FooterHtml,
+			"header": aDataTable(ctx).GetDataTableHeader() + panel.GetInfo().HeaderHtml,
+			"prefix": h.config.PrefixFixSlash(),
+			"urls": map[string]string{
+				"edit":   urls[0],
+				"new":    urls[1],
+				"delete": urls[2],
+				"export": urls[3],
+				"detail": urls[4],
+				"info":   urls[5],
+				"update": urls[6],
+			},
 		},
-	})
+	)
 }

@@ -14,17 +14,17 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	c "github.com/GoAdminGroup/go-admin/modules/config"
-	errors2 "github.com/GoAdminGroup/go-admin/modules/errors"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/modules/logger"
-	"github.com/GoAdminGroup/go-admin/modules/menu"
-	"github.com/GoAdminGroup/go-admin/modules/system"
-	"github.com/GoAdminGroup/go-admin/modules/utils"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
-	"github.com/GoAdminGroup/go-admin/template/login"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	c "github.com/go-hq/go-admin/modules/config"
+	errors2 "github.com/go-hq/go-admin/modules/errors"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/modules/logger"
+	"github.com/go-hq/go-admin/modules/menu"
+	"github.com/go-hq/go-admin/modules/system"
+	"github.com/go-hq/go-admin/modules/utils"
+	"github.com/go-hq/go-admin/plugins/admin/models"
+	"github.com/go-hq/go-admin/template/login"
+	"github.com/go-hq/go-admin/template/types"
 	"golang.org/x/text/cases"
 	textLang "golang.org/x/text/language"
 )
@@ -211,7 +211,9 @@ func VersionCompare(toCompare string, versions []string) bool {
 	return false
 }
 
-func GetPageContentFromPageType(ctx *context.Context, title, desc, msg string, pt PageType) (template.HTML, template.HTML, template.HTML) {
+func GetPageContentFromPageType(ctx *context.Context, title, desc, msg string, pt PageType) (
+	template.HTML, template.HTML, template.HTML,
+) {
 	if c.GetDebug() {
 		return template.HTML(title), template.HTML(desc), Default(ctx).Alert().SetTitle(errors2.MsgWithIcon).Warning(msg)
 	}
@@ -237,7 +239,10 @@ func GetPageContentFromPageType(ctx *context.Context, title, desc, msg string, p
 	}
 }
 
-var DefaultThemeNames = []string{"sword", "adminlte"}
+var DefaultThemeNames = []string{
+	"sword",
+	"adminlte",
+}
 
 func Themes() []string {
 	names := make([]string, len(templateMap))
@@ -284,8 +289,8 @@ type Component interface {
 	// {{.UrlPrefix}}/assets/login/css/bootstrap.min.css => login/css/bootstrap.min.css
 	//
 	// See:
-	// https://github.com/GoAdminGroup/go-admin/blob/master/template/login/theme1.tmpl#L32
-	// https://github.com/GoAdminGroup/go-admin/blob/master/template/login/list.go
+	// https://github.com/go-hq/go-admin/blob/master/template/login/theme1.tmpl#L32
+	// https://github.com/go-hq/go-admin/blob/master/template/login/list.go
 	GetAssetList() []string
 
 	// GetAsset return the asset content according to the corresponding url suffix.
@@ -458,22 +463,30 @@ func GetExecuteOptions(options []ExecuteOptions) ExecuteOptions {
 func Execute(ctx *context.Context, param *ExecuteParam) *bytes.Buffer {
 
 	buf := new(bytes.Buffer)
-	err := param.Tmpl.ExecuteTemplate(buf, param.TmplName,
-		types.NewPage(ctx, &types.NewPageParam{
-			User:       param.User,
-			Menu:       param.Menu,
-			Assets:     GetComponentAssetImportHTML(ctx),
-			Buttons:    param.Buttons,
-			Iframe:     param.Iframe,
-			UpdateMenu: param.IsPjax,
-			Panel: param.Panel.
-				GetContent(append([]bool{param.Config.IsProductionEnvironment() && !param.NoCompress},
-					param.Animation)...).AddJS(param.Menu.GetUpdateJS(param.IsPjax)).
-				AddJS(updateNavAndLogoJS(param.Logo)).AddJS(updateNavJS(param.IsPjax)),
-			TmplHeadHTML: Default(ctx).GetHeadHTML(),
-			TmplFootJS:   Default(ctx).GetFootJS(),
-			Logo:         param.Logo,
-		}))
+	err := param.Tmpl.ExecuteTemplate(
+		buf, param.TmplName,
+		types.NewPage(
+			ctx, &types.NewPageParam{
+				User:       param.User,
+				Menu:       param.Menu,
+				Assets:     GetComponentAssetImportHTML(ctx),
+				Buttons:    param.Buttons,
+				Iframe:     param.Iframe,
+				UpdateMenu: param.IsPjax,
+				Panel: param.Panel.
+					GetContent(
+						append(
+							[]bool{param.Config.IsProductionEnvironment() && !param.NoCompress},
+							param.Animation,
+						)...,
+					).AddJS(param.Menu.GetUpdateJS(param.IsPjax)).
+					AddJS(updateNavAndLogoJS(param.Logo)).AddJS(updateNavJS(param.IsPjax)),
+				TmplHeadHTML: Default(ctx).GetHeadHTML(),
+				TmplFootJS:   Default(ctx).GetFootJS(),
+				Logo:         param.Logo,
+			},
+		),
+	)
 	if err != nil {
 		logger.Error("template execute error", err)
 	}

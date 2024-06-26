@@ -12,14 +12,14 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/GoAdminGroup/go-admin/adapter"
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/engine"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/plugins"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/adapter"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/engine"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/plugins"
+	"github.com/go-hq/go-admin/plugins/admin/models"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	"github.com/go-hq/go-admin/template/types"
 	"github.com/gobuffalo/buffalo"
 )
 
@@ -45,7 +45,9 @@ func (bu *Buffalo) Use(app interface{}, plugs []plugins.Plugin) error {
 }
 
 // Content implements the method Adapter.Content.
-func (bu *Buffalo) Content(ctx interface{}, getPanelFn types.GetPanelFn, fn context.NodeProcessor, btns ...types.Button) {
+func (bu *Buffalo) Content(
+	ctx interface{}, getPanelFn types.GetPanelFn, fn context.NodeProcessor, btns ...types.Button,
+) {
 	bu.GetContent(ctx, getPanelFn, bu, btns, fn)
 }
 
@@ -53,9 +55,11 @@ type HandlerFunc func(ctx buffalo.Context) (types.Panel, error)
 
 func Content(handler HandlerFunc) buffalo.Handler {
 	return func(ctx buffalo.Context) error {
-		engine.Content(ctx, func(ctx interface{}) (types.Panel, error) {
-			return handler(ctx.(buffalo.Context))
-		})
+		engine.Content(
+			ctx, func(ctx interface{}) (types.Panel, error) {
+				return handler(ctx.(buffalo.Context))
+			},
+		)
 		return nil
 	}
 }
@@ -81,38 +85,40 @@ func (bu *Buffalo) AddHandler(method, path string, handlers context.Handlers) {
 	url = reg1.ReplaceAllString(url, "{$1}/")
 	url = reg2.ReplaceAllString(url, "{$1}")
 
-	getHandleFunc(bu.app, strings.ToUpper(method))(url, func(c buffalo.Context) error {
+	getHandleFunc(bu.app, strings.ToUpper(method))(
+		url, func(c buffalo.Context) error {
 
-		if c.Request().URL.Path[len(c.Request().URL.Path)-1] == '/' {
-			c.Request().URL.Path = c.Request().URL.Path[:len(c.Request().URL.Path)-1]
-		}
-
-		ctx := context.NewContext(c.Request())
-
-		params := c.Params().(neturl.Values)
-
-		for key, param := range params {
-			if c.Request().URL.RawQuery == "" {
-				c.Request().URL.RawQuery += strings.ReplaceAll(key, ":", "") + "=" + param[0]
-			} else {
-				c.Request().URL.RawQuery += "&" + strings.ReplaceAll(key, ":", "") + "=" + param[0]
+			if c.Request().URL.Path[len(c.Request().URL.Path)-1] == '/' {
+				c.Request().URL.Path = c.Request().URL.Path[:len(c.Request().URL.Path)-1]
 			}
-		}
 
-		ctx.SetHandlers(handlers).Next()
-		for key, head := range ctx.Response.Header {
-			c.Response().Header().Set(key, head[0])
-		}
-		if ctx.Response.Body != nil {
-			buf := new(bytes.Buffer)
-			_, _ = buf.ReadFrom(ctx.Response.Body)
-			c.Response().WriteHeader(ctx.Response.StatusCode)
-			_, _ = c.Response().Write(buf.Bytes())
-		} else {
-			c.Response().WriteHeader(ctx.Response.StatusCode)
-		}
-		return nil
-	})
+			ctx := context.NewContext(c.Request())
+
+			params := c.Params().(neturl.Values)
+
+			for key, param := range params {
+				if c.Request().URL.RawQuery == "" {
+					c.Request().URL.RawQuery += strings.ReplaceAll(key, ":", "") + "=" + param[0]
+				} else {
+					c.Request().URL.RawQuery += "&" + strings.ReplaceAll(key, ":", "") + "=" + param[0]
+				}
+			}
+
+			ctx.SetHandlers(handlers).Next()
+			for key, head := range ctx.Response.Header {
+				c.Response().Header().Set(key, head[0])
+			}
+			if ctx.Response.Body != nil {
+				buf := new(bytes.Buffer)
+				_, _ = buf.ReadFrom(ctx.Response.Body)
+				c.Response().WriteHeader(ctx.Response.StatusCode)
+				_, _ = c.Response().Write(buf.Bytes())
+			} else {
+				c.Response().WriteHeader(ctx.Response.StatusCode)
+			}
+			return nil
+		},
+	)
 }
 
 // HandleFun is type of route methods of buffalo.

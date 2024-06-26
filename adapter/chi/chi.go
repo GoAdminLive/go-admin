@@ -12,15 +12,15 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/GoAdminGroup/go-admin/adapter"
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/engine"
-	cfg "github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/plugins"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/template/types"
 	"github.com/go-chi/chi"
+	"github.com/go-hq/go-admin/adapter"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/engine"
+	cfg "github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/plugins"
+	"github.com/go-hq/go-admin/plugins/admin/models"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 // Chi structure value is a Chi GoAdmin adapter.
@@ -57,9 +57,11 @@ func Content(handler HandlerFunc) http.HandlerFunc {
 			Request:  request,
 			Response: writer,
 		}
-		engine.Content(ctx, func(ctx interface{}) (types.Panel, error) {
-			return handler(ctx.(Context))
-		})
+		engine.Content(
+			ctx, func(ctx interface{}) (types.Panel, error) {
+				return handler(ctx.(Context))
+			},
+		)
 	}
 }
 
@@ -88,37 +90,39 @@ func (ch *Chi) AddHandler(method, path string, handlers context.Handlers) {
 		url = url[1:]
 	}
 
-	getHandleFunc(ch.app, strings.ToUpper(method))(url, func(w http.ResponseWriter, r *http.Request) {
+	getHandleFunc(ch.app, strings.ToUpper(method))(
+		url, func(w http.ResponseWriter, r *http.Request) {
 
-		if r.URL.Path[len(r.URL.Path)-1] == '/' {
-			r.URL.Path = r.URL.Path[:len(r.URL.Path)-1]
-		}
-
-		ctx := context.NewContext(r)
-
-		params := chi.RouteContext(r.Context()).URLParams
-
-		for i := 0; i < len(params.Values); i++ {
-			if r.URL.RawQuery == "" {
-				r.URL.RawQuery += strings.ReplaceAll(params.Keys[i], ":", "") + "=" + params.Values[i]
-			} else {
-				r.URL.RawQuery += "&" + strings.ReplaceAll(params.Keys[i], ":", "") + "=" + params.Values[i]
+			if r.URL.Path[len(r.URL.Path)-1] == '/' {
+				r.URL.Path = r.URL.Path[:len(r.URL.Path)-1]
 			}
-		}
 
-		ctx.SetHandlers(handlers).Next()
-		for key, head := range ctx.Response.Header {
-			w.Header().Set(key, head[0])
-		}
-		if ctx.Response.Body != nil {
-			buf := new(bytes.Buffer)
-			_, _ = buf.ReadFrom(ctx.Response.Body)
-			w.WriteHeader(ctx.Response.StatusCode)
-			_, _ = w.Write(buf.Bytes())
-		} else {
-			w.WriteHeader(ctx.Response.StatusCode)
-		}
-	})
+			ctx := context.NewContext(r)
+
+			params := chi.RouteContext(r.Context()).URLParams
+
+			for i := 0; i < len(params.Values); i++ {
+				if r.URL.RawQuery == "" {
+					r.URL.RawQuery += strings.ReplaceAll(params.Keys[i], ":", "") + "=" + params.Values[i]
+				} else {
+					r.URL.RawQuery += "&" + strings.ReplaceAll(params.Keys[i], ":", "") + "=" + params.Values[i]
+				}
+			}
+
+			ctx.SetHandlers(handlers).Next()
+			for key, head := range ctx.Response.Header {
+				w.Header().Set(key, head[0])
+			}
+			if ctx.Response.Body != nil {
+				buf := new(bytes.Buffer)
+				_, _ = buf.ReadFrom(ctx.Response.Body)
+				w.WriteHeader(ctx.Response.StatusCode)
+				_, _ = w.Write(buf.Bytes())
+			} else {
+				w.WriteHeader(ctx.Response.StatusCode)
+			}
+		},
+	)
 }
 
 // HandleFun is type of route methods of chi.

@@ -6,14 +6,14 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/modules/utils"
-	template2 "github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/icon"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/constant"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/modules/utils"
+	template2 "github.com/go-hq/go-admin/template"
+	"github.com/go-hq/go-admin/template/icon"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 type PopUpAction struct {
@@ -108,12 +108,14 @@ func PopUpWithIframe(id, title string, data IframeData, width, height string) *P
 		if data.AddParameterFn != nil {
 			param = data.AddParameterFn(ctx)
 		}
-		return true, "ok", fmt.Sprintf(`<iframe style="width:%s;height:%s;" 
+		return true, "ok", fmt.Sprintf(
+			`<iframe style="width:%s;height:%s;" 
 			scrolling="auto" 
 			allowtransparency="true" 
 			frameborder="0"
 			src="%s__goadmin_iframe=true&__go_admin_no_animation_=true&__goadmin_iframe_id=%s`+param+`"><iframe>`,
-			data.Width, data.Height, data.Src, modalID)
+			data.Width, data.Height, data.Src, modalID,
+		)
 	}
 	return &PopUpAction{
 		Url:        URL(id),
@@ -177,15 +179,17 @@ func PopUpWithForm(data PopUpData, fn GetForm, url string) *PopUpAction {
 
 		return true, "ok", template2.Default(ctx).Box().
 			SetHeader("").
-			SetBody(template2.Default(ctx).Form().
-				SetContent(fields).
-				SetTabHeaders(tabHeaders).
-				SetTabContents(tabFields).
-				SetAjax(panel.AjaxSuccessJS, panel.AjaxErrorJS).
-				SetPrefix(config.PrefixFixSlash()).
-				SetUrl(url).
-				SetOperationFooter(col1 + col2).GetContent()).
-				SetStyle(template.HTMLAttr(`overflow-x: hidden;overflow-y: hidden;`)).
+			SetBody(
+				template2.Default(ctx).Form().
+					SetContent(fields).
+					SetTabHeaders(tabHeaders).
+					SetTabContents(tabFields).
+					SetAjax(panel.AjaxSuccessJS, panel.AjaxErrorJS).
+					SetPrefix(config.PrefixFixSlash()).
+					SetUrl(url).
+					SetOperationFooter(col1 + col2).GetContent(),
+			).
+			SetStyle(template.HTMLAttr(`overflow-x: hidden;overflow-y: hidden;`)).
 			GetContent()
 	}
 	return &PopUpAction{
@@ -233,14 +237,16 @@ func PopUpWithCtxForm(data PopUpData, fn GetCtxForm, url string) *PopUpAction {
 
 		return true, "ok", template2.Default(ctx).Box().
 			SetHeader("").
-			SetBody(template2.Default(ctx).Form().
-				SetContent(fields).
-				SetTabHeaders(tabHeaders).
-				SetTabContents(tabFields).
-				SetAjax(panel.AjaxSuccessJS, panel.AjaxErrorJS).
-				SetPrefix(config.PrefixFixSlash()).
-				SetUrl(url).
-				SetOperationFooter(col1 + col2).GetContent()).
+			SetBody(
+				template2.Default(ctx).Form().
+					SetContent(fields).
+					SetTabHeaders(tabHeaders).
+					SetTabContents(tabFields).
+					SetAjax(panel.AjaxSuccessJS, panel.AjaxErrorJS).
+					SetPrefix(config.PrefixFixSlash()).
+					SetUrl(url).
+					SetOperationFooter(col1 + col2).GetContent(),
+			).
 			GetContent()
 	}
 	return &PopUpAction{
@@ -284,9 +290,12 @@ func (pop *PopUpAction) GetCallbacks() context.Node {
 }
 
 func (pop *PopUpAction) Js() template.JS {
-	return template.JS(`$('`+pop.BtnId+`').on('`+string(pop.Event)+`', function (event) {
+	return template.JS(
+		`$('`+pop.BtnId+`').on('`+string(pop.Event)+`', function (event) {
 						let data = `+pop.Data.JSON()+`;
-						`) + pop.ParameterJS + template.JS(`
+						`,
+	) + pop.ParameterJS + template.JS(
+		`
 						let id = $(this).attr("data-id");
 						if (id && id !== "") {
 							data["id"] = id;
@@ -318,7 +327,8 @@ func (pop *PopUpAction) Js() template.JS {
 								}, 500)
 							},
                         });
-            		});`)
+            		});`,
+	)
 }
 
 func (pop *PopUpAction) BtnAttribute() template.HTML {

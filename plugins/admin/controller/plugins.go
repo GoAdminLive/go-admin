@@ -10,24 +10,24 @@ import (
 	"strings"
 	"time"
 
-	"github.com/GoAdminGroup/go-admin/modules/system"
+	"github.com/go-hq/go-admin/modules/system"
 
-	"github.com/GoAdminGroup/go-admin/modules/logger"
+	"github.com/go-hq/go-admin/modules/logger"
 
-	"github.com/GoAdminGroup/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/config"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/auth"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/modules/remote_server"
-	"github.com/GoAdminGroup/go-admin/modules/utils"
-	"github.com/GoAdminGroup/go-admin/plugins"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/guard"
-	template2 "github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/types"
-	"github.com/GoAdminGroup/go-admin/template/types/form"
-	"github.com/GoAdminGroup/html"
 	"github.com/gin-gonic/gin"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/auth"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/modules/remote_server"
+	"github.com/go-hq/go-admin/modules/utils"
+	"github.com/go-hq/go-admin/plugins"
+	"github.com/go-hq/go-admin/plugins/admin/modules/guard"
+	template2 "github.com/go-hq/go-admin/template"
+	"github.com/go-hq/go-admin/template/types"
+	"github.com/go-hq/go-admin/template/types/form"
+	"github.com/go-hq/html"
 )
 
 func (h *Handler) Plugins(ctx *context.Context) {
@@ -36,12 +36,16 @@ func (h *Handler) Plugins(ctx *context.Context) {
 	rows := template.HTML("")
 	if h.config.IsNotProductionEnvironment() {
 		getMoreCover := config.Url("/assets/dist/img/plugin_more.png")
-		list = list.Add(plugins.NewBasePluginWithInfoAndIndexURL(plugins.Info{
-			Title:     "get more plugins",
-			Name:      "",
-			MiniCover: getMoreCover,
-			Cover:     getMoreCover,
-		}, config.Url("/plugins/store"), true))
+		list = list.Add(
+			plugins.NewBasePluginWithInfoAndIndexURL(
+				plugins.Info{
+					Title:     "get more plugins",
+					Name:      "",
+					MiniCover: getMoreCover,
+					Cover:     getMoreCover,
+				}, config.Url("/plugins/store"), true,
+			),
+		)
 	}
 	for i := 0; i < len(list); i += 6 {
 		box1 := aBox(ctx).
@@ -60,12 +64,14 @@ func (h *Handler) Plugins(ctx *context.Context) {
 		}
 		rows += aRow(ctx).SetContent(content).GetContent()
 	}
-	h.HTML(ctx, auth.Auth(ctx), types.Panel{
-		Content:     rows,
-		CSS:         pluginsPageCSS,
-		Description: language.GetFromHtml("plugins"),
-		Title:       language.GetFromHtml("plugins"),
-	})
+	h.HTML(
+		ctx, auth.Auth(ctx), types.Panel{
+			Content:     rows,
+			CSS:         pluginsPageCSS,
+			Description: language.GetFromHtml("plugins"),
+			Title:       language.GetFromHtml("plugins"),
+		},
+	)
 }
 
 func (h *Handler) PluginStore(ctx *context.Context) {
@@ -81,14 +87,17 @@ func (h *Handler) PluginStore(ctx *context.Context) {
 				Lang:       h.config.Language,
 				Version:    system.Version(),
 				CategoryId: ctx.Query("category_id"),
-			}, ctx.Cookie(remote_server.TokenKey))
+			}, ctx.Cookie(remote_server.TokenKey),
+		)
 		rows = template.HTML(page.HTML)
 	)
 
 	if ctx.Query("page") == "" && len(list) == 0 {
-		h.HTML(ctx, auth.Auth(ctx), types.Panel{
-			Content: pluginStore404(),
-			CSS: template.CSS(`.plugin-store-404-content {
+		h.HTML(
+			ctx, auth.Auth(ctx), types.Panel{
+				Content: pluginStore404(),
+				CSS: template.CSS(
+					`.plugin-store-404-content {
     margin: auto;
     width: 80%;
     text-align: center;
@@ -96,10 +105,12 @@ func (h *Handler) PluginStore(ctx *context.Context) {
     font-size: 17px;
     height: 250px;
     line-height: 250px;
-}`),
-			Description: language.GetFromHtml("plugin store"),
-			Title:       language.GetFromHtml("plugin store"),
-		})
+}`,
+				),
+				Description: language.GetFromHtml("plugin store"),
+				Title:       language.GetFromHtml("plugin store"),
+			},
+		)
 		return
 	}
 
@@ -141,25 +152,49 @@ func (h *Handler) PluginStore(ctx *context.Context) {
 
 	loginPopupModal := template2.Default(ctx).Popup().SetID("login-popup-modal").
 		SetTitle(plugWordHTML("login to goadmin member system")).
-		SetBody(aForm(ctx).SetContent(types.FormFields{
-			{Field: "name", Head: plugWord("account"), FormType: form.Text, Editable: true},
-			{Field: "password", Head: plugWord("password"), FormType: form.Password, Editable: true,
-				HelpMsg: template.HTML(fmt.Sprintf(plugWord("no account? click %s here %s to register."),
-					"<a target='_blank' href='http://www.go-admin.cn/register'>", "</a>"))},
-		}).GetContent()).
+		SetBody(
+			aForm(ctx).SetContent(
+				types.FormFields{
+					{
+						Field:    "name",
+						Head:     plugWord("account"),
+						FormType: form.Text,
+						Editable: true,
+					},
+					{
+						Field:    "password",
+						Head:     plugWord("password"),
+						FormType: form.Password,
+						Editable: true,
+						HelpMsg: template.HTML(
+							fmt.Sprintf(
+								plugWord("no account? click %s here %s to register."),
+								"<a target='_blank' href='http://www.go-admin.cn/register'>", "</a>",
+							),
+						),
+					},
+				},
+			).GetContent(),
+		).
 		SetWidth("540px").
 		SetHeight("250px").
-		SetFooterHTML(template.HTML(`<button type="button" class="btn btn-primary" onclick="login()">` +
-			plugWord("login") + `</button>`)).
+		SetFooterHTML(
+			template.HTML(
+				`<button type="button" class="btn btn-primary" onclick="login()">` +
+					plugWord("login") + `</button>`,
+			),
+		).
 		GetContent()
 
-	h.HTML(ctx, auth.Auth(ctx), types.Panel{
-		Content:     rows + detailPopupModal + buyPopupModal + loginPopupModal,
-		CSS:         pluginsStorePageCSS + template.CSS(page.CSS),
-		JS:          template.JS(page.JS) + GetPluginsPageJS(PluginsPageJSData{Prefix: h.config.Prefix()}),
-		Description: language.GetFromHtml("plugin store"),
-		Title:       language.GetFromHtml("plugin store"),
-	})
+	h.HTML(
+		ctx, auth.Auth(ctx), types.Panel{
+			Content:     rows + detailPopupModal + buyPopupModal + loginPopupModal,
+			CSS:         pluginsStorePageCSS + template.CSS(page.CSS),
+			JS:          template.JS(page.JS) + GetPluginsPageJS(PluginsPageJSData{Prefix: h.config.Prefix()}),
+			Description: language.GetFromHtml("plugin store"),
+			Title:       language.GetFromHtml("plugin store"),
+		},
+	)
 }
 
 func (h *Handler) PluginDetail(ctx *context.Context) {
@@ -168,10 +203,12 @@ func (h *Handler) PluginDetail(ctx *context.Context) {
 
 	plug, exist := plugins.FindByNameAll(name)
 	if !exist {
-		ctx.JSON(http.StatusOK, gin.H{
-			"code": 400,
-			"msg":  "bad request",
-		})
+		ctx.JSON(
+			http.StatusOK, gin.H{
+				"code": 400,
+				"msg":  "bad request",
+			},
+		)
 		return
 	}
 
@@ -181,27 +218,29 @@ func (h *Handler) PluginDetail(ctx *context.Context) {
 		info.MiniCover = config.Url("/assets/dist/img/plugin_default.png")
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"code": 0,
-		"msg":  "ok",
-		"data": gin.H{
-			"mini_cover":      info.MiniCover,
-			"title":           language.GetWithScope(info.Title, name),
-			"author":          fmt.Sprintf(plugWord("provided by %s"), language.GetWithScope(info.Author, name)),
-			"introduction":    language.GetWithScope(info.Description, name),
-			"website":         language.GetWithScope(info.Website, name),
-			"version":         language.GetWithScope(info.Version, name),
-			"created_at":      language.GetWithScope(info.CreateDate.Format("2006-01-02"), name),
-			"updated_at":      language.GetWithScope(info.UpdateDate.Format("2006-01-02"), name),
-			"downloaded":      info.Downloaded,
-			"download_reboot": plugins.Exist(plug),
-			"skip":            info.SkipInstallation,
-			"uuid":            info.Uuid,
-			"upgrade":         info.CanUpdate,
-			"install":         plug.IsInstalled(),
-			"free":            info.IsFree(),
+	ctx.JSON(
+		http.StatusOK, gin.H{
+			"code": 0,
+			"msg":  "ok",
+			"data": gin.H{
+				"mini_cover":      info.MiniCover,
+				"title":           language.GetWithScope(info.Title, name),
+				"author":          fmt.Sprintf(plugWord("provided by %s"), language.GetWithScope(info.Author, name)),
+				"introduction":    language.GetWithScope(info.Description, name),
+				"website":         language.GetWithScope(info.Website, name),
+				"version":         language.GetWithScope(info.Version, name),
+				"created_at":      language.GetWithScope(info.CreateDate.Format("2006-01-02"), name),
+				"updated_at":      language.GetWithScope(info.UpdateDate.Format("2006-01-02"), name),
+				"downloaded":      info.Downloaded,
+				"download_reboot": plugins.Exist(plug),
+				"skip":            info.SkipInstallation,
+				"uuid":            info.Uuid,
+				"upgrade":         info.CanUpdate,
+				"install":         plug.IsInstalled(),
+				"free":            info.IsFree(),
+			},
 		},
-	})
+	)
 }
 
 type PluginBoxParam struct {
@@ -232,11 +271,13 @@ func (h *Handler) pluginStoreBox(ctx *context.Context, param PluginBoxParam) tem
 		cover = template2.HTML(config.Url("/assets/dist/img/plugin_default.png"))
 	}
 	col1 := html.DivEl().SetClass("plugin-store-item-img").
-		SetContent(aImage(ctx).
-			SetSrc(cover).
-			SetHeight("110px").
-			SetWidth("110px").
-			GetContent()).
+		SetContent(
+			aImage(ctx).
+				SetSrc(cover).
+				SetHeight("110px").
+				SetWidth("110px").
+				GetContent(),
+		).
 		Get()
 	footer := html.ButtonEl().SetClass(pluginBtnClass("plugin-info")...).
 		SetAttr("onclick", `pluginDetail('`+param.Name+`','`+param.Info.Uuid+`')`).
@@ -307,51 +348,63 @@ func (h *Handler) pluginBox(ctx *context.Context, param PluginBoxParam) template
 		jump = h.config.Url("/info/plugin_" + param.Name + "/new")
 		label = html.SpanEl().SetClass("plugin-item-label").SetContent(language.GetFromHtml("uninstalled")).Get()
 	}
-	col1 := html.AEl().SetContent(html.DivEl().SetClass("plugin-item-img").
-		SetContent(aImage(ctx).
-			SetSrc(cover).
-			GetContent()+
-			html.PEl().SetContent(language.GetFromHtml(template.HTML(param.Info.Title), param.Name)).
-				SetClass("plugin-item-title").Get()).
-		Get()+label).SetAttr("href", jump).Get()
+	col1 := html.AEl().SetContent(
+		html.DivEl().SetClass("plugin-item-img").
+			SetContent(
+				aImage(ctx).
+					SetSrc(cover).
+					GetContent()+
+					html.PEl().SetContent(language.GetFromHtml(template.HTML(param.Info.Title), param.Name)).
+						SetClass("plugin-item-title").Get(),
+			).
+			Get()+label,
+	).SetAttr("href", jump).Get()
 	return col1
 }
 
 func (h *Handler) PluginDownload(ctx *context.Context) {
 
 	if !h.config.Debug {
-		ctx.JSON(http.StatusOK, map[string]interface{}{
-			"code": 400,
-			"msg":  plugWord("change to debug mode first"),
-		})
+		ctx.JSON(
+			http.StatusOK, map[string]interface{}{
+				"code": 400,
+				"msg":  plugWord("change to debug mode first"),
+			},
+		)
 		return
 	}
 
 	name := ctx.FormValue("name")
 
 	if name == "" {
-		ctx.JSON(http.StatusOK, map[string]interface{}{
-			"code": 400,
-			"msg":  plugWord("download fail, wrong name"),
-		})
+		ctx.JSON(
+			http.StatusOK, map[string]interface{}{
+				"code": 400,
+				"msg":  plugWord("download fail, wrong name"),
+			},
+		)
 		return
 	}
 
 	plug, exist := plugins.FindByNameAll(name)
 
 	if !exist {
-		ctx.JSON(http.StatusOK, map[string]interface{}{
-			"code": 400,
-			"msg":  plugWord("download fail, plugin not exist"),
-		})
+		ctx.JSON(
+			http.StatusOK, map[string]interface{}{
+				"code": 400,
+				"msg":  plugWord("download fail, plugin not exist"),
+			},
+		)
 		return
 	}
 
 	if !plug.GetInfo().IsFree() && !plug.GetInfo().HasBought {
-		ctx.JSON(http.StatusOK, map[string]interface{}{
-			"code": 400,
-			"msg":  plugWord("download fail, plugin has not been bought"),
-		})
+		ctx.JSON(
+			http.StatusOK, map[string]interface{}{
+				"code": 400,
+				"msg":  plugWord("download fail, plugin has not been bought"),
+			},
+		)
 		return
 	}
 
@@ -360,13 +413,17 @@ func (h *Handler) PluginDownload(ctx *context.Context) {
 
 	if !plug.GetInfo().IsFree() {
 		var err error
-		downloadURL, extraDownloadURL, err = remote_server.GetDownloadURL(plug.GetInfo().Uuid, ctx.Cookie(remote_server.TokenKey))
+		downloadURL, extraDownloadURL, err = remote_server.GetDownloadURL(
+			plug.GetInfo().Uuid, ctx.Cookie(remote_server.TokenKey),
+		)
 		if err != nil {
 			logger.ErrorCtx(ctx, "download plugins error: %+v", err)
-			ctx.JSON(http.StatusOK, map[string]interface{}{
-				"code": 500,
-				"msg":  plugWord("download fail"),
-			})
+			ctx.JSON(
+				http.StatusOK, map[string]interface{}{
+					"code": 500,
+					"msg":  plugWord("download fail"),
+				},
+			)
 			return
 		}
 	}
@@ -376,24 +433,30 @@ func (h *Handler) PluginDownload(ctx *context.Context) {
 	err := utils.DownloadTo(downloadURL, tempFile)
 
 	if err != nil {
-		logger.ErrorCtx(ctx, "download plugins error %+v", map[string]interface{}{
-			"error":       err,
-			"downloadURL": downloadURL,
-		})
-		ctx.JSON(http.StatusOK, map[string]interface{}{
-			"code": 500,
-			"msg":  plugWord("download fail"),
-		})
+		logger.ErrorCtx(
+			ctx, "download plugins error %+v", map[string]interface{}{
+				"error":       err,
+				"downloadURL": downloadURL,
+			},
+		)
+		ctx.JSON(
+			http.StatusOK, map[string]interface{}{
+				"code": 500,
+				"msg":  plugWord("download fail"),
+			},
+		)
 		return
 	}
 
 	gopath := os.Getenv("GOPATH")
 
 	if gopath == "" {
-		ctx.JSON(http.StatusOK, map[string]interface{}{
-			"code": 500,
-			"msg":  plugWord("golang develop environment does not exist"),
-		})
+		ctx.JSON(
+			http.StatusOK, map[string]interface{}{
+				"code": 500,
+				"msg":  plugWord("golang develop environment does not exist"),
+			},
+		)
 		return
 	}
 
@@ -410,14 +473,18 @@ func (h *Handler) PluginDownload(ctx *context.Context) {
 	err = utils.UnzipDir(tempFile, installPath)
 
 	if err != nil {
-		logger.ErrorCtx(ctx, "download plugins, unzip error %+v", map[string]interface{}{
-			"error":       err,
-			"installPath": installPath,
-		})
-		ctx.JSON(http.StatusOK, map[string]interface{}{
-			"code": 500,
-			"msg":  plugWord("download fail"),
-		})
+		logger.ErrorCtx(
+			ctx, "download plugins, unzip error %+v", map[string]interface{}{
+				"error":       err,
+				"installPath": installPath,
+			},
+		)
+		ctx.JSON(
+			http.StatusOK, map[string]interface{}{
+				"code": 500,
+				"msg":  plugWord("download fail"),
+			},
+		)
 		return
 	}
 
@@ -434,29 +501,37 @@ func (h *Handler) PluginDownload(ctx *context.Context) {
 			err = os.Rename(nowPath, rawPath+"@"+plug.GetInfo().Version)
 		}
 		if err != nil {
-			logger.ErrorCtx(ctx, "download plugins, rename error %+v", map[string]interface{}{
-				"error":   err,
-				"nowPath": nowPath,
-				"rawPath": rawPath,
-			})
-			ctx.JSON(http.StatusOK, map[string]interface{}{
-				"code": 500,
-				"msg":  plugWord("download fail"),
-			})
+			logger.ErrorCtx(
+				ctx, "download plugins, rename error %+v", map[string]interface{}{
+					"error":   err,
+					"nowPath": nowPath,
+					"rawPath": rawPath,
+				},
+			)
+			ctx.JSON(
+				http.StatusOK, map[string]interface{}{
+					"code": 500,
+					"msg":  plugWord("download fail"),
+				},
+			)
 			return
 		}
 	} else if gomodule != "off" {
 		rawPath := installPath + "/" + name
 		err = os.Rename(rawPath, rawPath+"@"+plug.GetInfo().Version)
 		if err != nil {
-			logger.ErrorCtx(ctx, "download plugins, rename error %+v", map[string]interface{}{
-				"error":   err,
-				"rawPath": rawPath,
-			})
-			ctx.JSON(http.StatusOK, map[string]interface{}{
-				"code": 500,
-				"msg":  plugWord("download fail"),
-			})
+			logger.ErrorCtx(
+				ctx, "download plugins, rename error %+v", map[string]interface{}{
+					"error":   err,
+					"rawPath": rawPath,
+				},
+			)
+			ctx.JSON(
+				http.StatusOK, map[string]interface{}{
+					"code": 500,
+					"msg":  plugWord("download fail"),
+				},
+			)
 			return
 		}
 	}
@@ -466,8 +541,10 @@ func (h *Handler) PluginDownload(ctx *context.Context) {
 		if err != nil {
 			logger.ErrorCtx(ctx, "read bootstrap file error: %+v", err)
 		} else {
-			err = os.WriteFile(h.config.BootstrapFilePath, []byte(string(content)+`
-import _ "`+plug.GetInfo().ModulePath+`"`), 0644)
+			err = os.WriteFile(
+				h.config.BootstrapFilePath, []byte(string(content)+`
+import _ "`+plug.GetInfo().ModulePath+`"`), 0644,
+			)
 			if err != nil {
 				logger.ErrorCtx(ctx, "write bootstrap file error: %+v", err)
 			}
@@ -486,8 +563,10 @@ import _ "`+plug.GetInfo().ModulePath+`"`), 0644)
 	// TODO: 实现运行环境与编译环境隔离
 
 	if plug.GetInfo().ExtraDownloadUrl != "" {
-		err = utils.DownloadTo(extraDownloadURL, "./"+plug.Name()+"_extra_"+
-			fmt.Sprintf("%d", time.Now().Unix())+".zip")
+		err = utils.DownloadTo(
+			extraDownloadURL, "./"+plug.Name()+"_extra_"+
+				fmt.Sprintf("%d", time.Now().Unix())+".zip",
+		)
 		if err != nil {
 			logger.ErrorCtx(ctx, "failed to download "+plug.Name()+" extra data: %+v", err)
 		}
@@ -496,33 +575,44 @@ import _ "`+plug.GetInfo().ModulePath+`"`), 0644)
 	plug.(*plugins.BasePlugin).Info.Downloaded = true
 	plug.(*plugins.BasePlugin).Info.CanUpdate = false
 
-	ctx.JSON(http.StatusOK, map[string]interface{}{
-		"code": 0,
-		"msg":  plugWord("download success, restart to install"),
-	})
+	ctx.JSON(
+		http.StatusOK, map[string]interface{}{
+			"code": 0,
+			"msg":  plugWord("download success, restart to install"),
+		},
+	)
 }
 
 func (h *Handler) ServerLogin(ctx *context.Context) {
 	param := guard.GetServerLoginParam(ctx)
 	res := remote_server.Login(param.Account, param.Password)
 	if res.Code == 0 && res.Data.Token != "" {
-		ctx.SetCookie(&http.Cookie{
-			Name:     remote_server.TokenKey,
-			Value:    res.Data.Token,
-			Expires:  time.Now().Add(time.Second * time.Duration(res.Data.Expire/1000)),
-			HttpOnly: true,
-			Path:     "/",
-		})
+		ctx.SetCookie(
+			&http.Cookie{
+				Name:     remote_server.TokenKey,
+				Value:    res.Data.Token,
+				Expires:  time.Now().Add(time.Second * time.Duration(res.Data.Expire/1000)),
+				HttpOnly: true,
+				Path:     "/",
+			},
+		)
 	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"code": res.Code,
-		"data": res.Data,
-		"msg":  res.Msg,
-	})
+	ctx.JSON(
+		http.StatusOK, gin.H{
+			"code": res.Code,
+			"data": res.Data,
+			"msg":  res.Msg,
+		},
+	)
 }
 
 func pluginBtnClass(class ...string) []string {
-	return append([]string{"btn", "btn-primary"}, class...)
+	return append(
+		[]string{
+			"btn",
+			"btn-primary",
+		}, class...,
+	)
 }
 
 func plugWord(word string) string {

@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/GoAdminGroup/go-admin/modules/db"
-	"github.com/GoAdminGroup/go-admin/modules/db/dialect"
+	"github.com/go-hq/go-admin/modules/db"
+	"github.com/go-hq/go-admin/modules/db/dialect"
 )
 
 // MenuModel is menu model structure.
@@ -31,7 +31,10 @@ func Menu() MenuModel {
 // MenuWithId return a default menu model of given id.
 func MenuWithId(id string) MenuModel {
 	idInt, _ := strconv.Atoi(id)
-	return MenuModel{Base: Base{TableName: "goadmin_menu"}, Id: int64(idInt)}
+	return MenuModel{
+		Base: Base{TableName: "goadmin_menu"},
+		Id:   int64(idInt),
+	}
 }
 
 func (t MenuModel) SetConn(con db.Connection) MenuModel {
@@ -48,15 +51,17 @@ func (t MenuModel) Find(id interface{}) MenuModel {
 // New create a new menu model.
 func (t MenuModel) New(title, icon, uri, header, pluginName string, parentId, order int64) (MenuModel, error) {
 
-	id, err := t.Table(t.TableName).Insert(dialect.H{
-		"title":       title,
-		"parent_id":   parentId,
-		"icon":        icon,
-		"uri":         uri,
-		"order":       order,
-		"header":      header,
-		"plugin_name": pluginName,
-	})
+	id, err := t.Table(t.TableName).Insert(
+		dialect.H{
+			"title":       title,
+			"parent_id":   parentId,
+			"icon":        icon,
+			"uri":         uri,
+			"order":       order,
+			"header":      header,
+			"plugin_name": pluginName,
+		},
+	)
 
 	t.Id = id
 	t.Title = title
@@ -89,15 +94,17 @@ func (t MenuModel) Delete() {
 func (t MenuModel) Update(title, icon, uri, header, pluginName string, parentId int64) (int64, error) {
 	return t.Table(t.TableName).
 		Where("id", "=", t.Id).
-		Update(dialect.H{
-			"title":       title,
-			"parent_id":   parentId,
-			"icon":        icon,
-			"plugin_name": pluginName,
-			"uri":         uri,
-			"header":      header,
-			"updated_at":  time.Now().Format("2006-01-02 15:04:05"),
-		})
+		Update(
+			dialect.H{
+				"title":       title,
+				"parent_id":   parentId,
+				"icon":        icon,
+				"plugin_name": pluginName,
+				"uri":         uri,
+				"header":      header,
+				"updated_at":  time.Now().Format("2006-01-02 15:04:05"),
+			},
+		)
 }
 
 type OrderItems []OrderItem
@@ -118,47 +125,57 @@ func (t MenuModel) ResetOrder(data []byte) {
 		if len(v.Children) > 0 {
 			_, _ = t.Table(t.TableName).
 				Where("id", "=", v.ID).
-				Update(dialect.H{
-					"order":     count,
-					"parent_id": 0,
-				})
+				Update(
+					dialect.H{
+						"order":     count,
+						"parent_id": 0,
+					},
+				)
 
 			for _, v2 := range v.Children {
 				if len(v2.Children) > 0 {
 
 					_, _ = t.Table(t.TableName).
 						Where("id", "=", v2.ID).
-						Update(dialect.H{
-							"order":     count,
-							"parent_id": v.ID,
-						})
+						Update(
+							dialect.H{
+								"order":     count,
+								"parent_id": v.ID,
+							},
+						)
 
 					for _, v3 := range v2.Children {
 						_, _ = t.Table(t.TableName).
 							Where("id", "=", v3.ID).
-							Update(dialect.H{
-								"order":     count,
-								"parent_id": v2.ID,
-							})
+							Update(
+								dialect.H{
+									"order":     count,
+									"parent_id": v2.ID,
+								},
+							)
 						count++
 					}
 				} else {
 					_, _ = t.Table(t.TableName).
 						Where("id", "=", v2.ID).
-						Update(dialect.H{
-							"order":     count,
-							"parent_id": v.ID,
-						})
+						Update(
+							dialect.H{
+								"order":     count,
+								"parent_id": v.ID,
+							},
+						)
 					count++
 				}
 			}
 		} else {
 			_, _ = t.Table(t.TableName).
 				Where("id", "=", v.ID).
-				Update(dialect.H{
-					"order":     count,
-					"parent_id": 0,
-				})
+				Update(
+					dialect.H{
+						"order":     count,
+						"parent_id": 0,
+					},
+				)
 			count++
 		}
 	}
@@ -178,10 +195,12 @@ func (t MenuModel) AddRole(roleId string) (int64, error) {
 	if roleId != "" {
 		if !t.CheckRole(roleId) {
 			return t.Table("goadmin_role_menu").
-				Insert(dialect.H{
-					"role_id": roleId,
-					"menu_id": t.Id,
-				})
+				Insert(
+					dialect.H{
+						"role_id": roleId,
+						"menu_id": t.Id,
+					},
+				)
 		}
 	}
 	return 0, nil

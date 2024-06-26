@@ -5,21 +5,21 @@ import (
 	template2 "html/template"
 	"net/http"
 
-	"github.com/GoAdminGroup/go-admin/template"
+	"github.com/go-hq/go-admin/template"
 
-	"github.com/GoAdminGroup/go-admin/modules/logger"
+	"github.com/go-hq/go-admin/modules/logger"
 
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/response"
+	"github.com/go-hq/go-admin/plugins/admin/modules/response"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/auth"
-	"github.com/GoAdminGroup/go-admin/modules/file"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	form2 "github.com/GoAdminGroup/go-admin/plugins/admin/modules/form"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/guard"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/auth"
+	"github.com/go-hq/go-admin/modules/file"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/plugins/admin/modules"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	form2 "github.com/go-hq/go-admin/plugins/admin/modules/form"
+	"github.com/go-hq/go-admin/plugins/admin/modules/guard"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 // ShowNewForm show a new form page.
@@ -59,35 +59,43 @@ func (h *Handler) showNewForm(ctx *context.Context, alert template2.HTML, prefix
 		hiddenFields[constant.IframeIDKey] = ctx.Query(constant.IframeIDKey)
 	}
 
-	content := formContent(ctx, aForm(ctx).
-		SetPrefix(h.config.PrefixFixSlash()).
-		SetFieldsHTML(f.HTMLContent).
-		SetContent(formInfo.FieldList).
-		SetTabContents(formInfo.GroupFieldList).
-		SetTabHeaders(formInfo.GroupFieldHeaders).
-		SetUrl(newUrl).
-		SetAjax(f.AjaxSuccessJS, f.AjaxErrorJS).
-		SetInputWidth(f.InputWidth).
-		SetHeadWidth(f.HeadWidth).
-		SetLayout(f.Layout).
-		SetPrimaryKey(panel.GetPrimaryKey().Name).
-		SetHiddenFields(hiddenFields).
-		SetTitle(f.FormNewTitle).
-		SetOperationFooter(formFooter(ctx, "new", f.IsHideContinueEditCheckBox, f.IsHideContinueNewCheckBox,
-			f.IsHideResetButton, f.FormNewBtnWord)).
-		SetHeader(f.HeaderHtml).
-		SetFooter(f.FooterHtml), len(formInfo.GroupFieldHeaders) > 0, !isNotIframe, f.IsHideBackButton, f.Header)
+	content := formContent(
+		ctx, aForm(ctx).
+			SetPrefix(h.config.PrefixFixSlash()).
+			SetFieldsHTML(f.HTMLContent).
+			SetContent(formInfo.FieldList).
+			SetTabContents(formInfo.GroupFieldList).
+			SetTabHeaders(formInfo.GroupFieldHeaders).
+			SetUrl(newUrl).
+			SetAjax(f.AjaxSuccessJS, f.AjaxErrorJS).
+			SetInputWidth(f.InputWidth).
+			SetHeadWidth(f.HeadWidth).
+			SetLayout(f.Layout).
+			SetPrimaryKey(panel.GetPrimaryKey().Name).
+			SetHiddenFields(hiddenFields).
+			SetTitle(f.FormNewTitle).
+			SetOperationFooter(
+				formFooter(
+					ctx, "new", f.IsHideContinueEditCheckBox, f.IsHideContinueNewCheckBox,
+					f.IsHideResetButton, f.FormNewBtnWord,
+				),
+			).
+			SetHeader(f.HeaderHtml).
+			SetFooter(f.FooterHtml), len(formInfo.GroupFieldHeaders) > 0, !isNotIframe, f.IsHideBackButton, f.Header,
+	)
 
 	if f.Wrapper != nil {
 		content = f.Wrapper(content)
 	}
 
-	h.HTML(ctx, user, types.Panel{
-		Content:     alert + content,
-		Description: template2.HTML(f.Description),
-		Title:       modules.AorBHTML(isNotIframe, template2.HTML(f.Title), ""),
-		MiniSidebar: f.HideSideBar,
-	}, template.ExecuteOptions{Animation: alert == ""})
+	h.HTML(
+		ctx, user, types.Panel{
+			Content:     alert + content,
+			Description: template2.HTML(f.Description),
+			Title:       modules.AorBHTML(isNotIframe, template2.HTML(f.Title), ""),
+			MiniSidebar: f.HideSideBar,
+		}, template.ExecuteOptions{Animation: alert == ""},
+	)
 
 	if isNew {
 		ctx.AddHeader(constant.PjaxUrlHeader, showNewUrl)
@@ -117,9 +125,11 @@ func (h *Handler) NewForm(ctx *context.Context) {
 	if err != nil {
 		logger.ErrorCtx(ctx, "insert data error: %+v", err)
 		if ctx.WantJSON() {
-			response.Error(ctx, err.Error(), map[string]interface{}{
-				"token": h.authSrv().AddToken(),
-			})
+			response.Error(
+				ctx, err.Error(), map[string]interface{}{
+					"token": h.authSrv().AddToken(),
+				},
+			)
 		} else {
 			h.showNewForm(ctx, aAlert(ctx).Warning(err.Error()), param.Prefix, param.Param.GetRouteParamStr(), true)
 		}
@@ -134,10 +144,12 @@ func (h *Handler) NewForm(ctx *context.Context) {
 	}
 
 	if ctx.WantJSON() && !param.IsIframe {
-		response.OkWithData(ctx, map[string]interface{}{
-			"url":   param.PreviousPath,
-			"token": h.authSrv().AddToken(),
-		})
+		response.OkWithData(
+			ctx, map[string]interface{}{
+				"url":   param.PreviousPath,
+				"token": h.authSrv().AddToken(),
+			},
+		)
 		return
 	}
 
@@ -154,13 +166,17 @@ func (h *Handler) NewForm(ctx *context.Context) {
 	}
 
 	if param.IsIframe {
-		ctx.HTML(http.StatusOK, fmt.Sprintf(`<script>
+		ctx.HTML(
+			http.StatusOK, fmt.Sprintf(
+				`<script>
 		swal('%s', '', 'success');
 		setTimeout(function(){
 			$("#%s", window.parent.document).hide();
 			$('.modal-backdrop.fade.in', window.parent.document).hide();
 		}, 1000)
-</script>`, language.Get("success"), param.IframeID))
+</script>`, language.Get("success"), param.IframeID,
+			),
+		)
 		return
 	}
 

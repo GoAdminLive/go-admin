@@ -6,17 +6,17 @@ import (
 	"os"
 	"testing"
 
-	_ "github.com/GoAdminGroup/go-admin/adapter/gin"
-	_ "github.com/GoAdminGroup/go-admin/modules/db/drivers/mysql"
-	_ "github.com/GoAdminGroup/themes/adminlte"
+	_ "github.com/go-hq/go-admin/adapter/gin"
+	_ "github.com/go-hq/go-admin/modules/db/drivers/mysql"
+	_ "github.com/go-hq/themes/adminlte"
 
-	"github.com/GoAdminGroup/go-admin/engine"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/plugins/admin"
-	"github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/chartjs"
-	"github.com/GoAdminGroup/go-admin/tests/tables"
 	"github.com/gin-gonic/gin"
+	"github.com/go-hq/go-admin/engine"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/plugins/admin"
+	"github.com/go-hq/go-admin/template"
+	"github.com/go-hq/go-admin/template/chartjs"
+	"github.com/go-hq/go-admin/tests/tables"
 )
 
 const (
@@ -80,7 +80,7 @@ const (
 	appleOptField      = `//*[@id="bootstrap-duallistbox-nonselected-list_fruit[]"]/option[1]`
 	bananaOptField     = `//*[@id="bootstrap-duallistbox-nonselected-list_fruit[]"]/option[2]`
 	watermelonOptField = `//*[@id="bootstrap-duallistbox-nonselected-list_fruit[]"]/option[3]`
-	//pearOptField          = `//*[@id="bootstrap-duallistbox-nonselected-list_fruit[]"]/option[4]`
+	// pearOptField          = `//*[@id="bootstrap-duallistbox-nonselected-list_fruit[]"]/option[4]`
 	genderBoyCheckBox     = `//*[@id="tab-form-1"]/div[5]/div/div/div[1]`
 	genderGirlCheckBox    = `//*[@id="tab-form-1"]/div[5]/div/div/div[2]`
 	experienceDropDown    = `//*[@id="tab-form-1"]/div[7]/div/span/span[1]/span/span[2]`
@@ -235,19 +235,21 @@ func startServer(quit chan struct{}) {
 }
 
 func TestWeb(t *testing.T) {
-	UserAcceptanceTestSuit(t, func(t *testing.T, page *Page) {
-		defer page.Destroy()
-		testLogin(page)
-		testInfoTablePageOperations(page)
-		testNewPageOperations(page)
-		testEditPageOperations(page)
-		testDetailPageOperations(page)
-		testRolePageOperations(page)
-		testPermissionPageOperations(page)
-		testMenuPageOperations(page)
-		testManagerPageOperations(page)
-		testPermission(page)
-	}, startServer, debugMode, optionList...)
+	UserAcceptanceTestSuit(
+		t, func(t *testing.T, page *Page) {
+			defer page.Destroy()
+			testLogin(page)
+			testInfoTablePageOperations(page)
+			testNewPageOperations(page)
+			testEditPageOperations(page)
+			testDetailPageOperations(page)
+			testRolePageOperations(page)
+			testPermissionPageOperations(page)
+			testMenuPageOperations(page)
+			testManagerPageOperations(page)
+			testPermission(page)
+		}, startServer, debugMode, optionList...,
+	)
 }
 
 func testLogin(page *Page) {
@@ -267,23 +269,23 @@ func testInfoTablePageOperations(page *Page) {
 	// Nav link Check
 	// =============================
 
-	//printPart("nav link check")
-	//page.Click(sideBarManageDropDown)
-	//page.Click(managerPageBtn)
-	//page.Click(rolesPageBtn)
-	//page.Click(permissionPageBtn)
-	//page.Click(menuPageBtn)
-	//page.Click(operationLogPageBtn)
-	//page.Click(navLinkBtn)
-	//page.Click(navCloseBtn)
-	//page.Click(navLinkBtn)
-	//page.Click(navCloseBtn)
-	//page.Click(navLinkBtn)
-	//page.Click(navCloseBtn)
-	//page.Click(navLinkBtn)
-	//page.Click(navCloseBtn)
-	//page.Click(navLinkBtn)
-	//page.Click(navCloseBtn)
+	// printPart("nav link check")
+	// page.Click(sideBarManageDropDown)
+	// page.Click(managerPageBtn)
+	// page.Click(rolesPageBtn)
+	// page.Click(permissionPageBtn)
+	// page.Click(menuPageBtn)
+	// page.Click(operationLogPageBtn)
+	// page.Click(navLinkBtn)
+	// page.Click(navCloseBtn)
+	// page.Click(navLinkBtn)
+	// page.Click(navCloseBtn)
+	// page.Click(navLinkBtn)
+	// page.Click(navCloseBtn)
+	// page.Click(navLinkBtn)
+	// page.Click(navCloseBtn)
+	// page.Click(navLinkBtn)
+	// page.Click(navCloseBtn)
 
 	page.NavigateTo(url("/info/user"))
 
@@ -355,8 +357,8 @@ func testInfoTablePageOperations(page *Page) {
 
 	page.Fill(filterNameField, "Jack")
 
-	//page.Fill(filterCreatedStart, "2020-03-08 15:24:00")
-	//page.Click(filterCreatedEnd)
+	// page.Fill(filterCreatedStart, "2020-03-08 15:24:00")
+	// page.Click(filterCreatedEnd)
 
 	page.Click(searchBtn, 2)
 
@@ -498,7 +500,7 @@ func checkSelectionsInForm(page *Page) {
 	page.Text(appleOptField, "Apple")
 	page.Text(bananaOptField, "Banana")
 	page.Text(watermelonOptField, "Watermelon")
-	//page.Text(pearOptField, "")
+	// page.Text(pearOptField, "")
 	page.Click(experienceDropDown)
 	page.Text(twoYearsSelection, "two years")
 	page.Text(threeYearsSelection, "three years")
@@ -601,11 +603,11 @@ func testMenuPageOperations(page *Page) {
 
 	// change order check
 
-	//item := page.FindByXPath(testMenuItem)
-	//assert.Equal(t, item.MouseToElement(), nil)
-	//assert.Equal(t, page.Click(agouti.HoldClick, agouti.LeftButton), nil)
-	//assert.Equal(t, item.ScrollFinger(0, -200), nil)
-	//assert.Equal(t, page.Click(agouti.HoldClick, agouti.LeftButton), nil)
+	// item := page.FindByXPath(testMenuItem)
+	// assert.Equal(t, item.MouseToElement(), nil)
+	// assert.Equal(t, page.Click(agouti.HoldClick, agouti.LeftButton), nil)
+	// assert.Equal(t, item.ScrollFinger(0, -200), nil)
+	// assert.Equal(t, page.Click(agouti.HoldClick, agouti.LeftButton), nil)
 
 	// Delete Check
 	// =============================
@@ -645,8 +647,10 @@ func testManagerPageOperations(page *Page) {
 	page.Fill(permissionSlugInput, "user_view")
 	page.Click(permissionMethodSelect)
 	page.Click(permissionGetSelectOpt)
-	page.Fill(permissionPathInput, `/info/user
-/info/user/detail`)
+	page.Fill(
+		permissionPathInput, `/info/user
+/info/user/detail`,
+	)
 	page.Click(permissionSaveBtn)
 	page.Click(managerPermissionDropDown)
 	page.Click(managerUserViewSelectOpt)

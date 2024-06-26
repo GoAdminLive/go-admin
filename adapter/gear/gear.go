@@ -15,15 +15,15 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/GoAdminGroup/go-admin/adapter"
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/engine"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/utils"
-	"github.com/GoAdminGroup/go-admin/plugins"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/adapter"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/engine"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/utils"
+	"github.com/go-hq/go-admin/plugins"
+	"github.com/go-hq/go-admin/plugins/admin/models"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	"github.com/go-hq/go-admin/template/types"
 	"github.com/teambition/gear"
 )
 
@@ -50,7 +50,9 @@ func (gears *Gear) Use(app interface{}, plugs []plugins.Plugin) error {
 }
 
 // Content implements the method Adapter.Content.
-func (gears *Gear) Content(ctx interface{}, getPanelFn types.GetPanelFn, fn context.NodeProcessor, btns ...types.Button) {
+func (gears *Gear) Content(
+	ctx interface{}, getPanelFn types.GetPanelFn, fn context.NodeProcessor, btns ...types.Button,
+) {
 	gears.GetContent(ctx, getPanelFn, gears, btns, fn)
 }
 
@@ -58,9 +60,11 @@ type HandlerFunc func(ctx *gear.Context) (types.Panel, error)
 
 func Content(handler HandlerFunc) gear.Middleware {
 	return func(ctx *gear.Context) error {
-		engine.Content(ctx, func(ctx interface{}) (types.Panel, error) {
-			return handler(ctx.(*gear.Context))
-		})
+		engine.Content(
+			ctx, func(ctx interface{}) (types.Panel, error) {
+				return handler(ctx.(*gear.Context))
+			},
+		)
 		return nil
 	}
 }
@@ -87,45 +91,47 @@ func (gears *Gear) AddHandler(method, path string, handlers context.Handlers) {
 		gears.router = gear.NewRouter()
 	}
 
-	gears.router.Handle(strings.ToUpper(method), path, func(c *gear.Context) error {
+	gears.router.Handle(
+		strings.ToUpper(method), path, func(c *gear.Context) error {
 
-		ctx := context.NewContext(c.Req)
+			ctx := context.NewContext(c.Req)
 
-		newPath := path
+			newPath := path
 
-		reg1 := regexp.MustCompile(":(.*?)/")
-		reg2 := regexp.MustCompile(":(.*?)$")
+			reg1 := regexp.MustCompile(":(.*?)/")
+			reg2 := regexp.MustCompile(":(.*?)$")
 
-		params := reg1.FindAllString(newPath, -1)
-		newPath = reg1.ReplaceAllString(newPath, "")
-		params = append(params, reg2.FindAllString(newPath, -1)...)
+			params := reg1.FindAllString(newPath, -1)
+			newPath = reg1.ReplaceAllString(newPath, "")
+			params = append(params, reg2.FindAllString(newPath, -1)...)
 
-		for _, param := range params {
-			p := utils.ReplaceAll(param, ":", "", "/", "")
+			for _, param := range params {
+				p := utils.ReplaceAll(param, ":", "", "/", "")
 
-			if c.Req.URL.RawQuery == "" {
-				c.Req.URL.RawQuery += p + "=" + c.Param(p)
-			} else {
-				c.Req.URL.RawQuery += "&" + p + "=" + c.Param(p)
+				if c.Req.URL.RawQuery == "" {
+					c.Req.URL.RawQuery += p + "=" + c.Param(p)
+				} else {
+					c.Req.URL.RawQuery += "&" + p + "=" + c.Param(p)
+				}
 			}
-		}
 
-		ctx.SetHandlers(handlers).Next()
+			ctx.SetHandlers(handlers).Next()
 
-		for key, head := range ctx.Response.Header {
-			c.Res.Header().Add(key, head[0])
-		}
+			for key, head := range ctx.Response.Header {
+				c.Res.Header().Add(key, head[0])
+			}
 
-		if ctx.Response.Body != nil {
-			buf := new(bytes.Buffer)
-			_, _ = buf.ReadFrom(ctx.Response.Body)
+			if ctx.Response.Body != nil {
+				buf := new(bytes.Buffer)
+				_, _ = buf.ReadFrom(ctx.Response.Body)
 
-			return c.End(ctx.Response.StatusCode, buf.Bytes())
-		}
+				return c.End(ctx.Response.StatusCode, buf.Bytes())
+			}
 
-		c.Status(ctx.Response.StatusCode)
-		return nil
-	})
+			c.Status(ctx.Response.StatusCode)
+			return nil
+		},
+	)
 
 	gears.app.UseHandler(gears.router)
 }

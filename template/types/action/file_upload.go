@@ -3,9 +3,9 @@ package action
 import (
 	"html/template"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/template/types"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/constant"
+	"github.com/go-hq/go-admin/template/types"
 )
 
 type FileUploadAction struct {
@@ -49,7 +49,8 @@ func (file *FileUploadAction) GetCallbacks() context.Node {
 
 func (file *FileUploadAction) Js() template.JS {
 
-	return template.JS(`$('` + file.BtnId + `').on('click', function(){
+	return template.JS(
+		`$('` + file.BtnId + `').on('click', function(){
   $('` + file.BtnId + `_input').click();
 });
 
@@ -85,7 +86,8 @@ $("` + file.BtnId + `_input").on("change", function () {
 			}
 		},
   });
-});`)
+});`,
+	)
 }
 
 func (file *FileUploadAction) BtnAttribute() template.HTML {

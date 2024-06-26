@@ -3,20 +3,22 @@ package db
 import (
 	"testing"
 
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	_ "github.com/GoAdminGroup/go-admin/modules/db/drivers/mssql"
+	"github.com/go-hq/go-admin/modules/config"
+	_ "github.com/go-hq/go-admin/modules/db/drivers/mssql"
 )
 
 var driverTestMssqlConn Connection
 
 func InitMssql() {
-	driverTestMssqlConn = testConn(DriverMssql, config.Database{
-		Host: "127.0.0.1",
-		Port: "1433",
-		User: "sa",
-		Pwd:  "Aa123456",
-		Name: "goadmin",
-	})
+	driverTestMssqlConn = testConn(
+		DriverMssql, config.Database{
+			Host: "127.0.0.1",
+			Port: "1433",
+			User: "sa",
+			Pwd:  "Aa123456",
+			Name: "goadmin",
+		},
+	)
 }
 
 func TestMssqlSQL_WhereIn(t *testing.T)         { testSQLWhereIn(t, driverTestMssqlConn) }

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"html/template"
 
-	template2 "github.com/GoAdminGroup/go-admin/template"
+	template2 "github.com/go-hq/go-admin/template"
 )
 
 type BarChart struct {
@@ -168,10 +168,12 @@ func (l *BarChart) SetLabels(s []string) *BarChart {
 
 func (l *BarChart) AddDataSet(s string) *BarChart {
 	l.dataSetIndex++
-	l.JsContent.Data.DataSets = l.JsContent.Data.DataSets.Add(&BarDataSet{
-		Type:  "bar",
-		Label: s,
-	})
+	l.JsContent.Data.DataSets = l.JsContent.Data.DataSets.Add(
+		&BarDataSet{
+			Type:  "bar",
+			Label: s,
+		},
+	)
 	return l
 }
 

@@ -3,15 +3,15 @@ package controller
 import (
 	"fmt"
 
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/modules/auth"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/parameter"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/response"
-	"github.com/GoAdminGroup/go-admin/template/types"
-	"github.com/GoAdminGroup/go-admin/template/types/form"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/modules/auth"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/plugins/admin/modules"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	"github.com/go-hq/go-admin/plugins/admin/modules/parameter"
+	"github.com/go-hq/go-admin/plugins/admin/modules/response"
+	"github.com/go-hq/go-admin/template/types"
+	"github.com/go-hq/go-admin/template/types/form"
 )
 
 func (h *Handler) ApiDetail(ctx *context.Context) {
@@ -47,15 +47,19 @@ func (h *Handler) ApiDetail(ctx *context.Context) {
 		}
 	}
 
-	param := parameter.GetParam(ctx.Request.URL,
+	param := parameter.GetParam(
+		ctx.Request.URL,
 		panel.GetInfo().DefaultPageSize,
 		panel.GetInfo().SortField,
-		panel.GetInfo().GetSort())
+		panel.GetInfo().GetSort(),
+	)
 
 	paramStr := param.DeleteDetailPk().GetRouteParamStr()
 
-	editUrl := modules.AorEmpty(!panel.GetInfo().IsHideEditButton, h.routePathWithPrefix("show_edit", prefix)+paramStr+
-		"&"+constant.EditPKKey+"="+ctx.Query(constant.DetailPKKey))
+	editUrl := modules.AorEmpty(
+		!panel.GetInfo().IsHideEditButton, h.routePathWithPrefix("show_edit", prefix)+paramStr+
+			"&"+constant.EditPKKey+"="+ctx.Query(constant.DetailPKKey),
+	)
 	deleteUrl := modules.AorEmpty(!panel.GetInfo().IsHideDeleteButton, h.routePathWithPrefix("delete", prefix)+paramStr)
 	infoUrl := h.routePathWithPrefix("info", prefix) + paramStr
 
@@ -65,7 +69,8 @@ func (h *Handler) ApiDetail(ctx *context.Context) {
 	deleteJs := ""
 
 	if deleteUrl != "" {
-		deleteJs = fmt.Sprintf(`<script>
+		deleteJs = fmt.Sprintf(
+			`<script>
 function DeletePost(id) {
 	swal({
 			title: '%s',
@@ -101,7 +106,8 @@ $('.delete-btn').on('click', function (event) {
 	DeletePost('%s')
 });
 
-</script>`, language.Get("are you sure to delete"), language.Get("yes"), language.Get("cancel"), deleteUrl, infoUrl, id)
+</script>`, language.Get("are you sure to delete"), language.Get("yes"), language.Get("cancel"), deleteUrl, infoUrl, id,
+		)
 	}
 
 	desc := panel.GetDetail().Description
@@ -117,10 +123,12 @@ $('.delete-btn').on('click', function (event) {
 		return
 	}
 
-	response.OkWithData(ctx, map[string]interface{}{
-		"panel":    formInfo,
-		"previous": infoUrl,
-		"footer":   deleteJs,
-		"prefix":   h.config.PrefixFixSlash(),
-	})
+	response.OkWithData(
+		ctx, map[string]interface{}{
+			"panel":    formInfo,
+			"previous": infoUrl,
+			"footer":   deleteJs,
+			"prefix":   h.config.PrefixFixSlash(),
+		},
+	)
 }

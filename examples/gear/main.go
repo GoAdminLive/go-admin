@@ -6,19 +6,19 @@ import (
 	"os/signal"
 	"time"
 
-	_ "github.com/GoAdminGroup/go-admin/adapter/gear"
-	_ "github.com/GoAdminGroup/go-admin/modules/db/drivers/mysql"
-	_ "github.com/GoAdminGroup/themes/sword"
+	_ "github.com/go-hq/go-admin/adapter/gear"
+	_ "github.com/go-hq/go-admin/modules/db/drivers/mysql"
+	_ "github.com/go-hq/themes/sword"
 	"github.com/teambition/gear"
 
-	"github.com/GoAdminGroup/go-admin/engine"
-	"github.com/GoAdminGroup/go-admin/examples/datamodel"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/modules/language"
-	"github.com/GoAdminGroup/go-admin/plugins/example"
-	"github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/chartjs"
-	"github.com/GoAdminGroup/themes/adminlte"
+	"github.com/go-hq/go-admin/engine"
+	"github.com/go-hq/go-admin/examples/datamodel"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/modules/language"
+	"github.com/go-hq/go-admin/plugins/example"
+	"github.com/go-hq/go-admin/template"
+	"github.com/go-hq/go-admin/template/chartjs"
+	"github.com/go-hq/themes/adminlte"
 )
 
 func main() {
@@ -41,8 +41,8 @@ func main() {
 				ConnMaxLifetime: time.Hour,
 				Driver:          config.DriverMysql,
 
-				//Driver: config.DriverSqlite,
-				//File:   "../datamodel/admin.db",
+				// Driver: config.DriverSqlite,
+				// File:   "../datamodel/admin.db",
 			},
 		},
 		Store: config.Store{
@@ -72,7 +72,7 @@ func main() {
 	// examplePlugin := plugins.LoadFromPlugin("../datamodel/example.so")
 
 	// customize the login page
-	// example: https://github.com/GoAdminGroup/demo.go-admin.cn/blob/master/main.go#L39
+	// example: https://github.com/go-hq/demo.go-admin.cn/blob/master/main.go#L39
 	//
 	// template.AddComp("login", datamodel.LoginPage)
 

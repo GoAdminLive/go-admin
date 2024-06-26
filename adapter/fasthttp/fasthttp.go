@@ -12,15 +12,15 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/GoAdminGroup/go-admin/adapter"
-	"github.com/GoAdminGroup/go-admin/context"
-	"github.com/GoAdminGroup/go-admin/engine"
-	"github.com/GoAdminGroup/go-admin/modules/config"
-	"github.com/GoAdminGroup/go-admin/plugins"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/models"
-	"github.com/GoAdminGroup/go-admin/plugins/admin/modules/constant"
-	"github.com/GoAdminGroup/go-admin/template/types"
 	"github.com/buaazp/fasthttprouter"
+	"github.com/go-hq/go-admin/adapter"
+	"github.com/go-hq/go-admin/context"
+	"github.com/go-hq/go-admin/engine"
+	"github.com/go-hq/go-admin/modules/config"
+	"github.com/go-hq/go-admin/plugins"
+	"github.com/go-hq/go-admin/plugins/admin/models"
+	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
+	"github.com/go-hq/go-admin/template/types"
 	"github.com/valyala/fasthttp"
 )
 
@@ -46,7 +46,9 @@ func (fast *Fasthttp) Use(app interface{}, plugs []plugins.Plugin) error {
 }
 
 // Content implements the method Adapter.Content.
-func (fast *Fasthttp) Content(ctx interface{}, getPanelFn types.GetPanelFn, fn context.NodeProcessor, btns ...types.Button) {
+func (fast *Fasthttp) Content(
+	ctx interface{}, getPanelFn types.GetPanelFn, fn context.NodeProcessor, btns ...types.Button,
+) {
 	fast.GetContent(ctx, getPanelFn, fast, btns, fn)
 }
 
@@ -54,9 +56,11 @@ type HandlerFunc func(ctx *fasthttp.RequestCtx) (types.Panel, error)
 
 func Content(handler HandlerFunc) fasthttp.RequestHandler {
 	return func(ctx *fasthttp.RequestCtx) {
-		engine.Content(ctx, func(ctx interface{}) (types.Panel, error) {
-			return handler(ctx.(*fasthttp.RequestCtx))
-		})
+		engine.Content(
+			ctx, func(ctx interface{}) (types.Panel, error) {
+				return handler(ctx.(*fasthttp.RequestCtx))
+			},
+		)
 	}
 }
 
@@ -76,36 +80,40 @@ func (fast *Fasthttp) SetApp(app interface{}) error {
 
 // AddHandler implements the method Adapter.AddHandler.
 func (fast *Fasthttp) AddHandler(method, path string, handlers context.Handlers) {
-	fast.app.Handle(strings.ToUpper(method), path, func(c *fasthttp.RequestCtx) {
-		httpreq := convertCtx(c)
-		ctx := context.NewContext(httpreq)
+	fast.app.Handle(
+		strings.ToUpper(method), path, func(c *fasthttp.RequestCtx) {
+			httpreq := convertCtx(c)
+			ctx := context.NewContext(httpreq)
 
-		var params = make(map[string]string)
-		c.VisitUserValues(func(i []byte, i2 interface{}) {
-			if value, ok := i2.(string); ok {
-				params[string(i)] = value
+			var params = make(map[string]string)
+			c.VisitUserValues(
+				func(i []byte, i2 interface{}) {
+					if value, ok := i2.(string); ok {
+						params[string(i)] = value
+					}
+				},
+			)
+
+			for key, value := range params {
+				if httpreq.URL.RawQuery == "" {
+					httpreq.URL.RawQuery += strings.ReplaceAll(key, ":", "") + "=" + value
+				} else {
+					httpreq.URL.RawQuery += "&" + strings.ReplaceAll(key, ":", "") + "=" + value
+				}
 			}
-		})
 
-		for key, value := range params {
-			if httpreq.URL.RawQuery == "" {
-				httpreq.URL.RawQuery += strings.ReplaceAll(key, ":", "") + "=" + value
-			} else {
-				httpreq.URL.RawQuery += "&" + strings.ReplaceAll(key, ":", "") + "=" + value
+			ctx.SetHandlers(handlers).Next()
+			for key, head := range ctx.Response.Header {
+				c.Response.Header.Set(key, head[0])
 			}
-		}
-
-		ctx.SetHandlers(handlers).Next()
-		for key, head := range ctx.Response.Header {
-			c.Response.Header.Set(key, head[0])
-		}
-		if ctx.Response.Body != nil {
-			buf := new(bytes.Buffer)
-			_, _ = buf.ReadFrom(ctx.Response.Body)
-			_, _ = c.WriteString(buf.String())
-		}
-		c.Response.SetStatusCode(ctx.Response.StatusCode)
-	})
+			if ctx.Response.Body != nil {
+				buf := new(bytes.Buffer)
+				_, _ = buf.ReadFrom(ctx.Response.Body)
+				_, _ = c.WriteString(buf.String())
+			}
+			c.Response.SetStatusCode(ctx.Response.StatusCode)
+		},
+	)
 }
 
 func convertCtx(ctx *fasthttp.RequestCtx) *http.Request {
@@ -122,16 +130,18 @@ func convertCtx(ctx *fasthttp.RequestCtx) *http.Request {
 	r.RemoteAddr = ctx.RemoteAddr().String()
 
 	hdr := make(http.Header)
-	ctx.Request.Header.VisitAll(func(k, v []byte) {
-		sk := string(k)
-		sv := string(v)
-		switch sk {
-		case "Transfer-Encoding":
-			r.TransferEncoding = append(r.TransferEncoding, sv)
-		default:
-			hdr.Set(sk, sv)
-		}
-	})
+	ctx.Request.Header.VisitAll(
+		func(k, v []byte) {
+			sk := string(k)
+			sv := string(v)
+			switch sk {
+			case "Transfer-Encoding":
+				r.TransferEncoding = append(r.TransferEncoding, sv)
+			default:
+				hdr.Set(sk, sv)
+			}
+		},
+	)
 	r.Header = hdr
 	r.Body = &netHTTPBody{body}
 	rURL, err := url.ParseRequestURI(r.RequestURI)
