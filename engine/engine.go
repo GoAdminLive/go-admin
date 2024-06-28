@@ -131,7 +131,7 @@ func (eng *Engine) announce() *Engine {
 	if eng.config.Debug {
 		eng.announceLock.Do(
 			func() {
-				fmt.Printf(language.Get("goadmin is now running. \nrunning in \"debug\" mode. switch to \"release\" mode in production.\n\n"))
+				fmt.Print(language.Get("goadmin is now running. \nrunning in \"debug\" mode. switch to \"release\" mode in production.\n\n"))
 			},
 		)
 	}

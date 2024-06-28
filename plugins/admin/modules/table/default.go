@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -207,8 +207,7 @@ func (tb *DefaultTable) getDataFromURL(params parameter.Parameters) ([]map[strin
 		_ = res.Body.Close()
 	}()
 
-	body, err := ioutil.ReadAll(res.Body)
-
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return []map[string]interface{}{}, 0
 	}
@@ -957,13 +956,13 @@ func (tb *DefaultTable) getInjectValueFromFormValue(dataList form.Values, typ ty
 
 	var (
 		value         = make(dialect.H)
-		exceptString  = make([]string, 0)
 		columns, auto = tb.getColumns(tb.Form.Table)
 
-		fun types.PostFieldFilterFn
+		exceptString []string
+		fun          types.PostFieldFilterFn
 	)
 
-	// If a key is a auto increment primary key, it can`t be insert or update.
+	// If a key is auto increment primary key, it can`t be insert or update.
 	if auto {
 		exceptString = []string{
 			tb.PrimaryKey.Name,

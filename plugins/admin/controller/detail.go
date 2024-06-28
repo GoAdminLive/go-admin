@@ -26,7 +26,8 @@ func (h *Handler) ShowDetail(ctx *context.Context) {
 		detail    = panel.GetDetail()
 		info      = panel.GetInfo()
 		formModel = newPanel.GetForm()
-		fieldList = make(types.FieldList, 0)
+
+		fieldList types.FieldList
 	)
 
 	if len(detail.FieldList) == 0 {

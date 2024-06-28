@@ -14,7 +14,7 @@ require (
 	github.com/gin-gonic/gin v1.3.0
 	github.com/go-chi/chi v1.5.5
 	github.com/go-hq/html v0.1.0
-	github.com/go-hq/themes v0.0.0-20240626113638-fb6217edeb67
+	github.com/go-hq/themes v0.1.1
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/gobuffalo/buffalo v1.1.0
 	github.com/gofiber/fiber/v2 v2.52.4

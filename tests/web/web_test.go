@@ -1,16 +1,18 @@
 package web
 
 import (
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"testing"
 
-	_ "github.com/go-hq/go-admin/adapter/gin"
-	_ "github.com/go-hq/go-admin/modules/db/drivers/mysql"
 	_ "github.com/go-hq/themes/adminlte"
 
+	_ "github.com/go-hq/go-admin/adapter/gin"
+	_ "github.com/go-hq/go-admin/modules/db/drivers/mysql"
+
 	"github.com/gin-gonic/gin"
+
 	"github.com/go-hq/go-admin/engine"
 	"github.com/go-hq/go-admin/modules/config"
 	"github.com/go-hq/go-admin/plugins/admin"
@@ -196,7 +198,7 @@ func startServer(quit chan struct{}) {
 
 	if !debugMode {
 		gin.SetMode(gin.ReleaseMode)
-		gin.DefaultWriter = ioutil.Discard
+		gin.DefaultWriter = io.Discard
 	}
 
 	r := gin.New()

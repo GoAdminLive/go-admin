@@ -254,7 +254,7 @@ func GetUserTable(ctx *context.Context) (userTable table.Table) {
 		"city", "/choose/country",
 		func(ctx *context.Context) (bool, string, interface{}) {
 			country := ctx.FormValue("value")
-			var data = make(selection.Options, 0)
+			var data selection.Options
 			switch country {
 			case "china":
 				data = selection.Options{

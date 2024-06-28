@@ -17,11 +17,12 @@ import (
 	"sync/atomic"
 	"time"
 
+	"gopkg.in/ini.v1"
+	"gopkg.in/yaml.v2"
+
 	"github.com/go-hq/go-admin/modules/logger"
 	"github.com/go-hq/go-admin/modules/utils"
 	"github.com/go-hq/go-admin/plugins/admin/modules/form"
-	"gopkg.in/ini.v1"
-	"gopkg.in/yaml.v2"
 )
 
 // Database is a type of database connection config.
@@ -832,15 +833,12 @@ var (
 // ReadFromJson read the Config from a JSON file.
 func ReadFromJson(path string) Config {
 	jsonByte, err := os.ReadFile(path)
-
 	if err != nil {
 		panic(err)
 	}
 
 	var cfg Config
-
 	err = json.Unmarshal(jsonByte, &cfg)
-
 	if err != nil {
 		panic(err)
 	}
