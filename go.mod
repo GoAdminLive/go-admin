@@ -12,9 +12,9 @@ require (
 	github.com/denisenkom/go-mssqldb v0.12.3
 	github.com/gavv/httpexpect v2.0.0+incompatible
 	github.com/gin-gonic/gin v1.10.0
-	github.com/go-chi/chi v1.5.5
-	github.com/go-hq/html v0.1.0
-	github.com/go-hq/themes v0.1.1
+	github.com/go-chi/chi/v5 v5.1.0
+	github.com/go-hq/html v1.1.1
+	github.com/go-hq/themes v1.1.2
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/gobuffalo/buffalo v1.1.0
 	github.com/gofiber/fiber/v2 v2.52.4

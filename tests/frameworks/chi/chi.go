@@ -21,7 +21,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/v5"
+
 	"github.com/go-hq/go-admin/engine"
 	"github.com/go-hq/go-admin/plugins/admin"
 	"github.com/go-hq/go-admin/plugins/example"
