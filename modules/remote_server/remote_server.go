@@ -2,13 +2,12 @@ package remote_server
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 
-	"github.com/go-hq/go-admin/modules/system"
-
 	"github.com/go-hq/go-admin/modules/logger"
+	"github.com/go-hq/go-admin/modules/system"
 )
 
 const (
@@ -59,7 +58,7 @@ func Login(account, password string) LoginRes {
 	defer func() {
 		_ = res.Body.Close()
 	}()
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		logger.Error("login: ", err)
 		resData.Code = 500
@@ -114,7 +113,7 @@ func GetDownloadURL(uuid, token string) (string, string, error) {
 	defer func() {
 		_ = res.Body.Close()
 	}()
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return "", "", err
 	}
@@ -196,7 +195,7 @@ func GetOnline(reqData GetOnlineReq, token string) ([]byte, error) {
 	defer func() {
 		_ = res.Body.Close()
 	}()
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		logger.Error("get online plugins: ", err)
 		return nil, err

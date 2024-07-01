@@ -1,17 +1,16 @@
 package main
 
 import (
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"os/signal"
 	"time"
 
-	_ "github.com/go-hq/go-admin/adapter/gin"
-	_ "github.com/go-hq/go-admin/modules/db/drivers/mysql"
-	_ "github.com/go-hq/themes/sword"
-
 	"github.com/gin-gonic/gin"
+
+	"github.com/go-hq/themes/adminlte"
+
 	"github.com/go-hq/go-admin/engine"
 	"github.com/go-hq/go-admin/examples/datamodel"
 	"github.com/go-hq/go-admin/modules/config"
@@ -19,12 +18,16 @@ import (
 	"github.com/go-hq/go-admin/plugins/example"
 	"github.com/go-hq/go-admin/template"
 	"github.com/go-hq/go-admin/template/chartjs"
-	"github.com/go-hq/themes/adminlte"
+
+	_ "github.com/go-hq/themes/sword"
+
+	_ "github.com/go-hq/go-admin/adapter/gin"
+	_ "github.com/go-hq/go-admin/modules/db/drivers/mysql"
 )
 
 func main() {
 	gin.SetMode(gin.ReleaseMode)
-	gin.DefaultWriter = ioutil.Discard
+	gin.DefaultWriter = io.Discard
 
 	r := gin.New()
 
