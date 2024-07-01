@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/GoAdminLive/go-admin/tests/common"
 	"github.com/gavv/httpexpect"
-	"github.com/go-hq/go-admin/tests/common"
 )
 
 func TestEcho(t *testing.T) {

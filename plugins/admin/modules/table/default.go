@@ -11,20 +11,20 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-hq/go-admin/context"
-	"github.com/go-hq/go-admin/modules/config"
+	"github.com/GoAdminLive/go-admin/context"
+	"github.com/GoAdminLive/go-admin/modules/config"
 
-	"github.com/go-hq/go-admin/modules/db"
-	"github.com/go-hq/go-admin/modules/db/dialect"
-	errs "github.com/go-hq/go-admin/modules/errors"
-	"github.com/go-hq/go-admin/modules/language"
-	"github.com/go-hq/go-admin/modules/logger"
-	"github.com/go-hq/go-admin/plugins/admin/modules"
-	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
-	"github.com/go-hq/go-admin/plugins/admin/modules/form"
-	"github.com/go-hq/go-admin/plugins/admin/modules/paginator"
-	"github.com/go-hq/go-admin/plugins/admin/modules/parameter"
-	"github.com/go-hq/go-admin/template/types"
+	"github.com/GoAdminLive/go-admin/modules/db"
+	"github.com/GoAdminLive/go-admin/modules/db/dialect"
+	errs "github.com/GoAdminLive/go-admin/modules/errors"
+	"github.com/GoAdminLive/go-admin/modules/language"
+	"github.com/GoAdminLive/go-admin/modules/logger"
+	"github.com/GoAdminLive/go-admin/plugins/admin/modules"
+	"github.com/GoAdminLive/go-admin/plugins/admin/modules/constant"
+	"github.com/GoAdminLive/go-admin/plugins/admin/modules/form"
+	"github.com/GoAdminLive/go-admin/plugins/admin/modules/paginator"
+	"github.com/GoAdminLive/go-admin/plugins/admin/modules/parameter"
+	"github.com/GoAdminLive/go-admin/template/types"
 )
 
 // DefaultTable is an implementation of table.Table

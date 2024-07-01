@@ -3,13 +3,13 @@ package admin
 import (
 	"net/http"
 
-	"github.com/go-hq/go-admin/context"
-	"github.com/go-hq/go-admin/modules/auth"
-	"github.com/go-hq/go-admin/modules/config"
-	"github.com/go-hq/go-admin/modules/trace"
-	"github.com/go-hq/go-admin/modules/utils"
-	"github.com/go-hq/go-admin/plugins/admin/modules/response"
-	"github.com/go-hq/go-admin/template"
+	"github.com/GoAdminLive/go-admin/context"
+	"github.com/GoAdminLive/go-admin/modules/auth"
+	"github.com/GoAdminLive/go-admin/modules/config"
+	"github.com/GoAdminLive/go-admin/modules/trace"
+	"github.com/GoAdminLive/go-admin/modules/utils"
+	"github.com/GoAdminLive/go-admin/plugins/admin/modules/response"
+	"github.com/GoAdminLive/go-admin/template"
 )
 
 // initRouter initialize the router and return the context.

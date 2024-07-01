@@ -2,33 +2,33 @@ package buffalo
 
 import (
 	// add buffalo adapter
-	_ "github.com/go-hq/go-admin/adapter/buffalo"
-	"github.com/go-hq/go-admin/modules/config"
-	"github.com/go-hq/go-admin/modules/language"
-	"github.com/go-hq/go-admin/plugins/admin/modules/table"
-	"github.com/go-hq/themes/adminlte"
+	_ "github.com/GoAdminLive/go-admin/adapter/buffalo"
+	"github.com/GoAdminLive/go-admin/modules/config"
+	"github.com/GoAdminLive/go-admin/modules/language"
+	"github.com/GoAdminLive/go-admin/plugins/admin/modules/table"
+	"github.com/GoAdminLive/themes/adminlte"
 
 	// add mysql driver
-	_ "github.com/go-hq/go-admin/modules/db/drivers/mysql"
+	_ "github.com/GoAdminLive/go-admin/modules/db/drivers/mysql"
 	// add postgresql driver
-	_ "github.com/go-hq/go-admin/modules/db/drivers/postgres"
+	_ "github.com/GoAdminLive/go-admin/modules/db/drivers/postgres"
 	// add sqlite driver
-	_ "github.com/go-hq/go-admin/modules/db/drivers/sqlite"
+	_ "github.com/GoAdminLive/go-admin/modules/db/drivers/sqlite"
 	// add mssql driver
-	_ "github.com/go-hq/go-admin/modules/db/drivers/mssql"
+	_ "github.com/GoAdminLive/go-admin/modules/db/drivers/mssql"
 	// add adminlte ui theme
-	_ "github.com/go-hq/themes/adminlte"
+	_ "github.com/GoAdminLive/themes/adminlte"
 
-	"github.com/go-hq/go-admin/template"
-	"github.com/go-hq/go-admin/template/chartjs"
+	"github.com/GoAdminLive/go-admin/template"
+	"github.com/GoAdminLive/go-admin/template/chartjs"
 
 	"net/http"
 	"os"
 
-	"github.com/go-hq/go-admin/engine"
-	"github.com/go-hq/go-admin/plugins/admin"
-	"github.com/go-hq/go-admin/plugins/example"
-	"github.com/go-hq/go-admin/tests/tables"
+	"github.com/GoAdminLive/go-admin/engine"
+	"github.com/GoAdminLive/go-admin/plugins/admin"
+	"github.com/GoAdminLive/go-admin/plugins/example"
+	"github.com/GoAdminLive/go-admin/tests/tables"
 	"github.com/gobuffalo/buffalo"
 )
 

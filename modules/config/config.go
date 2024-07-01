@@ -20,9 +20,9 @@ import (
 	"gopkg.in/ini.v1"
 	"gopkg.in/yaml.v2"
 
-	"github.com/go-hq/go-admin/modules/logger"
-	"github.com/go-hq/go-admin/modules/utils"
-	"github.com/go-hq/go-admin/plugins/admin/modules/form"
+	"github.com/GoAdminLive/go-admin/modules/logger"
+	"github.com/GoAdminLive/go-admin/modules/utils"
+	"github.com/GoAdminLive/go-admin/plugins/admin/modules/form"
 )
 
 // Database is a type of database connection config.

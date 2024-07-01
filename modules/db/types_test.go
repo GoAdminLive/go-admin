@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-hq/go-admin/modules/config"
-	_ "github.com/go-hq/go-admin/modules/db/drivers/mysql"
+	"github.com/GoAdminLive/go-admin/modules/config"
+	_ "github.com/GoAdminLive/go-admin/modules/db/drivers/mysql"
 	"github.com/magiconair/properties/assert"
 )
 

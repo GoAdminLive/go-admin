@@ -5,4 +5,4 @@ name = "go"
 enabled = true
 
   [analyzers.meta]
-  import_paths = ["github.com/go-hq/go-admin"]
+  import_paths = ["github.com/GoAdminLive/go-admin"]

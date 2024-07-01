@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"html/template"
 
-	template2 "github.com/go-hq/go-admin/template"
+	template2 "github.com/GoAdminLive/go-admin/template"
 )
 
 type PieChart struct {

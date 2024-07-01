@@ -3,7 +3,7 @@ package models
 import (
 	"database/sql"
 
-	"github.com/go-hq/go-admin/modules/db"
+	"github.com/GoAdminLive/go-admin/modules/db"
 )
 
 // Base is base model structure.

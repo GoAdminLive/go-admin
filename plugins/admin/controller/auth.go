@@ -6,17 +6,17 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/go-hq/go-admin/context"
-	"github.com/go-hq/go-admin/modules/auth"
-	"github.com/go-hq/go-admin/modules/config"
-	"github.com/go-hq/go-admin/modules/db"
-	"github.com/go-hq/go-admin/modules/logger"
-	"github.com/go-hq/go-admin/modules/system"
-	"github.com/go-hq/go-admin/plugins/admin/models"
-	"github.com/go-hq/go-admin/plugins/admin/modules/captcha"
-	"github.com/go-hq/go-admin/plugins/admin/modules/response"
-	"github.com/go-hq/go-admin/template"
-	"github.com/go-hq/go-admin/template/types"
+	"github.com/GoAdminLive/go-admin/context"
+	"github.com/GoAdminLive/go-admin/modules/auth"
+	"github.com/GoAdminLive/go-admin/modules/config"
+	"github.com/GoAdminLive/go-admin/modules/db"
+	"github.com/GoAdminLive/go-admin/modules/logger"
+	"github.com/GoAdminLive/go-admin/modules/system"
+	"github.com/GoAdminLive/go-admin/plugins/admin/models"
+	"github.com/GoAdminLive/go-admin/plugins/admin/modules/captcha"
+	"github.com/GoAdminLive/go-admin/plugins/admin/modules/response"
+	"github.com/GoAdminLive/go-admin/template"
+	"github.com/GoAdminLive/go-admin/template/types"
 )
 
 // Auth check the input password and username for authentication.

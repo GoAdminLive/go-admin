@@ -3,11 +3,11 @@ package controller
 import (
 	"encoding/json"
 
-	"github.com/go-hq/go-admin/context"
-	"github.com/go-hq/go-admin/modules/config"
-	"github.com/go-hq/go-admin/plugins/admin/models"
-	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
-	"github.com/go-hq/go-admin/plugins/admin/modules/response"
+	"github.com/GoAdminLive/go-admin/context"
+	"github.com/GoAdminLive/go-admin/modules/config"
+	"github.com/GoAdminLive/go-admin/plugins/admin/models"
+	"github.com/GoAdminLive/go-admin/plugins/admin/modules/constant"
+	"github.com/GoAdminLive/go-admin/plugins/admin/modules/response"
 )
 
 func (h *Handler) Operation(ctx *context.Context) {

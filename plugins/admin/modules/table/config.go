@@ -1,7 +1,7 @@
 package table
 
 import (
-	"github.com/go-hq/go-admin/modules/db"
+	"github.com/GoAdminLive/go-admin/modules/db"
 )
 
 type Config struct {

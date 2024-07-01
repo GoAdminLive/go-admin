@@ -1,4 +1,4 @@
-module github.com/go-hq/go-admin
+module github.com/GoAdminLive/go-admin
 
 go 1.22
 
@@ -13,8 +13,8 @@ require (
 	github.com/gavv/httpexpect v2.0.0+incompatible
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-chi/chi/v5 v5.1.0
-	github.com/go-hq/html v1.1.1
-	github.com/go-hq/themes v1.1.1
+	github.com/GoAdminLive/html v1.1.1
+	github.com/GoAdminLive/themes v1.1.1
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/gobuffalo/buffalo v1.1.0
 	github.com/gofiber/fiber/v2 v2.52.4

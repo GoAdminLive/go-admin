@@ -6,18 +6,18 @@ import (
 	"os/signal"
 	"time"
 
-	_ "github.com/go-hq/go-admin/adapter/beego2"
-	_ "github.com/go-hq/go-admin/modules/db/drivers/mysql"
+	_ "github.com/GoAdminLive/go-admin/adapter/beego2"
+	_ "github.com/GoAdminLive/go-admin/modules/db/drivers/mysql"
 
+	"github.com/GoAdminLive/go-admin/engine"
+	"github.com/GoAdminLive/go-admin/examples/datamodel"
+	"github.com/GoAdminLive/go-admin/modules/config"
+	"github.com/GoAdminLive/go-admin/modules/language"
+	"github.com/GoAdminLive/go-admin/plugins/example"
+	"github.com/GoAdminLive/go-admin/template"
+	"github.com/GoAdminLive/go-admin/template/chartjs"
+	"github.com/GoAdminLive/themes/adminlte"
 	"github.com/beego/beego/v2/server/web"
-	"github.com/go-hq/go-admin/engine"
-	"github.com/go-hq/go-admin/examples/datamodel"
-	"github.com/go-hq/go-admin/modules/config"
-	"github.com/go-hq/go-admin/modules/language"
-	"github.com/go-hq/go-admin/plugins/example"
-	"github.com/go-hq/go-admin/template"
-	"github.com/go-hq/go-admin/template/chartjs"
-	"github.com/go-hq/themes/adminlte"
 )
 
 func main() {

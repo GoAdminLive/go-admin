@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/GoAdminLive/go-admin/modules/config"
+	"github.com/GoAdminLive/go-admin/plugins/admin/modules/constant"
+	"github.com/GoAdminLive/go-admin/plugins/admin/modules/form"
 	"github.com/gavv/httpexpect"
-	"github.com/go-hq/go-admin/modules/config"
-	"github.com/go-hq/go-admin/plugins/admin/modules/constant"
-	"github.com/go-hq/go-admin/plugins/admin/modules/form"
 )
 
 func roleTest(e *httpexpect.Expect, sesID *http.Cookie) {

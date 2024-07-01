@@ -4,10 +4,10 @@ import (
 	"html/template"
 	"net/url"
 
-	"github.com/go-hq/go-admin/context"
-	"github.com/go-hq/go-admin/modules/language"
-	"github.com/go-hq/go-admin/modules/utils"
-	"github.com/go-hq/go-admin/plugins/admin/models"
+	"github.com/GoAdminLive/go-admin/context"
+	"github.com/GoAdminLive/go-admin/modules/language"
+	"github.com/GoAdminLive/go-admin/modules/utils"
+	"github.com/GoAdminLive/go-admin/plugins/admin/models"
 )
 
 type Button interface {

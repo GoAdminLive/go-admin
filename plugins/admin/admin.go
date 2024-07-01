@@ -1,18 +1,18 @@
 package admin
 
 import (
-	"github.com/go-hq/go-admin/context"
-	"github.com/go-hq/go-admin/modules/config"
-	"github.com/go-hq/go-admin/modules/service"
-	"github.com/go-hq/go-admin/modules/system"
-	"github.com/go-hq/go-admin/modules/utils"
-	"github.com/go-hq/go-admin/plugins"
-	"github.com/go-hq/go-admin/plugins/admin/controller"
-	"github.com/go-hq/go-admin/plugins/admin/modules/guard"
-	"github.com/go-hq/go-admin/plugins/admin/modules/table"
-	"github.com/go-hq/go-admin/template/types"
-	"github.com/go-hq/go-admin/template/types/action"
-	_ "github.com/go-hq/go-admin/template/types/display"
+	"github.com/GoAdminLive/go-admin/context"
+	"github.com/GoAdminLive/go-admin/modules/config"
+	"github.com/GoAdminLive/go-admin/modules/service"
+	"github.com/GoAdminLive/go-admin/modules/system"
+	"github.com/GoAdminLive/go-admin/modules/utils"
+	"github.com/GoAdminLive/go-admin/plugins"
+	"github.com/GoAdminLive/go-admin/plugins/admin/controller"
+	"github.com/GoAdminLive/go-admin/plugins/admin/modules/guard"
+	"github.com/GoAdminLive/go-admin/plugins/admin/modules/table"
+	"github.com/GoAdminLive/go-admin/template/types"
+	"github.com/GoAdminLive/go-admin/template/types/action"
+	_ "github.com/GoAdminLive/go-admin/template/types/display"
 )
 
 // Admin is a GoAdmin plugin.

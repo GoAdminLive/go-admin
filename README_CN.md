@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/go-hq/go-admin">
+  <a href="https://github.com/GoAdminLive/go-admin">
     <img width="48%" alt="go-admin" src="http://quick.go-admin.cn/official/assets/imgs/github_logo.png">
   </a>
 </p>
@@ -8,8 +8,8 @@
 </p>
 <p align="center">
   <a href="http://drone.go-admin.com/GoAdminGroup/go-admin"><img alt="Build Status" src="http://drone.go-admin.com/api/badges/GoAdminGroup/go-admin/status.svg?ref=refs/heads/master"></a>
-  <a href="https://goreportcard.com/report/github.com/go-hq/go-admin"><img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/go-hq/go-admin"></a>
-  <a href="https://goreportcard.com/report/github.com/go-hq/go-admin"><img alt="golang" src="https://img.shields.io/badge/awesome-golang-blue.svg"></a>
+  <a href="https://goreportcard.com/report/github.com/GoAdminLive/go-admin"><img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/GoAdminLive/go-admin"></a>
+  <a href="https://goreportcard.com/report/github.com/GoAdminLive/go-admin"><img alt="golang" src="https://img.shields.io/badge/awesome-golang-blue.svg"></a>
   <a href="https://discord.gg/usAaEpCP"><img alt="discord" src="https://img.shields.io/badge/chat%20on-Discord-blue.svg"></a>
   <a href="https://t.me/joinchat/NlyH6Bch2QARZkArithKvg" rel="nofollow"><img alt="telegram" src="https://img.shields.io/badge/chat%20on-telegram-blue" style="max-width:100%;"></a>  
   <a href="https://raw.githubusercontent.com/GoAdminGroup/go-admin/master/LICENSE" rel="nofollow"><img src="https://img.shields.io/badge/license-Apache2.0-blue.svg" alt="license" data-canonical-src="https://img.shields.io/badge/license-Apache2.0-blue.svg" style="max-width:100%;"></a>
@@ -22,7 +22,7 @@
 
 GoAdmin 可以帮助你的golang应用快速实现数据可视化，搭建一个数据管理平台。
 
-[文档](http://doc.go-admin.cn/zh) | [论坛](http://discuss.go-admin.com) | [Demo](https://demo.go-admin.cn) | [上手例子](https://github.com/go-hq/example/blob/master/README_CN.md) | [GoAdmin+vue 例子](https://github.com/go-hq/goadmin-vue-example)
+[文档](http://doc.go-admin.cn/zh) | [论坛](http://discuss.go-admin.com) | [Demo](https://demo.go-admin.cn) | [上手例子](https://github.com/GoAdminLive/example/blob/master/README_CN.md) | [GoAdmin+vue 例子](https://github.com/GoAdminLive/goadmin-vue-example)
 
 
 ![](http://file.go-admin.cn/introduction/interface_3.png)
@@ -37,21 +37,21 @@ GoAdmin 可以帮助你的golang应用快速实现数据可视化，搭建一个
 
 ## 例子
 
-- [纯golang](https://github.com/go-hq/example), 简单很少依赖
-- [golang + 前端模版](https://github.com/go-hq/example_with_frontend), 你可以自己修改模版
-- [golang + vue](https://github.com/go-hq/example_with_vue), 如果你会vue的话，不妨试试
+- [纯golang](https://github.com/GoAdminLive/example), 简单很少依赖
+- [golang + 前端模版](https://github.com/GoAdminLive/example_with_frontend), 你可以自己修改模版
+- [golang + vue](https://github.com/GoAdminLive/example_with_vue), 如果你会vue的话，不妨试试
 
 ## 翻译
-我们需要您的帮忙： [https://github.com/go-hq/docs/issues/1](https://github.com/go-hq/docs/issues/1)
+我们需要您的帮忙： [https://github.com/GoAdminLive/docs/issues/1](https://github.com/GoAdminLive/docs/issues/1)
 
 ## 谁在使用GoAdmin
 
-[评论这个issue告诉我们](https://github.com/go-hq/go-admin/issues/71).
+[评论这个issue告诉我们](https://github.com/GoAdminLive/go-admin/issues/71).
 
 ## 使用
 
 ```shell
-$ go install github.com/go-hq/adm@latest
+$ go install github.com/GoAdminLive/adm@latest
 $ mkdir new_project && cd new_project
 $ adm init web -l cn
 ```
@@ -66,7 +66,7 @@ $ adm init web -l cn
 
 <strong>QQ群</strong>：[874825430](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=f1LB6fiIKDi8hwR__CjB70pqylsbQsef&authKey=PsKZe803zC1VvhhFg10zbVBTAOzGbqMSU3%2BrA8mMwK3fhasaoilz9dFj7f%2FZyku6&noverify=0&group_code=874825430)，记得备注加群来意
 
-这里是[开发计划](https://github.com/go-hq/go-admin/projects)
+这里是[开发计划](https://github.com/GoAdminLive/go-admin/projects)
 
 <strong>[点击这里申请加微信群（记得备注加群）](http://quick.go-admin.cn/resource/wechat_qrcode_02.jpg)</strong>
 

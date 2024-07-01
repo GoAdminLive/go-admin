@@ -1,12 +1,12 @@
 package ui
 
 import (
-	"github.com/go-hq/go-admin/modules/config"
-	"github.com/go-hq/go-admin/modules/language"
-	"github.com/go-hq/go-admin/modules/service"
-	"github.com/go-hq/go-admin/template/icon"
-	"github.com/go-hq/go-admin/template/types"
-	"github.com/go-hq/go-admin/template/types/action"
+	"github.com/GoAdminLive/go-admin/modules/config"
+	"github.com/GoAdminLive/go-admin/modules/language"
+	"github.com/GoAdminLive/go-admin/modules/service"
+	"github.com/GoAdminLive/go-admin/template/icon"
+	"github.com/GoAdminLive/go-admin/template/types"
+	"github.com/GoAdminLive/go-admin/template/types/action"
 )
 
 type Service struct {

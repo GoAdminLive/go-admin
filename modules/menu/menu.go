@@ -10,11 +10,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/go-hq/go-admin/modules/db/dialect"
+	"github.com/GoAdminLive/go-admin/modules/db/dialect"
 
-	"github.com/go-hq/go-admin/modules/db"
-	"github.com/go-hq/go-admin/modules/language"
-	"github.com/go-hq/go-admin/plugins/admin/models"
+	"github.com/GoAdminLive/go-admin/modules/db"
+	"github.com/GoAdminLive/go-admin/modules/language"
+	"github.com/GoAdminLive/go-admin/plugins/admin/models"
 )
 
 // Item is an menu item.

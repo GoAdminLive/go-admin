@@ -11,26 +11,26 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-hq/go-admin/context"
-	"github.com/go-hq/go-admin/modules/collection"
-	"github.com/go-hq/go-admin/modules/config"
-	"github.com/go-hq/go-admin/modules/db"
-	"github.com/go-hq/go-admin/modules/db/dialect"
-	errs "github.com/go-hq/go-admin/modules/errors"
-	"github.com/go-hq/go-admin/modules/language"
-	"github.com/go-hq/go-admin/modules/logger"
-	"github.com/go-hq/go-admin/modules/ui"
-	"github.com/go-hq/go-admin/modules/utils"
-	"github.com/go-hq/go-admin/plugins/admin/models"
-	form2 "github.com/go-hq/go-admin/plugins/admin/modules/form"
-	"github.com/go-hq/go-admin/plugins/admin/modules/parameter"
-	"github.com/go-hq/go-admin/plugins/admin/modules/tools"
-	"github.com/go-hq/go-admin/template"
-	"github.com/go-hq/go-admin/template/types"
-	"github.com/go-hq/go-admin/template/types/action"
-	"github.com/go-hq/go-admin/template/types/form"
-	selection "github.com/go-hq/go-admin/template/types/form/select"
-	"github.com/go-hq/html"
+	"github.com/GoAdminLive/go-admin/context"
+	"github.com/GoAdminLive/go-admin/modules/collection"
+	"github.com/GoAdminLive/go-admin/modules/config"
+	"github.com/GoAdminLive/go-admin/modules/db"
+	"github.com/GoAdminLive/go-admin/modules/db/dialect"
+	errs "github.com/GoAdminLive/go-admin/modules/errors"
+	"github.com/GoAdminLive/go-admin/modules/language"
+	"github.com/GoAdminLive/go-admin/modules/logger"
+	"github.com/GoAdminLive/go-admin/modules/ui"
+	"github.com/GoAdminLive/go-admin/modules/utils"
+	"github.com/GoAdminLive/go-admin/plugins/admin/models"
+	form2 "github.com/GoAdminLive/go-admin/plugins/admin/modules/form"
+	"github.com/GoAdminLive/go-admin/plugins/admin/modules/parameter"
+	"github.com/GoAdminLive/go-admin/plugins/admin/modules/tools"
+	"github.com/GoAdminLive/go-admin/template"
+	"github.com/GoAdminLive/go-admin/template/types"
+	"github.com/GoAdminLive/go-admin/template/types/action"
+	"github.com/GoAdminLive/go-admin/template/types/form"
+	selection "github.com/GoAdminLive/go-admin/template/types/form/select"
+	"github.com/GoAdminLive/html"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/text/cases"
 	textLang "golang.org/x/text/language"
@@ -2152,20 +2152,20 @@ func (s *SystemTable) GetGenerateForm(ctx *context.Context) (generateTool Table)
 					Value: "fmt",
 				},
 				{
-					Text:  "github.com/go-hq/go-admin/modules/db/dialect",
-					Value: "github.com/go-hq/go-admin/modules/db/dialect",
+					Text:  "github.com/GoAdminLive/go-admin/modules/db/dialect",
+					Value: "github.com/GoAdminLive/go-admin/modules/db/dialect",
 				},
 				{
-					Text:  "github.com/go-hq/go-admin/modules/db",
-					Value: "github.com/go-hq/go-admin/modules/db",
+					Text:  "github.com/GoAdminLive/go-admin/modules/db",
+					Value: "github.com/GoAdminLive/go-admin/modules/db",
 				},
 				{
-					Text:  "github.com/go-hq/go-admin/modules/language",
-					Value: "github.com/go-hq/go-admin/modules/language",
+					Text:  "github.com/GoAdminLive/go-admin/modules/language",
+					Value: "github.com/GoAdminLive/go-admin/modules/language",
 				},
 				{
-					Text:  "github.com/go-hq/go-admin/modules/logger",
-					Value: "github.com/go-hq/go-admin/modules/logger",
+					Text:  "github.com/GoAdminLive/go-admin/modules/logger",
+					Value: "github.com/GoAdminLive/go-admin/modules/logger",
 				},
 			},
 		).

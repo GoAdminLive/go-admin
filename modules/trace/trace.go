@@ -8,7 +8,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/go-hq/go-admin/context"
+	"github.com/GoAdminLive/go-admin/context"
 )
 
 var (

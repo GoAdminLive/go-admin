@@ -2,31 +2,31 @@ package echo
 
 import (
 	// add echo adapter
-	_ "github.com/go-hq/go-admin/adapter/echo"
-	"github.com/go-hq/go-admin/modules/config"
-	"github.com/go-hq/go-admin/modules/language"
-	"github.com/go-hq/go-admin/plugins/admin/modules/table"
+	_ "github.com/GoAdminLive/go-admin/adapter/echo"
+	"github.com/GoAdminLive/go-admin/modules/config"
+	"github.com/GoAdminLive/go-admin/modules/language"
+	"github.com/GoAdminLive/go-admin/plugins/admin/modules/table"
 
 	// add mysql driver
-	_ "github.com/go-hq/go-admin/modules/db/drivers/mysql"
+	_ "github.com/GoAdminLive/go-admin/modules/db/drivers/mysql"
 	// add postgresql driver
-	_ "github.com/go-hq/go-admin/modules/db/drivers/postgres"
+	_ "github.com/GoAdminLive/go-admin/modules/db/drivers/postgres"
 	// add sqlite driver
-	_ "github.com/go-hq/go-admin/modules/db/drivers/sqlite"
+	_ "github.com/GoAdminLive/go-admin/modules/db/drivers/sqlite"
 	// add mssql driver
-	_ "github.com/go-hq/go-admin/modules/db/drivers/mssql"
+	_ "github.com/GoAdminLive/go-admin/modules/db/drivers/mssql"
 	// add adminlte ui theme
-	"github.com/go-hq/themes/adminlte"
+	"github.com/GoAdminLive/themes/adminlte"
 
 	"net/http"
 	"os"
 
-	"github.com/go-hq/go-admin/engine"
-	"github.com/go-hq/go-admin/plugins/admin"
-	"github.com/go-hq/go-admin/plugins/example"
-	"github.com/go-hq/go-admin/template"
-	"github.com/go-hq/go-admin/template/chartjs"
-	"github.com/go-hq/go-admin/tests/tables"
+	"github.com/GoAdminLive/go-admin/engine"
+	"github.com/GoAdminLive/go-admin/plugins/admin"
+	"github.com/GoAdminLive/go-admin/plugins/example"
+	"github.com/GoAdminLive/go-admin/template"
+	"github.com/GoAdminLive/go-admin/template/chartjs"
+	"github.com/GoAdminLive/go-admin/tests/tables"
 	"github.com/labstack/echo/v4"
 )
 

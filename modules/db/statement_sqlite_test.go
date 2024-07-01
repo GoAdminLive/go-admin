@@ -3,8 +3,8 @@ package db
 import (
 	"testing"
 
-	"github.com/go-hq/go-admin/modules/config"
-	_ "github.com/go-hq/go-admin/modules/db/drivers/sqlite"
+	"github.com/GoAdminLive/go-admin/modules/config"
+	_ "github.com/GoAdminLive/go-admin/modules/db/drivers/sqlite"
 )
 
 var driverTestSQLiteConn Connection

@@ -129,10 +129,6 @@ github.com/gin-gonic/gin v1.10.0/go.mod h1:4PMNQiOhvDRa013RKVbsiNwoyezlm2rm0uX/T
 github.com/glendc/gopher-json v0.0.0-20170414221815-dc4743023d0c/go.mod h1:Gja1A+xZ9BoviGJNA2E9vFkPjjsl+CoJxSXiQM1UXtw=
 github.com/go-chi/chi/v5 v5.1.0 h1:acVI1TYaD+hhedDJ3r54HyA6sExp3HfXq7QWEEY/xMw=
 github.com/go-chi/chi/v5 v5.1.0/go.mod h1:DslCQbL2OYiznFReuXYUmQ2hGd1aDpCnlMNITLSKoi8=
-github.com/go-hq/html v1.1.1 h1:WASm06LeOLpMsU/jWcqp1f283aqmpBXx6sl+iT2yIW8=
-github.com/go-hq/html v1.1.1/go.mod h1:/MzGNnVAfA3ABFB5Qz4oUiJwfWUQYSE549W1wRetib8=
-github.com/go-hq/themes v1.1.1 h1:/tGUjiKndWV7iD/JFW13RLb/j05i/MlSHsmKZaVGYFc=
-github.com/go-hq/themes v1.1.1/go.mod h1:kEho9b0Cl9c/7qyEtkqbQF+aZJjBc6htrNMCzgQPHpc=
 github.com/go-http-utils/cookie v1.3.1 h1:GCdTeqVV5vDcjP7LrgYpH8pbt3dOYKS+Wrs7Jo3/k/w=
 github.com/go-http-utils/cookie v1.3.1/go.mod h1:ATl4rfG3bEemjiVa+8WIfgNcBUWdYBTasfXKjJ3Avt8=
 github.com/go-http-utils/negotiator v1.0.0 h1:Qp1zofD6Nw7KXApXa3pAjehP06Js0ILguEBCnHhZeVA=

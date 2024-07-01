@@ -6,19 +6,19 @@ import (
 	"os"
 	"testing"
 
-	_ "github.com/go-hq/themes/adminlte"
+	_ "github.com/GoAdminLive/themes/adminlte"
 
-	_ "github.com/go-hq/go-admin/adapter/gin"
-	_ "github.com/go-hq/go-admin/modules/db/drivers/mysql"
+	_ "github.com/GoAdminLive/go-admin/adapter/gin"
+	_ "github.com/GoAdminLive/go-admin/modules/db/drivers/mysql"
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/go-hq/go-admin/engine"
-	"github.com/go-hq/go-admin/modules/config"
-	"github.com/go-hq/go-admin/plugins/admin"
-	"github.com/go-hq/go-admin/template"
-	"github.com/go-hq/go-admin/template/chartjs"
-	"github.com/go-hq/go-admin/tests/tables"
+	"github.com/GoAdminLive/go-admin/engine"
+	"github.com/GoAdminLive/go-admin/modules/config"
+	"github.com/GoAdminLive/go-admin/plugins/admin"
+	"github.com/GoAdminLive/go-admin/template"
+	"github.com/GoAdminLive/go-admin/template/chartjs"
+	"github.com/GoAdminLive/go-admin/tests/tables"
 )
 
 const (

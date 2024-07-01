@@ -3,17 +3,17 @@ package datamodel
 import (
 	"html/template"
 
-	"github.com/go-hq/go-admin/context"
-	tmpl "github.com/go-hq/go-admin/template"
-	"github.com/go-hq/go-admin/template/chartjs"
-	"github.com/go-hq/go-admin/template/icon"
-	"github.com/go-hq/go-admin/template/types"
-	"github.com/go-hq/themes/adminlte/components/chart_legend"
-	"github.com/go-hq/themes/adminlte/components/description"
-	"github.com/go-hq/themes/adminlte/components/infobox"
-	"github.com/go-hq/themes/adminlte/components/productlist"
-	"github.com/go-hq/themes/adminlte/components/progress_group"
-	"github.com/go-hq/themes/adminlte/components/smallbox"
+	"github.com/GoAdminLive/go-admin/context"
+	tmpl "github.com/GoAdminLive/go-admin/template"
+	"github.com/GoAdminLive/go-admin/template/chartjs"
+	"github.com/GoAdminLive/go-admin/template/icon"
+	"github.com/GoAdminLive/go-admin/template/types"
+	"github.com/GoAdminLive/themes/adminlte/components/chart_legend"
+	"github.com/GoAdminLive/themes/adminlte/components/description"
+	"github.com/GoAdminLive/themes/adminlte/components/infobox"
+	"github.com/GoAdminLive/themes/adminlte/components/productlist"
+	"github.com/GoAdminLive/themes/adminlte/components/progress_group"
+	"github.com/GoAdminLive/themes/adminlte/components/smallbox"
 )
 
 // GetContent return the content of index page.
